@@ -17,9 +17,9 @@ e max(x) é o menor número de máquina maior ou igual a x.
 */
 typedef struct
 {
-    Float_t min;
-    Float_t max;
-} Intervalo_t;
+    Float_t *min;
+    Float_t *max;
+} Interval_t;
 
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
@@ -27,25 +27,25 @@ typedef struct
 Seja X = [a,b] e Y = [c,d]
 X + Y = [a+c, b+d]
 */
-Float_t op_sum_interval(Intervalo_t X, Intervalo_t Y);
+Interval_t op_sum_interval(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
 X - Y = [a-d, b-c]
 */
-Float_t op_sub_interval(Intervalo_t X, Intervalo_t Y);
+Interval_t op_sub_interval(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
 X * Y = [a,b] * [c,d]  =  [min{a*c,a*d,b*c,b*d}, max{a*c,a*d,b*c,b*d}]
 */
-Float_t op_mul_interval(Intervalo_t X, Intervalo_t Y);
+Interval_t op_mul_interval(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
 X / Y = [a,b] * [1/d,1/c], se 0 não pertence ao intervalo Y
 */
-Float_t op_div_interval(Intervalo_t X, Intervalo_t Y);
+Interval_t op_div_interval(Interval_t X, Interval_t Y);
 
 // Auxiliar functions
 
@@ -60,12 +60,16 @@ if char == '-', then select_operation = op_sub_interval
 @param char: the operation to be performed. It can be [+,-,*,/]
 
 */
-Float_t (*select_operation)(char);
+Float_t (*operation)(char);
 
-Float_t absolute_error(Intervalo_t X, Intervalo_t Y);
+Float_t absolute_error(Interval_t X, Interval_t Y);
 
-Float_t relative_error(Intervalo_t X, Intervalo_t Y);
+Float_t relative_error(Interval_t X, Interval_t Y);
 
-uint ulps_error(Intervalo_t X, Intervalo_t Y);
+uint ulps_error(Interval_t X, Interval_t Y);
+
+Interval_t read_Interval();
+
+char read_operation();
 
 #endif
