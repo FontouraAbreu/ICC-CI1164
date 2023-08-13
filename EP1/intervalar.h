@@ -66,10 +66,11 @@ Float_t absolute_error(Interval_t X, Interval_t Y);
 
 Float_t relative_error(Interval_t X, Interval_t Y);
 
-uint ulps_error(Interval_t X, Interval_t Y);
+uint8_t ulps_error(Interval_t X, Interval_t Y);
 
-Interval_t read_Interval();
+Float_t read_float_t();
 
-char read_operation();
+void read_expression(char *operations, Float_t *floats);
+void print_expression(char *operations, Float_t *floats);
 
 #endif
