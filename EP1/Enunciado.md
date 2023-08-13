@@ -10,7 +10,7 @@ X + Y = [a+c, b+d]
 
 X - Y = [a-d, b-c]
 
-X *Y = [a,b]* [c,d]  =  [min{a*c,a*d,b*c,b*d}, max{a*c,a*d,b*c,b*d}]
+X \* Y = [a,b] \* [c,d]  =  [min{a*c,a*d,b*c,b*d}, max{a*c,a*d,b*c,b*d}]
 
 X / Y = [a,b] * [1/d,1/c], se 0 não pertence ao intervalo Y
 
