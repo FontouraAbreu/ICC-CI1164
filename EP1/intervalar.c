@@ -1,4 +1,5 @@
 #include "intervalar.h"
+#include <fenv.h>
 
 /*
 This function will read from stdin the expression to be calculated.
@@ -16,37 +17,38 @@ For example:
 @param expressions: a pointer to and array of chars that will store the expression
 @param intervals: a pointer to an array of intervals that will store the intervals
 */
-void read_expression(char *operations, Float_t *floats)
+void read_expression(char *operations, float *floats)
 {
-    scanf("%e", floats[0]);
-    for (int i = 0; i < 4; i++)
-    {
-        scanf("%c", operations[i]);
-        scanf("%e", floats[i + 1]);
-    }
+    scanf("%f %c %f %c %f %c %f %c %f", &floats[0], &operations[0], &floats[1], &operations[1], &floats[2], &operations[2], &floats[3], &operations[3], &floats[4]);
 
     return;
 }
 
-void print_expression(char *operations, Float_t *floats)
+Interval_t generate_interval(float x) {
+    Interval_t interval;
+
+    fesetround(FE_DOWNWARD);
+    int current_direction = fegetround();
+
+    interval.min = &x;
+    fesetround(FE_UPWARD);
+    current_direction = fegetround();
+    interval.max = &x;
+    
+    return interval;
+}
+
+
+void print_expression(char *operations, float *floats)
 {
-    printf("%1.8e", floats[0]);
-    for (int i = 0; i < 4; i++)
-    {
-        printf("%c", operations[i]);
-        printf("%1.8e", floats[i + 1]);
-    }
+    printf("%f %c %f %c %f %c %f %c %f\n", floats[0], operations[0], floats[1], operations[1], floats[2], operations[2], floats[3], operations[3], floats[4]);
 
     return;
 }
 
-Float_t read_float_t()
+float read_float()
 {
-    Float_t num;
-    scanf("%f", &num.f);
+    float num;
+    scanf("%f", &num);
     return num;
-}
-
-void main()
-{
 }

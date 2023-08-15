@@ -1,7 +1,11 @@
 #ifndef INTERVALAR_H
 #define INTERVALAR_H
 
-#include "FloatType.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <float.h>
+#include <math.h>
 
 /*
 Atributos
@@ -17,9 +21,11 @@ e max(x) é o menor número de máquina maior ou igual a x.
 */
 typedef struct
 {
-    Float_t *min;
-    Float_t *max;
+    float *min;
+    float *max;
 } Interval_t;
+
+Interval_t generate_interval(float x);
 
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
@@ -60,17 +66,16 @@ if char == '-', then select_operation = op_sub_interval
 @param char: the operation to be performed. It can be [+,-,*,/]
 
 */
-Float_t (*operation)(char);
+// float (*operation)(char);
 
-Float_t absolute_error(Interval_t X, Interval_t Y);
+float absolute_error(Interval_t X, Interval_t Y);
 
-Float_t relative_error(Interval_t X, Interval_t Y);
+float relative_error(Interval_t X, Interval_t Y);
 
 uint8_t ulps_error(Interval_t X, Interval_t Y);
 
-Float_t read_float_t();
 
-void read_expression(char *operations, Float_t *floats);
-void print_expression(char *operations, Float_t *floats);
+void read_expression(char *operations, float *floats);
+void print_expression(char *operations, float *floats);
 
 #endif
