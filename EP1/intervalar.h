@@ -25,7 +25,7 @@ typedef struct
     float *max;
 } Interval_t;
 
-Interval_t generate_interval(float x);
+Interval_t generate_intervals(float * floats);
 
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
