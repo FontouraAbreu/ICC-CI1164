@@ -64,6 +64,18 @@ Interval_t op_mul_interval(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
+Will find min{a*c,a*d,b*c,b*d}
+*/
+float find_min(Interval_t X, Interval_t Y);
+
+/*
+Seja X = [a,b] e Y = [c,d]
+Will find max{a*c,a*d,b*c,b*d}
+*/
+float find_max(Interval_t X, Interval_t Y);
+
+/*
+Seja X = [a,b] e Y = [c,d]
 X / Y = [a,b] * [1/d,1/c], se 0 não pertence ao intervalo Y
 */
 Interval_t op_div_interval(Interval_t X, Interval_t Y);

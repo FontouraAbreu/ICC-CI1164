@@ -78,21 +78,40 @@ void print_expression(char *operations, Float_t *floats)
 Interval_t op_sum_interval(Interval_t X, Interval_t Y)
 {
     printf("[%1.8e, %1.8e] + [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
-
     Interval_t result;
+    Float_t min, max;
 
-    printf("\n");
-    return Y;
+    min.f = X.min.f + Y.min.f;
+    min.f = nextafterf(min.f, -INFINITY);
+
+    max.f = X.max.f + Y.max.f;
+    max.f = nextafterf(max.f, INFINITY);
+
+    result.min.f = min.f;
+    result.max.f = max.f;
+
+    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
+    return result;
 }
 
 Interval_t op_sub_interval(Interval_t X, Interval_t Y)
 {
     printf("[%1.8e, %1.8e] - [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
-
     Interval_t result;
-    printf("\n");
+    Float_t min, max;
 
-    return Y;
+    min.f = X.min.f - Y.min.f;
+    min.f = nextafterf(min.f, -INFINITY);
+
+    max.f = X.max.f - Y.max.f;
+    max.f = nextafterf(max.f, INFINITY);
+
+    result.min.f = min.f;
+    result.max.f = max.f;
+
+    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
+
+    return result;
 }
 
 Interval_t op_div_interval(Interval_t X, Interval_t Y)
@@ -100,17 +119,106 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
     printf("[%1.8e, %1.8e] / [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
 
     Interval_t result;
-    printf("\n");
 
-    return Y;
+    // checking if 0.0 is in Y
+    if (Y.max.f == 0.0 || Y.min.f == 0.0)
+    {
+        result.min.f = -INFINITY;
+        result.max.f = INFINITY;
+
+        return result;
+    }
+
+    Y.min.f = 1 / Y.min.f;
+    Y.max.f = 1 / Y.max.f;
+
+    result = op_mul_interval(X, Y);
+    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
+
+    return result;
 }
 
 Interval_t op_mul_interval(Interval_t X, Interval_t Y)
 {
     printf("[%1.8e, %1.8e] * [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
-
     Interval_t result;
-    printf("\n");
+    Float_t min, max;
 
-    return Y;
+    min.f = find_min(X, Y);
+    // min.f = nextafterf(min.f, -INFINITY);
+
+    max.f = find_max(X, Y);
+    // max.f = nextafterf(max.f, INFINITY);
+
+    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
+
+    return result;
+}
+
+float find_min(Interval_t X, Interval_t Y)
+{
+    Float_t min;
+
+    Float_t a = X.min;
+    Float_t b = X.max;
+    Float_t c = Y.min;
+    Float_t d = Y.max;
+
+    float ac = a.f * c.f;
+    float ad = a.f * d.f;
+    float bc = b.f * c.f;
+    float bd = b.f * d.f;
+
+    min.f = ac;
+
+    if (ad < min.f)
+    {
+        min.f = ad;
+    }
+
+    if (bc < min.f)
+    {
+        min.f = bc;
+    }
+
+    if (bd < min.f)
+    {
+        min.f = bd;
+    }
+
+    return min.f;
+}
+
+float find_max(Interval_t X, Interval_t Y)
+{
+    Float_t max;
+
+    Float_t a = X.min;
+    Float_t b = X.max;
+    Float_t c = Y.min;
+    Float_t d = Y.max;
+
+    float ac = a.f * c.f;
+    float ad = a.f * d.f;
+    float bc = b.f * c.f;
+    float bd = b.f * d.f;
+
+    max.f = ac;
+
+    if (ad > max.f)
+    {
+        max.f = ad;
+    }
+
+    if (bc > max.f)
+    {
+        max.f = bc;
+    }
+
+    if (bd > max.f)
+    {
+        max.f = bd;
+    }
+
+    return max.f;
 }
