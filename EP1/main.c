@@ -17,8 +17,10 @@ int main()
     for (int i = 0; i < 4; i++)
     {
         current_operation = select_operation(operations[i]);
-        printf("current_operation function pointer: %p\n", current_operation);
         current_result = current_operation(intervals[i], intervals[i + 1]);
+
+        intervals[i + 1] = current_result;
+
         printf("\n");
     }
 
