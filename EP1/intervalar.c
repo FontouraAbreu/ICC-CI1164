@@ -23,75 +23,46 @@ void read_expression(char *operations, Float_t *floats)
     return;
 }
 
-// void show_fe_current_rounding_direction(void)
-// {
-//     printf("current rounding direction:  ");
-//     switch (fegetround()) {
-//            case FE_TONEAREST:  printf ("FE_TONEAREST");  break;
-//            case FE_DOWNWARD:   printf ("FE_DOWNWARD");   break;
-//            case FE_UPWARD:     printf ("FE_UPWARD");     break;
-//            case FE_TOWARDZERO: printf ("FE_TOWARDZERO"); break;
-//            default:            printf ("unknown");
-//     };
-//     printf("\n");
-// }
-
 Interval_t *generate_intervals(Float_t *floats)
 {
     Interval_t *intervals = malloc(sizeof(Interval_t) * 5);
 
     for (int i = 0; i < 5; i++)
     {
-        printf("float: %1.12e\n", floats[i].f);
         double max = nextafterf(floats[i].f, INFINITY);
-        printf("max: %1.12e\n", max);
-
         double min = nextafterf(floats[i].f, -INFINITY);
-        printf("min: %1.12e\n", min);
-        // intervals[i].min = nextafter(floats[i], -INFINITY);
-        // intervals[i].min = nextafter(floats[i], INFINITY);
-
-        printf("[%1.12e, %1.12e]\n", min, max);
     }
 
     return intervals;
 }
 
-// Interval_t select_operation(char operation, Interval_t X, Interval_t Y)
-// {
-//     Interval_t result;
-//     switch (operation) {
-//         case '+':
-//             result = op_sum_interval(X, Y);
-//             break;
-//         case '-':
-//             result = op_sub_interval(X, Y);
-//             break;
-//         case '*':
-//             result = op_mul_interval(X, Y);
-//             break;
-//         case '/':
-//             result = op_div_interval(X, Y);
-//             break;
-//         default:
-//             printf("Invalid operation\n");
-//             break;
-//     }
-//     return result;
-// }
-
-// void calculateResult(Interval_t *interv)
+Interval_t select_operation(char operation, Interval_t X, Interval_t Y)
+{
+    Interval_t result;
+    switch (operation)
+    {
+    case '+':
+        result = op_sum_interval(X, Y);
+        break;
+    case '-':
+        result = op_sub_interval(X, Y);
+        break;
+    case '*':
+        result = op_mul_interval(X, Y);
+        break;
+    case '/':
+        result = op_div_interval(X, Y);
+        break;
+    default:
+        printf("Invalid operation\n");
+        break;
+    }
+    return result;
+}
 
 void print_expression(char *operations, Float_t *floats)
 {
     printf("%1.12e %c %1.12e %c %1.12e %c %1.12e %c %1.12e\n", floats[0].f, operations[0], floats[1].f, operations[1], floats[2].f, operations[2], floats[3].f, operations[3], floats[4].f);
 
     return;
-}
-
-float read_float()
-{
-    float num;
-    scanf("%f", &num);
-    return num;
 }
