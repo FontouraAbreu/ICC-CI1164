@@ -36,22 +36,22 @@ void read_expression(char *operations, Float_t *floats)
 //     printf("\n");
 // }
 
+Interval_t *generate_intervals(Float_t *floats)
+{
+    Interval_t *intervals = malloc(sizeof(Interval_t) * 5);
 
-Interval_t* generate_intervals(Float_t * floats) {
-    Interval_t *intervals = malloc(sizeof(Interval_t)*5);
-
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++)
+    {
         printf("float: %1.12e\n", floats[i].f);
-        double max = nextafter(floats[i].f, INFINITY);
+        double max = nextafterf(floats[i].f, INFINITY);
         printf("max: %1.12e\n", max);
 
-        double min = nextafter(floats[i].f, -INFINITY);
+        double min = nextafterf(floats[i].f, -INFINITY);
         printf("min: %1.12e\n", min);
         // intervals[i].min = nextafter(floats[i], -INFINITY);
         // intervals[i].min = nextafter(floats[i], INFINITY);
 
         printf("[%1.12e, %1.12e]\n", min, max);
-
     }
 
     return intervals;
@@ -81,7 +81,6 @@ Interval_t* generate_intervals(Float_t * floats) {
 // }
 
 // void calculateResult(Interval_t *interv)
-
 
 void print_expression(char *operations, Float_t *floats)
 {
