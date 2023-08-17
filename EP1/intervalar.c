@@ -1,5 +1,4 @@
 #include "intervalar.h"
-#include <fenv.h>
 
 /*
 This function will read from stdin the expression to be calculated.
@@ -17,45 +16,41 @@ For example:
 @param expressions: a pointer to and array of chars that will store the expression
 @param intervals: a pointer to an array of intervals that will store the intervals
 */
-void read_expression(char *operations, float *floats)
+void read_expression(char *operations, Float_t *floats)
 {
-    scanf("%f %c %f %c %f %c %f %c %f", &floats[0], &operations[0], &floats[1], &operations[1], &floats[2], &operations[2], &floats[3], &operations[3], &floats[4]);
+    scanf("%f %c %f %c %f %c %f %c %f", &floats[0].f, &operations[0], &floats[1].f, &operations[1], &floats[2].f, &operations[2], &floats[3].f, &operations[3], &floats[4].f);
 
     return;
 }
 
-void show_fe_current_rounding_direction(void)
-{
-    printf("current rounding direction:  ");
-    switch (fegetround()) {
-           case FE_TONEAREST:  printf ("FE_TONEAREST");  break;
-           case FE_DOWNWARD:   printf ("FE_DOWNWARD");   break;
-           case FE_UPWARD:     printf ("FE_UPWARD");     break;
-           case FE_TOWARDZERO: printf ("FE_TOWARDZERO"); break;
-           default:            printf ("unknown");
-    };
-    printf("\n");
-}
+// void show_fe_current_rounding_direction(void)
+// {
+//     printf("current rounding direction:  ");
+//     switch (fegetround()) {
+//            case FE_TONEAREST:  printf ("FE_TONEAREST");  break;
+//            case FE_DOWNWARD:   printf ("FE_DOWNWARD");   break;
+//            case FE_UPWARD:     printf ("FE_UPWARD");     break;
+//            case FE_TOWARDZERO: printf ("FE_TOWARDZERO"); break;
+//            default:            printf ("unknown");
+//     };
+//     printf("\n");
+// }
 
 
-Interval_t* generate_intervals(float * floats) {
+Interval_t* generate_intervals(Float_t * floats) {
     Interval_t *intervals = malloc(sizeof(Interval_t)*5);
-    // show_fe_current_rounding_direction();
 
     for (int i = 0; i < 5; i++) {
+        printf("float: %1.12e\n", floats[i].f);
+        double max = nextafter(floats[i].f, INFINITY);
+        printf("max: %1.12e\n", max);
 
-        fesetround(FE_DOWNWARD);
-        show_fe_current_rounding_direction();
-        intervals[i].min = &floats[i];
-        printf("%1.12e \n   ", floats[i]);
+        double min = nextafter(floats[i].f, -INFINITY);
+        printf("min: %1.12e\n", min);
+        // intervals[i].min = nextafter(floats[i], -INFINITY);
+        // intervals[i].min = nextafter(floats[i], INFINITY);
 
-        fesetround(FE_UPWARD);
-
-        show_fe_current_rounding_direction();
-        intervals[i].max = &floats[i];
-        // printf("%1.12e \n   ", floats[i]);
-
-        printf("[%1.12e, %1.12e]\n", *intervals[i].min, *intervals[i].max);
+        printf("[%1.12e, %1.12e]\n", min, max);
 
     }
 
@@ -88,9 +83,9 @@ Interval_t* generate_intervals(float * floats) {
 // void calculateResult(Interval_t *interv)
 
 
-void print_expression(char *operations, float *floats)
+void print_expression(char *operations, Float_t *floats)
 {
-    printf("%1.12e %c %1.12e %c %1.12e %c %1.12e %c %1.12e\n", floats[0], operations[0], floats[1], operations[1], floats[2], operations[2], floats[3], operations[3], floats[4]);
+    printf("%1.12e %c %1.12e %c %1.12e %c %1.12e %c %1.12e\n", floats[0].f, operations[0], floats[1].f, operations[1], floats[2].f, operations[2], floats[3].f, operations[3], floats[4].f);
 
     return;
 }

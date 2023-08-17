@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
+#include "FloatType.h"
 
 /*
 Atributos
@@ -21,11 +22,11 @@ e max(x) é o menor número de máquina maior ou igual a x.
 */
 typedef struct
 {
-    float *min;
-    float *max;
+    Float_t min;
+    Float_t max;
 } Interval_t;
 
-Interval_t* generate_intervals(float * floats);
+Interval_t* generate_intervals(Float_t * floats);
 
 void copy_value(float *source, float *destination);
 
@@ -78,7 +79,7 @@ float relative_error(Interval_t X, Interval_t Y);
 uint8_t ulps_error(Interval_t X, Interval_t Y);
 
 
-void read_expression(char *operations, float *floats);
-void print_expression(char *operations, float *floats);
+void read_expression(char *operations, Float_t *floats);
+void print_expression(char *operations, Float_t *floats);
 
 #endif
