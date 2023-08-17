@@ -26,7 +26,19 @@ typedef struct
     Float_t max;
 } Interval_t;
 
-Interval_t* generate_intervals(Float_t * floats);
+/*
+Will loop through the array of floats and generate the intervals for each one of them.
+
+@param floats: the array of *Float_t to be converted to intervals
+*/
+Interval_t *generate_intervals(Float_t *floats);
+
+/*
+Will generate a single interval for a given Float_t.
+
+@param number: the Float_t to be converted to an interval
+*/
+Interval_t generate_single_interval(Float_t *number);
 
 void copy_value(float *source, float *destination);
 
@@ -70,14 +82,13 @@ if char == '-', then select_operation = op_sub_interval
 
 */
 // float (*operation)(char);
-Interval_t select_operation(char operation, Interval_t X, Interval_t Y);
+Interval_t (*select_operation(char operation))(Interval_t, Interval_t);
 
 float absolute_error(Interval_t X, Interval_t Y);
 
 float relative_error(Interval_t X, Interval_t Y);
 
 uint8_t ulps_error(Interval_t X, Interval_t Y);
-
 
 void read_expression(char *operations, Float_t *floats);
 void print_expression(char *operations, Float_t *floats);
