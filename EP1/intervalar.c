@@ -38,31 +38,59 @@ void show_fe_current_rounding_direction(void)
 }
 
 
-Interval_t generate_intervals(float * floats) {
-    Interval_t * intervals;
+Interval_t* generate_intervals(float * floats) {
+    Interval_t *intervals = malloc(sizeof(Interval_t)*5);
+    // show_fe_current_rounding_direction();
 
-    show_fe_current_rounding_direction();
     for (int i = 0; i < 5; i++) {
+
         fesetround(FE_DOWNWARD);
         show_fe_current_rounding_direction();
         intervals[i].min = &floats[i];
+        printf("%1.12e \n   ", floats[i]);
 
         fesetround(FE_UPWARD);
+
         show_fe_current_rounding_direction();
         intervals[i].max = &floats[i];
-        printf("[%1.8e, %1.8e]\n", *intervals[i].min, *intervals[i].max);
+        // printf("%1.12e \n   ", floats[i]);
+
+        printf("[%1.12e, %1.12e]\n", *intervals[i].min, *intervals[i].max);
 
     }
 
-
-
-    return *intervals;
+    return intervals;
 }
+
+// Interval_t select_operation(char operation, Interval_t X, Interval_t Y)
+// {
+//     Interval_t result;
+//     switch (operation) {
+//         case '+':
+//             result = op_sum_interval(X, Y);
+//             break;
+//         case '-':
+//             result = op_sub_interval(X, Y);
+//             break;
+//         case '*':
+//             result = op_mul_interval(X, Y);
+//             break;
+//         case '/':
+//             result = op_div_interval(X, Y);
+//             break;
+//         default:
+//             printf("Invalid operation\n");
+//             break;
+//     }
+//     return result;
+// }
+
+// void calculateResult(Interval_t *interv)
 
 
 void print_expression(char *operations, float *floats)
 {
-    printf("%1.8e %c %1.8e %c %1.8e %c %1.8e %c %1.8e\n", floats[0], operations[0], floats[1], operations[1], floats[2], operations[2], floats[3], operations[3], floats[4]);
+    printf("%1.12e %c %1.12e %c %1.12e %c %1.12e %c %1.12e\n", floats[0], operations[0], floats[1], operations[1], floats[2], operations[2], floats[3], operations[3], floats[4]);
 
     return;
 }

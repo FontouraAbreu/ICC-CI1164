@@ -25,7 +25,9 @@ typedef struct
     float *max;
 } Interval_t;
 
-Interval_t generate_intervals(float * floats);
+Interval_t* generate_intervals(float * floats);
+
+void copy_value(float *source, float *destination);
 
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
@@ -67,6 +69,7 @@ if char == '-', then select_operation = op_sub_interval
 
 */
 // float (*operation)(char);
+Interval_t select_operation(char operation, Interval_t X, Interval_t Y);
 
 float absolute_error(Interval_t X, Interval_t Y);
 
