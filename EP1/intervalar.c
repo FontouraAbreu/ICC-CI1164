@@ -1,21 +1,5 @@
 #include "intervalar.h"
 
-/*
-This function will read from stdin the expression to be calculated.
-
-the expression must be in this format:
-
-X1 O1 X2 O2 X3 O3 X4 O4 X5
-
-where Xi is an interval and Oi is an operation [+,-,*,/]
-
-For example:
-
-2.347e-40 * 0.001 + 1.1e+10 - 0.75e-39 / 0.0
-
-@param expressions: a pointer to and array of chars that will store the expression
-@param intervals: a pointer to an array of intervals that will store the intervals
-*/
 void read_expression(char *operations, Float_t *floats)
 {
     scanf("%f %c %f %c %f %c %f %c %f", &floats[0].f, &operations[0], &floats[1].f, &operations[1], &floats[2].f, &operations[2], &floats[3].f, &operations[3], &floats[4].f);
@@ -39,6 +23,16 @@ Interval_t *generate_intervals(Float_t *floats)
 Interval_t generate_single_interval(Float_t *number)
 {
     Interval_t interval;
+
+    // necessary because nextafterf(0.0, -INFINITY) & nextafterf(0.0, INFINITY) return 0.0
+    // doesnt return the correct value
+    if (number->f == 0.0)
+    {
+        interval.min.f = 0.0;
+        interval.max.f = 0.0;
+
+        return interval;
+    }
 
     interval.min.f = nextafterf(number->f, -INFINITY);
     interval.max.f = nextafterf(number->f, INFINITY);
@@ -75,9 +69,35 @@ void print_expression(char *operations, Float_t *floats)
     return;
 }
 
+Float_t absolute_error(Interval_t interval)
+{
+    Float_t result;
+
+    result.f = fabs(interval.max.f - interval.min.f);
+
+    return result;
+}
+
+Float_t relative_error(Interval_t interval)
+{
+    Float_t result;
+
+    result.f = fabs(interval.max.f - interval.min.f) / fabs(interval.min.f);
+
+    return result;
+}
+
+int how_many_ulps_between(Interval_t interval)
+{
+    int result;
+
+    result = (int)fabs(interval.min.i - interval.max.i) - 1;
+
+    return result;
+}
+
 Interval_t op_sum_interval(Interval_t X, Interval_t Y)
 {
-    printf("[%1.8e, %1.8e] + [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
     Interval_t result;
     Float_t min, max;
 
@@ -90,13 +110,11 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
     result.min.f = min.f;
     result.max.f = max.f;
 
-    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
     return result;
 }
 
 Interval_t op_sub_interval(Interval_t X, Interval_t Y)
 {
-    printf("[%1.8e, %1.8e] - [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
     Interval_t result;
     Float_t min, max;
 
@@ -109,14 +127,11 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     result.min.f = min.f;
     result.max.f = max.f;
 
-    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
-
     return result;
 }
 
 Interval_t op_div_interval(Interval_t X, Interval_t Y)
 {
-    printf("[%1.8e, %1.8e] / [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
 
     Interval_t result;
 
@@ -133,24 +148,17 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
     Y.max.f = 1 / Y.max.f;
 
     result = op_mul_interval(X, Y);
-    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
 
     return result;
 }
 
 Interval_t op_mul_interval(Interval_t X, Interval_t Y)
 {
-    printf("[%1.8e, %1.8e] * [%1.8e, %1.8e] = ", X.min.f, X.max.f, Y.min.f, Y.max.f);
     Interval_t result;
     Float_t min, max;
 
-    min.f = find_min(X, Y);
-    // min.f = nextafterf(min.f, -INFINITY);
-
-    max.f = find_max(X, Y);
-    // max.f = nextafterf(max.f, INFINITY);
-
-    printf("[%1.8e, %1.8e]\n", result.min.f, result.max.f);
+    result.min.f = nextafterf(find_min(X, Y), -INFINITY);
+    result.max.f = nextafterf(find_max(X, Y), INFINITY);
 
     return result;
 }

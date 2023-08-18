@@ -26,22 +26,6 @@ typedef struct
     Float_t max;
 } Interval_t;
 
-/*
-Will loop through the array of floats and generate the intervals for each one of them.
-
-@param floats: the array of *Float_t to be converted to intervals
-*/
-Interval_t *generate_intervals(Float_t *floats);
-
-/*
-Will generate a single interval for a given Float_t.
-
-@param number: the Float_t to be converted to an interval
-*/
-Interval_t generate_single_interval(Float_t *number);
-
-void copy_value(float *source, float *destination);
-
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
 /*
@@ -96,13 +80,43 @@ if char == '-', then select_operation = op_sub_interval
 // float (*operation)(char);
 Interval_t (*select_operation(char operation))(Interval_t, Interval_t);
 
-float absolute_error(Interval_t X, Interval_t Y);
+Float_t absolute_error(Interval_t interval);
 
-float relative_error(Interval_t X, Interval_t Y);
+Float_t relative_error(Interval_t interval);
 
-uint8_t ulps_error(Interval_t X, Interval_t Y);
+int how_many_ulps_between(Interval_t interval);
 
+/*
+This function will read from stdin the expression to be calculated.
+
+the expression must be in this format:
+
+X1 O1 X2 O2 X3 O3 X4 O4 X5
+
+where Xi is an interval and Oi is an operation [+,-,*,/]
+
+For example:
+
+2.347e-40 * 0.001 + 1.1e+10 - 0.75e-39 / 0.0
+
+@param expressions: a pointer to and array of chars that will store the expression
+@param intervals: a pointer to an array of intervals that will store the intervals
+*/
 void read_expression(char *operations, Float_t *floats);
 void print_expression(char *operations, Float_t *floats);
+
+/*
+Will loop through the array of floats and generate the intervals for each one of them.
+
+@param floats: the array of *Float_t to be converted to intervals
+*/
+Interval_t *generate_intervals(Float_t *floats);
+
+/*
+Will generate a single interval for a given Float_t.
+
+@param number: the Float_t to be converted to an interval
+*/
+Interval_t generate_single_interval(Float_t *number);
 
 #endif
