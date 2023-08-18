@@ -16,6 +16,9 @@ main.o: main.c
 
 
 # regra para limpar os diretórios
+run: main
+	./main
+
 clean:
 	rm -f *.o main
 
