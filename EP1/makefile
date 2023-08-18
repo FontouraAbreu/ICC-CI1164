@@ -9,7 +9,7 @@ main: intervalar.o main.o
 intervalar.o: intervalar.c intervalar.h 
 	gcc -c intervalar.c -o intervalar.o
 	
-main.o: main.c main.h
+main.o: main.c
 	gcc -c main.c -o main.o
 
 
