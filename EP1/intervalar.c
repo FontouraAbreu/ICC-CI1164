@@ -101,14 +101,25 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
     Interval_t result;
     Float_t min, max;
 
-    min.f = X.min.f + Y.min.f;
-    min.f = nextafterf(min.f, -INFINITY);
+    if (X.min.f == 0.0 && Y.min.f == 0.0)
+    {
+        result.min.f = 0.0;
+    }
+    else
+    {
+        result.min.f = X.min.f + Y.min.f;
+        result.min.f = nextafterf(result.min.f, -INFINITY);
+    }
 
-    max.f = X.max.f + Y.max.f;
-    max.f = nextafterf(max.f, INFINITY);
-
-    result.min.f = min.f;
-    result.max.f = max.f;
+    if (X.max.f == 0.0 && Y.max.f == 0.0)
+    {
+        result.max.f = 0.0;
+    }
+    else
+    {
+        result.max.f = X.max.f + Y.max.f;
+        result.max.f = nextafterf(result.max.f, INFINITY);
+    }
 
     return result;
 }
@@ -118,14 +129,25 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     Interval_t result;
     Float_t min, max;
 
-    min.f = X.min.f - Y.min.f;
-    min.f = nextafterf(min.f, -INFINITY);
+    if (X.min.f == 0.0 && Y.min.f == 0.0)
+    {
+        result.min.f = 0.0;
+    }
+    else
+    {
+        result.min.f = X.min.f - Y.min.f;
+        result.min.f = nextafterf(result.min.f, -INFINITY);
+    }
 
-    max.f = X.max.f - Y.max.f;
-    max.f = nextafterf(max.f, INFINITY);
-
-    result.min.f = min.f;
-    result.max.f = max.f;
+    if (X.max.f == 0.0 && Y.max.f == 0.0)
+    {
+        result.max.f = 0.0;
+    }
+    else
+    {
+        result.max.f = X.max.f - Y.max.f;
+        result.max.f = nextafterf(result.max.f, INFINITY);
+    }
 
     return result;
 }
