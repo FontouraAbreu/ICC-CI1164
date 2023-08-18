@@ -91,7 +91,7 @@ int how_many_ulps_between(Interval_t interval)
 {
     int result;
 
-    result = (int)fabs(interval.min.i - interval.max.i) - 1;
+    result = abs(interval.min.i - interval.max.i) - 1;
 
     return result;
 }

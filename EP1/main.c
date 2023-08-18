@@ -12,7 +12,6 @@ int main()
     Interval_t *intervals = generate_intervals(floats);
 
     Interval_t current_result;
-    print_expression(operations, floats);
     // loop through the operations and store the resulting interval in current_result
     for (int i = 0; i < 4; i++)
     {
