@@ -24,16 +24,6 @@ Interval_t generate_single_interval(Float_t *number)
 {
     Interval_t interval;
 
-    // necessary because nextafterf(0.0, -INFINITY) & nextafterf(0.0, INFINITY) return 0.0
-    // doesnt return the correct value
-    if (number->f == 0.0)
-    {
-        interval.min.f = 0.0;
-        interval.max.f = 0.0;
-
-        return interval;
-    }
-
     interval.min.f = nextafterf(number->f, -INFINITY);
     interval.max.f = nextafterf(number->f, INFINITY);
 
@@ -93,6 +83,11 @@ int how_many_ulps_between(Interval_t interval)
 
     result = abs(interval.min.i - interval.max.i) - 1;
 
+    if (result < 0)
+    {
+        return 0;
+    }
+
     return result;
 }
 
@@ -101,25 +96,8 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
     Interval_t result;
     Float_t min, max;
 
-    if (X.min.f == 0.0 && Y.min.f == 0.0)
-    {
-        result.min.f = 0.0;
-    }
-    else
-    {
-        result.min.f = X.min.f + Y.min.f;
-        result.min.f = nextafterf(result.min.f, -INFINITY);
-    }
-
-    if (X.max.f == 0.0 && Y.max.f == 0.0)
-    {
-        result.max.f = 0.0;
-    }
-    else
-    {
-        result.max.f = X.max.f + Y.max.f;
-        result.max.f = nextafterf(result.max.f, INFINITY);
-    }
+    result.min.f = X.min.f + Y.min.f;
+    result.min.f = nextafterf(result.min.f, -INFINITY);
 
     return result;
 }
@@ -129,25 +107,8 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     Interval_t result;
     Float_t min, max;
 
-    if (X.min.f == 0.0 && Y.min.f == 0.0)
-    {
-        result.min.f = 0.0;
-    }
-    else
-    {
-        result.min.f = X.min.f - Y.min.f;
-        result.min.f = nextafterf(result.min.f, -INFINITY);
-    }
-
-    if (X.max.f == 0.0 && Y.max.f == 0.0)
-    {
-        result.max.f = 0.0;
-    }
-    else
-    {
-        result.max.f = X.max.f - Y.max.f;
-        result.max.f = nextafterf(result.max.f, INFINITY);
-    }
+    result.min.f = X.min.f - Y.min.f;
+    result.min.f = nextafterf(result.min.f, -INFINITY);
 
     return result;
 }
