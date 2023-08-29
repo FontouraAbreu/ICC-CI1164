@@ -1,16 +1,17 @@
 CFLAGS = -Wall -g -O1
+CC = gcc
 # regras de ligação
 all: main
 
 main: intervalar.o main.o
-	gcc -o main intervalar.o main.o -lm
+	$(CC) -o main intervalar.o main.o -lm
 
 # regras de compilação
 intervalar.o: intervalar.c intervalar.h 
-	gcc -c intervalar.c -o intervalar.o
+	$(CC) $(CFLAGS) -c intervalar.c -o intervalar.o
 	
 main.o: main.c
-	gcc -c main.c -o main.o
+	$(CC) $(CFLAGS) -c main.c -o main.o
 
 
 
