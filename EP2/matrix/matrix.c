@@ -8,11 +8,12 @@ matrix_t read_and_create_matrix()
     scanf("%d", &n);
     matrix.size = n;
     matrix.data = malloc(sizeof(double *) * n);
+    matrix.independent_terms = malloc(sizeof(double) * n);
 
     for (int i = 0; i < n; i++)
     {
         // Allocating memory for each line of the matrix
-        matrix.data[i] = malloc(sizeof(double) * n - 1);
+        matrix.data[i] = malloc(sizeof(double) * n);
 
         // filling a line of the matrix
         for (int j = 0; j < n; j++)
@@ -33,13 +34,12 @@ void print_matrix(matrix_t matrix)
     {
         for (int j = 0; j < matrix.size; j++)
         {
-            if (j == matrix.size - 1)
+            if (j == matrix.size)
             {
-                printf("| ");
             }
             printf("%1.8e ", matrix.data[i][j]);
         }
-        printf("\n");
+        printf("| %1.8e\n", matrix.independent_terms[i]);
     }
 
     return;
