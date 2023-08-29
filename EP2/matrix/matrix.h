@@ -19,6 +19,16 @@ typedef struct matrix
  */
 matrix_t read_and_create_matrix();
 
+/*
+ * Will print a matrix and its independent terms to stdout
+ * @param matrix the matrix to be printed
+ */
 void print_matrix(matrix_t matrix);
+
+/*
+ * Will free the memory allocated for a matrix
+ * @param matrix the matrix to be freed
+ */
+void free_matrix(matrix_t matrix);
 
 #endif // MATRIX_H
