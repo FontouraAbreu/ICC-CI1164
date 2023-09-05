@@ -17,6 +17,11 @@ matrix_t read_and_create_matrix()
         ? NULL
         : exit(1);
 
+    matrix.residual = malloc(sizeof(double) * n);
+    (matrix.residual != NULL)
+        ? NULL
+        : exit(1);
+
     for (int i = 0; i < n; i++)
     {
         // Allocating memory for each line of the matrix
@@ -33,6 +38,7 @@ matrix_t read_and_create_matrix()
 
         // filling the independent terms
         scanf("%lf", &matrix.independent_terms[i]);
+        matrix.residual[i] = 0.0;
     }
 
     return matrix;

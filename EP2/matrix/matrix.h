@@ -10,6 +10,7 @@ typedef struct matrix
     int size;                  // matrix size
     double **data;             // pointer to an array of *double
     double *independent_terms; // pointer to an array of double
+    double *residual;           // residual of the matrix
 } matrix_t;
 
 /*
