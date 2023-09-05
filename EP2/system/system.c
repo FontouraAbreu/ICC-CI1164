@@ -21,14 +21,13 @@ void retrossubs(matrix_t *A)
 
 matrix_t *(*select_solver(int i))(matrix_t *A)
 {
-    switch (i)
-    {
+    switch (i) {
     case 0:
         printf("------PARTIAL PIVOTING------\n");
         return partial_pivoting_system_solver;
     case 1:
         printf("------TOTAL PIVOTING------\n");
-        return total_pivoting_system_solver;
+        return partial_pivoting_system_solver_no_multiplier;
     case 2:
         printf("------REFINEMENT------\n");
         return refinement_system_solver;
@@ -69,7 +68,7 @@ matrix_t *partial_pivoting_system_solver(matrix_t *A)
     return x;
 }
 
-matrix_t *total_pivoting_system_solver(matrix_t *A)
+matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
 {
     // copying the matrix A to a new matrix x
     matrix_t *x = copy_matrix(A);
@@ -92,7 +91,7 @@ matrix_t *total_pivoting_system_solver(matrix_t *A)
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
-                x->data[j][k] -= m * x->data[i][k];
+                x->data[j][k] = x->data[j][k]*x->data[i][i] - x->data[i][k]*x->data[j][i];
             // calculate the new independent term
             x->independent_terms[j] -= m * x->independent_terms[i];
         }
@@ -157,6 +156,8 @@ matrix_t *copy_matrix(matrix_t *A)
         }
         x->independent_terms[i] = A->independent_terms[i];
     }
+
+    x->residual = A->residual;
 
     return x;
 }

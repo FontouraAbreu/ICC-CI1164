@@ -27,7 +27,7 @@ matrix_t *partial_pivoting_system_solver(matrix_t *A);
  *   @brief Will generate a triangular matrix using total pivoting method
  *   @complexity O(n^3)
  */
-matrix_t *total_pivoting_system_solver(matrix_t *A);
+matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A);
 
 /*
  *   refinement system solver
