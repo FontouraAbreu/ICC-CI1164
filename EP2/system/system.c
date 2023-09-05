@@ -29,8 +29,8 @@ matrix_t *(*select_solver(int i))(matrix_t *A)
         printf("------TOTAL PIVOTING------\n");
         return partial_pivoting_system_solver_no_multiplier;
     case 2:
-        printf("------REFINEMENT------\n");
-        return refinement_system_solver;
+        printf("------ALTERNATIVE------\n");
+        return alternative_system_solver;
     default:
         return NULL;
     }
@@ -100,10 +100,24 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
     return x;
 }
 
-matrix_t *refinement_system_solver(matrix_t *A)
+matrix_t *alternative_system_solver(matrix_t *A)
 {
     matrix_t *x = copy_matrix(A);
+    int n = x->size;
 
+    // for each row
+    for (int i=0;i<n;i++) {
+        // for each column
+        for (int j=i;j<n;j++) {
+            // divide every element in the row by the pivot
+            x->data[i][j] /= x->data[i][i];
+
+            // set every element in the column to 0
+            if (i != j)
+                x->data[j][i] = 0.0;
+            x->independent_terms[i] /= x->data[i][i];
+        }
+    }
     return x;
 }
 

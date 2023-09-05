@@ -7,7 +7,7 @@
  *   retrossubs of a triangular matrix
  *   @param A: matrix_t(the triangular matrix)
  *   @brief Solve a system using retrossubs
- *   @attention Keep in mind that the matrix must be triangular
+ *   @attention Keep in mind that the matrix must be triangular. Every system solver should use this function after generating a triangular matrix
  */
 void retrossubs(matrix_t *A);
 
@@ -30,13 +30,13 @@ matrix_t *partial_pivoting_system_solver(matrix_t *A);
 matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A);
 
 /*
- *   refinement system solver
+ *   alternative system solver
  *   @param A: matrix_t
  *   @return x: matrix_t
- *   @brief Will refine the solution of a system
+ *   @brief Will use the alternate method to achieve the solution of a system
  *   @complexity O(n^2)
  */
-matrix_t *refinement_system_solver(matrix_t *A);
+matrix_t *alternative_system_solver(matrix_t *A);
 
 /*
  *   select solver function
