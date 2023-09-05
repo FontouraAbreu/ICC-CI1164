@@ -4,8 +4,8 @@ CC=gcc
 all: perfEG
 
 # regras de ligacao
-perfEG: main.o matrix.o
-	$(CC) $(CFLAGS) matrix.o main.o -lm -o perfEG
+perfEG: main.o matrix.o system.o
+	$(CC) $(CFLAGS) matrix.o main.o system.o -lm -o perfEG
 
 # regras de compilacao
 main.o: main.c
