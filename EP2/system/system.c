@@ -21,15 +21,16 @@ void retrossubs(matrix_t *A)
 
 matrix_t *(*select_solver(int i))(matrix_t *A)
 {
-    switch (i) {
+    switch (i)
+    {
     case 0:
-        printf("------PARTIAL PIVOTING------\n");
+        printf("\n------PARTIAL PIVOTING------\n");
         return partial_pivoting_system_solver;
     case 1:
-        printf("------TOTAL PIVOTING------\n");
+        printf("\n------TOTAL PIVOTING------\n");
         return partial_pivoting_system_solver_no_multiplier;
     case 2:
-        printf("------ALTERNATIVE------\n");
+        printf("\n------ALTERNATIVE------\n");
         return alternative_system_solver;
     default:
         return NULL;
@@ -91,7 +92,7 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
-                x->data[j][k] = x->data[j][k]*x->data[i][i] - x->data[i][k]*x->data[j][i];
+                x->data[j][k] = x->data[j][k] * x->data[i][i] - x->data[i][k] * x->data[j][i];
             // calculate the new independent term
             x->independent_terms[j] -= m * x->independent_terms[i];
         }
@@ -106,16 +107,25 @@ matrix_t *alternative_system_solver(matrix_t *A)
     int n = x->size;
 
     // for each row
-    for (int i=0;i<n;i++) {
+    for (int i = 0; i < n; i++)
+    {
         // for each column
-        for (int j=i;j<n;j++) {
+        for (int j = i; j < n; j++)
+        {
             // divide every element in the row by the pivot
-            x->data[i][j] /= x->data[i][i];
-
-            // set every element in the column to 0
-            if (i != j)
-                x->data[j][i] = 0.0;
-            x->independent_terms[i] /= x->data[i][i];
+            double divider = x->data[i][i];
+            for (int k = i; k < n; k++)
+                x->data[i][k] /= divider;
+            x->independent_terms[i] /= divider;
+        }
+        // loop through the next rows
+        // and use the multiplier of that row to update it
+        for (int k = i + 1; k < n; k++)
+        {
+            double m = x->data[k][i];
+            for (int l = i; l < n; l++)
+                x->data[k][l] -= m * x->data[i][l];
+            x->independent_terms[k] -= m * x->independent_terms[i];
         }
     }
     return x;
