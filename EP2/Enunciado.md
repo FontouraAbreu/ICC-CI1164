@@ -31,10 +31,10 @@ A solução do SL deve ser calculada usando 3 (três) variações do Método de 
    Veja o exemplo abaixo:
 
 ```text
-  -1.   4.  -1.   0.   6.   -->  / -1
-   2.  -1.   4.  -1.   1.
-   4.  -1.   0.  -1.   3.
-  -1.   0.  -1.   4.  12.
+  -1   4  -1   0   6   -->  / -1
+   2  -1   4  -1   1
+   4  -1   0  -1   3
+  -1   0  -1   4  12
 
    1. -4.   1.   0.  -6.
    2. -1.   4.  -1.   1.    m = 2
