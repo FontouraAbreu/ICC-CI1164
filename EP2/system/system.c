@@ -31,7 +31,7 @@ matrix_t *(*select_solver(int i))(matrix_t *A)
         printf("\n------PIVOTING WITHOUT MULTIPLIER------\n");
         return partial_pivoting_system_solver_no_multiplier;
     case 2:
-        printf("\n------ALTERNATIVE------\n");
+        printf("\n------ALTERNATIVE METHOD------\n");
         return alternative_system_solver;
     default:
         return NULL;
