@@ -1,6 +1,6 @@
 #include "system.h"
 
-void retrossubs(matrix_t *A)
+double *retrossubs(matrix_t *A)
 {
     int n = A->size;
     double *x = malloc(sizeof(double) * n);
@@ -16,7 +16,8 @@ void retrossubs(matrix_t *A)
         x[i] = (A->independent_terms[i] - sum) / A->data[i][i];
         printf("x_%d = %1.8e\n", i, x[i]);
     }
-    free(x);
+
+    return x;
 }
 
 matrix_t *(*select_solver(int i))(matrix_t *A)
@@ -27,7 +28,7 @@ matrix_t *(*select_solver(int i))(matrix_t *A)
         printf("\n------PARTIAL PIVOTING------\n");
         return partial_pivoting_system_solver;
     case 1:
-        printf("\n------TOTAL PIVOTING------\n");
+        printf("\n------PIVOTING WITHOUT MULTIPLIER------\n");
         return partial_pivoting_system_solver_no_multiplier;
     case 2:
         printf("\n------ALTERNATIVE------\n");
@@ -78,7 +79,7 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
     for (int i = 0; i < n; i++)
     {
         // find the pivot
-        int pivot = find_total_pivot(x, i, i);
+        int pivot = find_partial_pivot(x, i, i);
         // swap rows if necessary
         if (pivot != i)
             swap_rows(x, i, pivot);
@@ -86,15 +87,13 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
         // for each column
         for (int j = i + 1; j < n; j++)
         {
-            // calculate the multiplier
-            double m = x->data[j][i] / x->data[i][i];
             x->data[j][i] = 0.0;
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
                 x->data[j][k] = x->data[j][k] * x->data[i][i] - x->data[i][k] * x->data[j][i];
             // calculate the new independent term
-            x->independent_terms[j] -= m * x->independent_terms[i];
+            x->independent_terms[j] = x->independent_terms[j] * x->data[i][i] - x->independent_terms[i] * x->data[j][i];
         }
     }
 
@@ -184,4 +183,32 @@ matrix_t *copy_matrix(matrix_t *A)
     x->residual = A->residual;
 
     return x;
+}
+
+void show_residual(matrix_t *A, double *results) {
+    int n = A->size;
+    double *b = A->independent_terms;
+    // r = Ax - b
+    double *r = malloc(sizeof(double) * n);
+    double *Ax = malloc(sizeof(double) * n);
+    double *residual = malloc(sizeof(double) * n);
+    // for each row
+    for (int i = 0; i < n; i++)
+    {
+        double sum = 0.0;
+        // for each column
+        for (int j = 0; j < n; j++)
+            // calculate the sum of the products
+            sum += A->data[i][j] * results[j];
+        // calculate the value of Ax
+        Ax[i] = sum;
+        // calculate the value of r
+        r[i] =Ax[i] - b[i];
+        // calculate the value of the residual
+        residual[i] = fabs(r[i] / b[i]);
+    }
+
+    printf("residual vector:\n");
+    for (int i = 0; i < n; i++)
+        printf("%1.8e\n", residual[i]);
 }

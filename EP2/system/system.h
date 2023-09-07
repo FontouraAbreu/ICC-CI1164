@@ -7,9 +7,10 @@
  *   retrossubs of a triangular matrix
  *   @param A: matrix_t(the triangular matrix)
  *   @brief Solve a system using retrossubs
+ *   @return x: double*(the solutions of the system)
  *   @attention Keep in mind that the matrix must be triangular. Every system solver should use this function after generating a triangular matrix
  */
-void retrossubs(matrix_t *A);
+double *retrossubs(matrix_t *A);
 
 /*
  *   parcial pivoting system solver
@@ -86,5 +87,14 @@ matrix_t *copy_matrix(matrix_t *A);
  *   @complexity O(n)
  */
 void swap_rows(matrix_t *A, int row1, int row2);
+
+/*
+ *   show residual of a system
+ *   @param A: matrix_t(the matrix of the system)
+ *   @param x: double*(the solutions of the system)
+ *   @brief Will show the residual of a system
+ *   @complexity O(n^2)
+ */
+void show_residual(matrix_t *A, double *results);
 
 #endif // SYSTEM_H
