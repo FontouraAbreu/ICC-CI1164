@@ -4,9 +4,9 @@
 int main()
 {
     matrix_t matrix = read_and_create_matrix();
-    printf("\nyour matrix:\n");
-    print_matrix(matrix);
     matrix_t *(*current_system_solver)(matrix_t *);
+
+    // for each type of system solver   
     for (int i = 0; i < 3; i++)
     {
         current_system_solver = select_solver(i);
@@ -15,7 +15,9 @@ int main()
         print_matrix(*x);
         printf("-------------------\n");
         printf("resulting solution:\n");
-        retrossubs(x);
+        double *results = retrossubs(x);
+        printf("\n");
+        show_residual(&matrix, results);
     }
 
     free_matrix(matrix);
