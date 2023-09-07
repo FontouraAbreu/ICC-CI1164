@@ -13,7 +13,6 @@
     <trecho de programa do qual se deseja medir tempo>
     tempo = timestamp() - tempo;
 */
-
 rtime_t timestamp (void)
 {
   struct timespec tp;
