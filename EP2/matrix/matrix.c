@@ -52,7 +52,7 @@ void print_matrix(matrix_t matrix)
         {
             printf("%1.8e ", matrix.data[i][j]);
         }
-        printf("| %1.8e\n", matrix.independent_terms[i]);
+        printf("\t| %1.8e\n", matrix.independent_terms[i]);
     }
 
     return;
@@ -68,4 +68,36 @@ void free_matrix(matrix_t matrix)
     free(matrix.independent_terms);
 
     return;
+}
+
+void swap_rows(matrix_t *A, int row1, int row2)
+{
+    double *aux = A->data[row1];
+    A->data[row1] = A->data[row2];
+    A->data[row2] = aux;
+    // swapping the independent terms
+    double aux2 = A->independent_terms[row1];
+    A->independent_terms[row1] = A->independent_terms[row2];
+    A->independent_terms[row2] = aux2;
+}
+
+matrix_t *copy_matrix(matrix_t *A)
+{
+    matrix_t *x = malloc(sizeof(matrix_t));
+    x->size = A->size;
+    x->data = malloc(sizeof(double *) * x->size);
+    x->independent_terms = malloc(sizeof(double) * x->size);
+    for (int i = 0; i < x->size; i++)
+    {
+        x->data[i] = malloc(sizeof(double) * x->size);
+        for (int j = 0; j < x->size; j++)
+        {
+            x->data[i][j] = A->data[i][j];
+        }
+        x->independent_terms[i] = A->independent_terms[i];
+    }
+
+    x->residual = A->residual;
+
+    return x;
 }

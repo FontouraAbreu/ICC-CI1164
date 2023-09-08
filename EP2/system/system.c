@@ -1,4 +1,5 @@
 #include "system.h"
+#include "../matrix/matrix.h"
 
 double *retrossubs(matrix_t *A)
 {
@@ -137,52 +138,6 @@ int find_partial_pivot(matrix_t *A, int row, int col)
         if (fabs(A->data[i][col]) > fabs(A->data[imax][col]))
             imax = i;
     return imax;
-}
-
-int find_total_pivot(matrix_t *A, int row, int col)
-{
-    int imax = row;
-    int jmax = col;
-    for (int i = row; i < A->size; i++)
-        for (int j = col; j < A->size; j++)
-            if (fabs(A->data[i][j]) > fabs(A->data[imax][jmax]))
-            {
-                imax = i;
-                jmax = j;
-            }
-    return imax;
-}
-
-void swap_rows(matrix_t *A, int row1, int row2)
-{
-    double *aux = A->data[row1];
-    A->data[row1] = A->data[row2];
-    A->data[row2] = aux;
-    // swapping the independent terms
-    double aux2 = A->independent_terms[row1];
-    A->independent_terms[row1] = A->independent_terms[row2];
-    A->independent_terms[row2] = aux2;
-}
-
-matrix_t *copy_matrix(matrix_t *A)
-{
-    matrix_t *x = malloc(sizeof(matrix_t));
-    x->size = A->size;
-    x->data = malloc(sizeof(double *) * x->size);
-    x->independent_terms = malloc(sizeof(double) * x->size);
-    for (int i = 0; i < x->size; i++)
-    {
-        x->data[i] = malloc(sizeof(double) * x->size);
-        for (int j = 0; j < x->size; j++)
-        {
-            x->data[i][j] = A->data[i][j];
-        }
-        x->independent_terms[i] = A->independent_terms[i];
-    }
-
-    x->residual = A->residual;
-
-    return x;
 }
 
 void show_residual(matrix_t *A, double *results) {
