@@ -5,7 +5,11 @@ matrix_t read_and_create_matrix()
     matrix_t matrix;
     int n;
 
-    scanf("%d", &n);
+    if(!(scanf("%d", &n)))
+    {
+        printf("failed to read interer");
+        exit(1);
+    }
     matrix.size = n;
     matrix.data = malloc(sizeof(double *) * n);
     (matrix.data != NULL)
@@ -33,11 +37,19 @@ matrix_t read_and_create_matrix()
         // filling a line of the matrix
         for (int j = 0; j < n; j++)
         {
-            scanf("%lf", &matrix.data[i][j]);
+            if(!(scanf("%lf", &matrix.data[i][j])))
+            {
+                printf("failed to read double");
+                exit(1);
+            }
         }
 
         // filling the independent terms
-        scanf("%lf", &matrix.independent_terms[i]);
+        if(!(scanf("%lf", &matrix.independent_terms[i])))
+        {
+            printf("failed to read double");
+            exit(1);
+        }
         matrix.residual[i] = 0.0;
     }
 
