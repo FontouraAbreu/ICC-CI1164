@@ -88,7 +88,6 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
         // for each column
         for (int j = i + 1; j < n; j++)
         {
-            x->data[j][i] = 0.0;
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
