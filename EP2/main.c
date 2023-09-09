@@ -28,7 +28,7 @@ int main()
         double *results = retrossubs(x);
 
         printf("\n");
-        printf("time spent: %1.8e\n", time);
+        printf("time spent: %1.8ems\n", time);
         printf("\n");
 
         show_residual(&matrix, results);
