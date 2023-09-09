@@ -14,9 +14,19 @@ Vinicius Fontoura de Abreu - GRR20206873
 
 Para a implementação desse trabalho utilizamos 3 bibliotecas:
 
-- matrix.h: Contendo as funções que lidam com criação, print, desalocação e cópia de matrizes. Além disso, contém a função que faz a troca de duas linhas da matriz. Além disso contém a estrutura de dados `matrix_t` que é usada ao longo do trabalho;
+- matrix.h: Contendo as funções que lidam com criação, print, desalocação e cópia de matrizes. Além disso, contém a função que faz a troca de duas linhas da matriz. Além disso contém a estrutura de dados `matrix_t` que é usada ao longo do trabalho, ela tem a seguinte estrutura:
 
-- system.h: Contendo as funções que lidam com a resolução de sistemas lineares, calculo de resíduo e encontrar o pivo de uma coluna;
+```c
+typedef struct matrix
+{
+    int size;                  // matrix size
+    double **data;             // pointer to an array of *double
+    double *independent_terms; // pointer to an array of double
+    double *residual;           // residual of the matrix
+} matrix_t;
+```
+
+- system.h: Contendo as funções que lidam com a resolução de sistemas lineares, calculo de resíduo e encontrar o pivo de uma coluna.
 
 - utils.h: Provida pelo professor, contém funções que geram o timestamp.
 
@@ -66,6 +76,8 @@ matrix_t *partial_pivoting_system_solver(matrix_t *A)
 }
 ```
 
+Para a função que encontra um pivô: uma melhor opção, quando se trata de precisão, seria utilizar o pivoteamento total(procurando pelo maior elemento em toda a matriz e não só na coluna), entretanto perderiamos performance.
+
 #### partial_pivot_system_solver_no_multiplier
 
 Soluciona o sistema usando a técnica de pivoteamento parcial e sem o multiplicador para zerar os elementos abaixo do pivo.
@@ -90,7 +102,6 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
         // for each column
         for (int j = i + 1; j < n; j++)
         {
-            x->data[j][i] = 0.0;
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
@@ -103,6 +114,8 @@ matrix_t *partial_pivoting_system_solver_no_multiplier(matrix_t *A)
     return x;
 }
 ```
+
+A escolha de não utilizar o multiplicador gera resíduos menores, deixando assim os resultados mais estáveis. Entretanto algumas operações com Ponto Flutuante a mais são necessárias para se chegar ao resultado.
 
 #### alternative_system_solver
 
@@ -141,3 +154,5 @@ matrix_t *alternative_system_solver(matrix_t *A)
     return x;
 }
 ```
+
+A princípio, essa técnica parece ser a mais simples de ser implementada, entretanto, ela gera resíduos maiores que as outras técnicas, deixando assim os resultados menos estáveis.
