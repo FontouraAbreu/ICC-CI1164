@@ -156,3 +156,122 @@ matrix_t *alternative_system_solver(matrix_t *A)
 ```
 
 A princípio, essa técnica parece ser a mais simples de ser implementada, entretanto, ela gera resíduos maiores que as outras técnicas, deixando assim os resultados menos estáveis.
+
+#### Calculo do Resíduo
+
+Para o calculo do resíduo, utilizamos a seguinte função:
+
+```c
+void show_residual(matrix_t *A, double *results) {
+    int n = A->size;
+    double *b = A->independent_terms;
+    // r = Ax - b
+    double *r = malloc(sizeof(double) * n);
+    double *Ax = malloc(sizeof(double) * n);
+    double *residual = malloc(sizeof(double) * n);
+    // for each row
+    for (int i = 0; i < n; i++)
+    {
+        double sum = 0.0;
+        // for each column
+        for (int j = 0; j < n; j++)
+            // calculate the sum of the products
+            sum += A->data[i][j] * results[j];
+        // calculate the value of Ax
+        Ax[i] = sum;
+        // calculate the value of r
+        r[i] =Ax[i] - b[i];
+        // calculate the value of the residual
+        residual[i] = fabs(r[i] / b[i]);
+    }
+
+    printf("residual vector:\n");
+    for (int i = 0; i < n; i++)
+        printf("%1.8e\n", residual[i]);
+}
+```
+
+Preferimos gerar os vetores intermediários `Ax` e `r` para facilitar o entendimento do código.
+Além de permitir o uso desses vetores para outros fins nos próximos trabalhos.
+
+***
+
+## Resultados
+
+Alguns dos sistemas de teste gerados pelo professor tiveram resultados inesperados, vamos falar sobre eles:
+
+### Sistema 2
+
+O segundo sitema:
+
+```text
+4
+ 0 -1  4 -1 1
+-1  4 -1  0 6
+ 4 -1  0 -1 3
+-1  0 -1  4 12
+```
+
+resultou na matriz:
+
+```text
+-nan -nan -nan -nan 	| -nan
+-nan -nan -nan -nan 	| -nan
+-nan -nan -nan -nan 	| -nan
+-nan -nan -nan -nan 	| -nan
+```
+
+Apenas para o método alternativo. Equanto isso, os outros dois métodos geraram resultados numéricos esperados.
+
+Acreditamos que isso tenha acontecido devido aos zeros na diagonal principal da matriz, que fazem com que a divisão por zero aconteça.
+
+### Sistema 7 e 13
+
+O sétimo e décimo-terceiro sistemas:
+
+```text
+3
+5 1 1 6
+3 4 1 13
+3 3 6 0
+
+3
+5 1 1 5
+3 4 1 6
+3 3 6 0
+```
+
+Resultaram em soluções iguais para todos os métodos. Porém, para todos os métodos, o resíduo foi `nan` ou `inf` para a última linha. Acreditamos que isso tenha acontecido pois no calculo do resíduo também existem divisões e as matrizes tem um `zero` como termo independente.
+
+### Sistema 23
+
+O vigésimo-terceiro sistema:
+
+```text
+17
+-3  0  0  1  3  0  0  0  0  0  0  0  0  0  0  0  0  0
+-3  0 -1  0 -3  0  0  0  0  0  0  0  0  0  0  0  0  0
+ 0 -1  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0  0
+ 0  0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  10
+ 0  0  0 -1  0  0  0  1  0  0  0  0  0  0  0  0  0  0
+ 0  0  0  0  0  0 -1  0  0  0  0  0  0  0  0  0  0  0
+ 0  0  0  0 -3 -1  0  0  3  1  0  0  0  0  0  0  0  0
+ 0  0  0  0  3  0  1  0  3  0  0  0  0  0  0  0  0  15
+ 0  0  0  0  0  0  0 -1 -3  0  0  1  3  0  0  0  0  0
+ 0  0  0  0  0  0  0  0 -3  0 -1  0 -3  0  0  0  0  0
+ 0  0  0  0  0  0  0  0  0 -1  0  0  0  1  0  0  0  0
+ 0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0
+ 0  0  0  0  0  0  0  0  0  0  0 -1  0  0  0  0  0  0
+ 0  0  0  0  0  0  0  0  0  0  0  0  0  0 -1 -3  0  0
+ 0  0  0  0  0  0  0  0  0  0  0  0 -3 -1  0  0  1  0
+ 0  0  0  0  0  0  0  0  0  0  0  0  3  0  1  0  0  10
+ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 -3 -1  0
+```
+
+Gera resultados numéricos apenas para o método de pivoteamento percial com multiplicador. Os outros dois métodos geram resultados `-nan`. Não soubemos identificar o motivo disso.
+
+## Conclusão
+
+A partir dos testes realizados, todos os métodos implementados geraram resultados numéricos esperados para a maioria dos sistemas. Entretanto, alguns sistemas geraram resultados inesperados, como o sistema 2, 7, 13 e 23. De toda forma, para todas as matrizes testadas, pelo menos um dos métodos gerou resultados numéricos esperados.
+
+Acreditamos que o mais estável seja o método de pivoteamento que para todos os sistemas gerou resultados numéricos esperados.
