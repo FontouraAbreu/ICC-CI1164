@@ -76,7 +76,8 @@ O Programa deve  gerar na saída padrão os seguintes  dados para cada uma das v
 - O tempo médio de cálculo da solução em milisegundos;
 - O resíduo.
 
-Execução do Programa
+## Execução do Programa
+
 Faça um script (em bash ou python) que executa o programa perfEG através do LIKWID de forma a mostrar também:
 
 A quantidade de MFLOP/s, medida através do LIKWID.
