@@ -1,20 +1,22 @@
 #include "interpola/interpola.h"
 
-int main() {
+int main(int argc, char *argv[]) {
     int n;
     if (scanf("%d", &n) != 1) {
         fprintf(stderr, "Erro ao ler n\n");
         return 1;
     }
-
-    point_t *points = malloc(n * sizeof(point_t));
-
-    for (int i = 0; i < n; i++) {
-        if (scanf("%lf %lf", &points[i].x, &points[i].y) != 2) {
-            fprintf(stderr, "Erro ao ler ponto %d\n", i);
-            return 1;
-        }
+    
+    if (argc != 2) {
+        fprintf(stderr, "O programa precisa de 1 argumento posicional 'x' que será aproximado\n");
+        return 1;
     }
+
+    float x = *argv[1];
+
+    point_t *table = read_points(n);
+
+    double *x = lagrange_method(table, n, x);
 
     return 0;
 }
