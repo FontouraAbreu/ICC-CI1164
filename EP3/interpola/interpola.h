@@ -11,6 +11,6 @@ typedef struct {
 
 void newton_method();
 
-void lagrange_method();
+void lagrange_method(point_t *table, int n, double x);
 
 #endif // INTERPOLA_H
