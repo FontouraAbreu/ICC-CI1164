@@ -19,9 +19,13 @@ void newton_method();
 * @param x: double*
 * @return g_x: the aproximated function
 */
-double *lagrange_method(point_t *table, int n, float x);
+void lagrange_method(point_t *table, int n, double x);
 
-float calculate_numerator(point_t *table, int n, float x);
+void print_numerator(double *numerator, int n);
+
+double *calculate_numerator(point_t *table, int n, double x);
+
+double calculate_denominator(point_t *table, int n, int i, double x);
 
 /*
 * Read from stdin a list of N points(point_t)
