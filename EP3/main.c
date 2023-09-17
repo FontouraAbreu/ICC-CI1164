@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     point_t *table = read_points(n);
 
-    double *x = lagrange_method(table, n, x);
+    lagrange_method(table, n, x);
 
     return 0;
 }
