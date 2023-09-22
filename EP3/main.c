@@ -1,4 +1,4 @@
-#include "interpola/interpola.h"
+#include "interpolators/interpola.h"
 
 int main(int argc, char *argv[]) {
     int n;
@@ -17,6 +17,8 @@ int main(int argc, char *argv[]) {
     point_t *table = read_points(n);
 
     lagrange_method(table, n, x);
+
+    newton_method(table, n, x);
 
     return 0;
 }

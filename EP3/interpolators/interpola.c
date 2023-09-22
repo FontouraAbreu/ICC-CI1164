@@ -52,3 +52,35 @@ double *calculate_numerator(point_t *table, int n, double x) {
     }
     return numerator;
 }
+
+void newton_method(point_t *table, int n, double x){
+
+}
+
+void calculate_divided_differences(point_t *table, int n, double x){
+    double **divided_differences = malloc(n * sizeof(double *));
+
+    //j caminha nas colunas
+    for(int j = 0; j < n; j++){
+        //i caminha nas linhas
+        for(int i = j; i < n*2; i++){
+            if(j == 0){
+                divided_differences[i][j] = table[j].y;
+                i++;
+            } 
+            else {
+                divided_differences[i][j] = (divided_differences[i+1][j-1] - divided_differences[i-1][j-1]) / (divided_differences[0][i+j]- divided_differences[0][i-j]);
+                i++;
+            }
+        }
+    }
+}
+
+void print_divided_differences(double **divided_differences, int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            printf("%1.8e ", divided_differences[i][j]);
+        }
+        printf("\n");
+    }
+}
