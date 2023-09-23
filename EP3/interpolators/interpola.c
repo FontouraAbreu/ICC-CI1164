@@ -15,44 +15,20 @@ point_t *read_points(int n) {
 }
 
 double lagrange_method(point_t *table, int n, double x) {
-    double numerator = calculate_numerator(table, n, x);
-    double denominator = 1.0;
-    double Px = 0.0;
-    double Li;
-    for (int i=0; i<n; ++i) {
-        denominator = calculate_denominator(table, n, i, x);
-        Li = numerator / denominator;
-        Px += Li * table[2*i+1].y;
-    }
-    printf("\nP_%d(%1.8e)_L = %1.8e\n", n, x, Px);
-    return Px;
-}
-
-void print_numerator(double *numerator, int n) {
-    for (int i=0; i<n; ++i) {
-        printf("(x - %1.8e) * ", numerator[i]);
-    }
-}
-
-double calculate_denominator(point_t *table, int n, int i, double x) {
-    double denominator = 1.0;
-    double xi = table[2*i].x;
-    for (int j=0; j<n; ++j) {
-        if (j != i) {
-            denominator *= (xi - table[2*j].x);
+    double result = 0.0;
+    for (int i = 0; i < n; i++) {
+        double term = table[i].y;
+        for (int j = 0; j < n; j++) {
+            if (i != j) {
+                term *= (x - table[j].x) / (table[i].x - table[j].x);
+            }
         }
+        result += term;
     }
-    denominator *= (x - xi);
-    return denominator;
+    printf("\nP_%d(%1.8e)_L = %1.8e\n", n, x, result);
+    return result;
 }
 
-double calculate_numerator(point_t *table, int n, double x) {
-    double numerator = 1.0;
-    for (int i=0; i<n; ++i) {
-        numerator *= (x - table[2*i].x);
-    }
-    return numerator;
-}
 
 void newton_method(point_t *table, int n, double x){
 

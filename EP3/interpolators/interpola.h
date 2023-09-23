@@ -22,11 +22,7 @@ void newton_method();
 */
 double lagrange_method(point_t *table, int n, double x);
 
-void print_numerator(double *numerator, int n);
 
-double calculate_numerator(point_t *table, int n, double x);
-
-double calculate_denominator(point_t *table, int n, int i, double x);
 
 /*
 * Read from stdin a list of N points(point_t)
