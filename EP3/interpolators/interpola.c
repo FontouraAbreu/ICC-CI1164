@@ -14,18 +14,18 @@ point_t *read_points(int n) {
     return points;
 }
 
-void lagrange_method(point_t *table, int n, double x) {
-    double current_independent_term = 0.0;
-    double *numerator = calculate_numerator(table, n, x);
-
-    printf("\nP_%d(%1.8e)_L = ", n, x);
+double lagrange_method(point_t *table, int n, double x) {
+    double numerator = calculate_numerator(table, n, x);
+    double denominator = 1.0;
+    double Px = 0.0;
+    double Li;
     for (int i=0; i<n; ++i) {
-        current_independent_term =  table[i].y / calculate_denominator(table, n, i, x);
-        printf("%1.8e * ", current_independent_term);
-        print_numerator(numerator, n);
-        printf(" + ");
+        denominator = calculate_denominator(table, n, i, x);
+        Li = numerator / denominator;
+        Px += Li * table[2*i+1].y;
     }
-    printf("\n");
+    printf("\nP_%d(%1.8e)_L = %1.8e\n", n, x, Px);
+    return Px;
 }
 
 void print_numerator(double *numerator, int n) {
@@ -36,19 +36,20 @@ void print_numerator(double *numerator, int n) {
 
 double calculate_denominator(point_t *table, int n, int i, double x) {
     double denominator = 1.0;
+    double xi = table[2*i].x;
     for (int j=0; j<n; ++j) {
         if (j != i) {
-            denominator *= (table[i].x - table[j].x);
+            denominator *= (xi - table[2*j].x);
         }
     }
-    denominator *= x - table[i].x;
+    denominator *= (x - xi);
     return denominator;
 }
 
-double *calculate_numerator(point_t *table, int n, double x) {
-    double *numerator = malloc(n * sizeof(double));
+double calculate_numerator(point_t *table, int n, double x) {
+    double numerator = 1.0;
     for (int i=0; i<n; ++i) {
-        numerator[i] = table[i].x;
+        numerator *= (x - table[2*i].x);
     }
     return numerator;
 }
