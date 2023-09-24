@@ -36,12 +36,7 @@ double **calculate_divided_differences(point_t *table, int n, double x){
     for (int i = 0; i < n; i++) {
         divided_differences[i] = malloc(n * sizeof(double));
     }
-
-    // setting the first column of the divided differences table to f(x_i)
-    // for (int i = 0; i < n; i++) {
-    //     divided_differences[i][0] = table[i].y;
-    // }
-
+    
     // Calculate the divided differences
     for (int j = 0; j < n; j++) {
         for (int i = j; i < n; i++) {
