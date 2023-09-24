@@ -10,8 +10,24 @@ typedef struct {
     double y;
 } point_t;
 
-void newton_method();
 
+/*
+* Will generate an aproximate function based on the table of points given using the newton interpolation method
+* @param table: point*
+* @param n: int
+* @param x: double*
+* @return g_x: the aproximated function
+*/
+double newton_method(point_t *table, int n, double x);
+
+/*
+* Will calculate the divided differences of the table of points given
+* @param table: point_t *
+* @param n: int
+* @param x: double
+* @return divided_differences: double **
+*/
+double **calculate_divided_differences(point_t *table, int n, double x);
 
 /*
 * Will generate an aproximate function based on the table of points given using the lagrange interpolation method

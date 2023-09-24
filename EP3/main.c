@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
     double Lx = lagrange_method(table, n, x);
 
-    newton_method(table, n, x);
+    double Nx = newton_method(table, n, x);
 
     return 0;
 }
