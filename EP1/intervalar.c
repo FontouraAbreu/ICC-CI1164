@@ -98,6 +98,8 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
 
     result.min.f = X.min.f + Y.min.f;
     result.min.f = nextafterf(result.min.f, -INFINITY);
+    result.max.f = X.max.f + Y.max.f;
+    result.max.f = nextafterf(result.max.f, INFINITY);
 
     return result;
 }
@@ -107,8 +109,10 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     Interval_t result;
     Float_t min, max;
 
-    result.min.f = X.min.f - Y.min.f;
+    result.min.f = X.min.f - Y.max.f;
     result.min.f = nextafterf(result.min.f, -INFINITY);
+    result.max.f = X.max.f - Y.min.f;
+    result.max.f = nextafterf(result.max.f, INFINITY);
 
     return result;
 }
