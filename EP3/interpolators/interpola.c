@@ -31,14 +31,18 @@ double lagrange_method(point_t *table, int n, double x) {
 
 double **calculate_divided_differences(point_t *table, int n, double x){
     double **divided_differences = malloc(n * sizeof(double *));
+
+    // Allocate memory
     for (int i = 0; i < n; i++) {
         divided_differences[i] = malloc(n * sizeof(double));
     }
 
-    // Calculate divided differences
+    // setting the first column of the divided differences table to f(x_i)
     for (int i = 0; i < n; i++) {
         divided_differences[i][0] = table[i].y;
     }
+
+    // Calculate the divided differences
     for (int j = 1; j < n; j++) {
         for (int i = j; i < n; i++) {
             divided_differences[i][j] = (divided_differences[i][j-1] - divided_differences[i-1][j-1]) / (table[i].x - table[i-j].x);
