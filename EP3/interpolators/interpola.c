@@ -38,20 +38,24 @@ double **calculate_divided_differences(point_t *table, int n, double x){
     }
 
     // setting the first column of the divided differences table to f(x_i)
-    for (int i = 0; i < n; i++) {
-        divided_differences[i][0] = table[i].y;
-    }
+    // for (int i = 0; i < n; i++) {
+    //     divided_differences[i][0] = table[i].y;
+    // }
 
     // Calculate the divided differences
-    for (int j = 1; j < n; j++) {
+    for (int j = 0; j < n; j++) {
         for (int i = j; i < n; i++) {
+            if(j == 0){
+                divided_differences[i][j] = table[i].y;
+            }
+            else{
             divided_differences[i][j] = (divided_differences[i][j-1] - divided_differences[i-1][j-1]) / (table[i].x - table[i-j].x);
+            }
         }
     }
 
     return divided_differences;
 }
-
 double newton_method(point_t *table, int n, double x){
     double **divided_differences = calculate_divided_differences(table, n, x);
 
