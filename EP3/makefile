@@ -4,8 +4,8 @@ CC=gcc
 all: interpola
 
 # regras de ligacao
-interpola: main.o interpola.o matrix.o
-	$(CC) $(CFLAGS) main.o interpola.o matrix.o -lm -o interpola
+interpola: main.o interpola.o utils.o
+	$(CC) $(CFLAGS) main.o interpola.o utils.o -lm -o interpola
 
 # regras de compilacao
 main.o: main.c
@@ -14,8 +14,8 @@ main.o: main.c
 interpola.o: interpolators/interpola.c interpolators/interpola.h
 	$(CC) $(CFLAGS) -c interpolators/interpola.c -o interpola.o
 
-matrix.o: matrix/matrix.c matrix/matrix.h
-	$(CC) $(CFLAGS) -c matrix/matrix.c -o matrix.o
+utils.o: utils/utils.c utils/utils.h
+	$(CC) $(CFLAGS) -c utils/utils.c -o utils.o
 	
 run: interpola
 	./interpola
