@@ -16,7 +16,7 @@ typedef struct
     Interval_t *residual;
 } IntervalMatrix_t;
 
-double MinimumSquareMethod(point_t *table, int k, int n);
+double leastSquareMethod(point_t *table, int k, int n);
 
 IntervalMatrix_t *createIntervalMatrix(int n);
 
