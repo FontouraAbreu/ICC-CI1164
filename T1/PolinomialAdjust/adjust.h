@@ -20,4 +20,6 @@ double leastSquareMethod(point_t *table, int k, int n);
 
 IntervalMatrix_t *createIntervalMatrix(int n);
 
+point_t *read_points(int n);
+
 #endif // POLADJUST_H
