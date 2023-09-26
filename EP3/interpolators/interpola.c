@@ -63,6 +63,7 @@ double **calculate_divided_differences(point_t *table, int n, double x)
 
     return divided_differences;
 }
+
 double newton_method(point_t *table, int n, double x)
 {
     double **divided_differences = calculate_divided_differences(table, n, x);
@@ -84,16 +85,4 @@ double newton_method(point_t *table, int n, double x)
     free(divided_differences);
 
     return result;
-}
-
-void print_divided_differences(double **divided_differences, int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            printf("%1.8e ", divided_differences[i][j]);
-        }
-        printf("\n");
-    }
 }
