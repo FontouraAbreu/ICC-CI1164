@@ -117,13 +117,26 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     return result;
 }
 
+int zero_in_interval(Interval_t interval)
+{
+    Float_t zero;
+    zero.f = 0.0;
+    Interval_t intervalZero = generate_single_interval(&zero);
+    if ((interval.min.f <= intervalZero.min.f && interval.max.f >= intervalZero.max.f) || (interval.min.f >= intervalZero.min.f && interval.max.f <= intervalZero.max.f))
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
 Interval_t op_div_interval(Interval_t X, Interval_t Y)
 {
 
     Interval_t result;
 
     // checking if 0.0 is in Y
-    if (Y.max.f == 0.0 || Y.min.f == 0.0)
+    if (zero_in_interval(Y))
     {
         result.min.f = -INFINITY;
         result.max.f = INFINITY;
@@ -131,8 +144,8 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
         return result;
     }
 
-    Y.min.f = 1 / Y.min.f;
-    Y.max.f = 1 / Y.max.f;
+    Y.min.f = 1 / Y.max.f;
+    Y.max.f = 1 / Y.min.f;
 
     result = op_mul_interval(X, Y);
 
