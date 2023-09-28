@@ -1,4 +1,3 @@
-#include "interpolators/interpola.h"
 #include "utils/utils.h"
 #include "PolinomialAdjust/adjust.h"
 
@@ -6,11 +5,6 @@ int main(int argc, char *argv[])
 {
     // reading inputs
     int n, k;
-    if (argc != 2)
-    {
-        fprintf(stderr, "O programa precisa de 1 argumento posicional 'x' que será aproximado\n");
-        return 1;
-    }
 
     if (scanf("%d", &n) != 1)
     {
@@ -25,7 +19,13 @@ int main(int argc, char *argv[])
     }
 
 
-    point_t *table = read_points(&k);
+    IntervalPoint_t *table = read_points(k);
+    
+    //printing points
+    for (int i = 0; i < k; i++)
+    {
+        printf("x: [%1.8e, %1.8e]; y: [%1.8e, %1.8e]\n", table[i].x.min.f, table[i].x.max.f, table[i].y.min.f, table[i].y.max.f);
+    }
 
 
     return 0;
