@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
-#include "FloatType.h"
+#include "../floatType/FloatType.h"
 
 /*
 Atributos

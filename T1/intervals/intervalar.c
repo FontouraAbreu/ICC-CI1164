@@ -2,7 +2,11 @@
 
 void read_expression(char *operations, Float_t *floats)
 {
-    scanf("%f %c %f %c %f %c %f %c %f", &floats[0].f, &operations[0], &floats[1].f, &operations[1], &floats[2].f, &operations[2], &floats[3].f, &operations[3], &floats[4].f);
+    if (scanf("%f %c %f %c %f %c %f %c %f", &floats[0].f, &operations[0], &floats[1].f, &operations[1], &floats[2].f, &operations[2], &floats[3].f, &operations[3], &floats[4].f) != 9)
+    {
+        fprintf(stderr, "Erro ao ler expressão\n");
+        return;
+    }
 
     return;
 }
@@ -50,6 +54,7 @@ Interval_t (*select_operation(char operation))(Interval_t, Interval_t)
         printf("Invalid operation\n");
         break;
     }
+    return NULL;
 }
 
 void print_expression(char *operations, Float_t *floats)
@@ -94,7 +99,6 @@ int how_many_ulps_between(Interval_t interval)
 Interval_t op_sum_interval(Interval_t X, Interval_t Y)
 {
     Interval_t result;
-    Float_t min, max;
 
     result.min.f = X.min.f + Y.min.f;
     result.min.f = nextafterf(result.min.f, -INFINITY);
@@ -107,7 +111,6 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
 Interval_t op_sub_interval(Interval_t X, Interval_t Y)
 {
     Interval_t result;
-    Float_t min, max;
 
     result.min.f = X.min.f - Y.max.f;
     result.min.f = nextafterf(result.min.f, -INFINITY);
@@ -155,7 +158,6 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
 Interval_t op_mul_interval(Interval_t X, Interval_t Y)
 {
     Interval_t result;
-    Float_t min, max;
 
     result.min.f = nextafterf(find_min(X, Y), -INFINITY);
     result.max.f = nextafterf(find_max(X, Y), INFINITY);
