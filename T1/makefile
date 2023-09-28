@@ -4,8 +4,8 @@ CC=gcc
 all: ajustePol
 
 # regras de ligacao
-ajustePol: main.o ajustePol.o utils.o floatType.o
-	$(CC) $(CFLAGS) main.o ajustePol.o utils.o floatType.o -lm -o ajustePol
+ajustePol: main.o ajustePol.o utils.o interval.o floatType.o
+	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o floatType.o -lm -o ajustePol
 
 # regras de compilacao
 main.o: main.c
@@ -17,8 +17,11 @@ ajustePol.o: PolinomialAdjust/adjust.c PolinomialAdjust/adjust.h
 utils.o: utils/utils.c utils/utils.h
 	$(CC) $(CFLAGS) -c utils/utils.c -o utils.o
 
-floatType.o: floatType/floatType.c floatType/floatType.h
-	$(CC) $(CFLAGS) -c floatType/floatType.c -o floatType.o
+interval.o: intervals/intervalar.c intervals/intervalar.h
+	$(CC) $(CFLAGS) -c intervals/intervalar.c -o interval.o
+
+floatType.o: floatType/FloatType.c floatType/FloatType.h
+	$(CC) $(CFLAGS) -c floatType/FloatType.c -o floatType.o
 	
 run: ajustePol
 	./ajustePol
