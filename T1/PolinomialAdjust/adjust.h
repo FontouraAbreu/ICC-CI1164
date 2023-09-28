@@ -2,11 +2,17 @@
 #define POLADJUST_H
 #include "../intervals/intervalar.h"
 
-typedef struct
+/*
+*   Point structure:
+*   x: interval_t of x coordinate
+*   y: interval_t of y coordinate
+*   BETTER OF AS TWO ARRAYS OF INTERVALS
+*/
+typedef struct 
 {
-    double x;
-    double y;
-} point_t;
+    Interval_t x;
+    Interval_t y;
+} IntervalPoint_t;
 
 typedef struct
 {
@@ -16,10 +22,10 @@ typedef struct
     Interval_t *residual;
 } IntervalMatrix_t;
 
-double leastSquareMethod(point_t *table, int k, int n);
+double leastSquareMethod(IntervalPoint_t *table, int k, int n);
 
 IntervalMatrix_t *createIntervalMatrix(int n);
 
-point_t *read_points(int n);
+IntervalPoint_t *read_points(int n);
 
 #endif // POLADJUST_H
