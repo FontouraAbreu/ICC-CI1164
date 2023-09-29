@@ -21,11 +21,7 @@ int main(int argc, char *argv[])
 
     IntervalPoint_t *table = read_points(k);
     
-    //printing points
-    for (int i = 0; i < k; i++)
-    {
-        printf("x: [%1.8e, %1.8e]; y: [%1.8e, %1.8e]\n", table[i].x.min.f, table[i].x.max.f, table[i].y.min.f, table[i].y.max.f);
-    }
+
 
 
     return 0;
