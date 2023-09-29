@@ -26,6 +26,15 @@ typedef struct
     Float_t max;
 } Interval_t;
 
+typedef struct
+{
+    int rows;
+    int cols;
+    Interval_t **data;
+    Interval_t *independent_terms;
+    Interval_t *residual;
+} IntervalMatrix_t;
+
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
 /*
@@ -45,6 +54,18 @@ Seja X = [a,b] e Y = [c,d]
 X * Y = [a,b] * [c,d]  =  [min{a*c,a*d,b*c,b*d}, max{a*c,a*d,b*c,b*d}]
 */
 Interval_t op_mul_interval(Interval_t X, Interval_t Y);
+
+
+/*
+*  Seja X = [a,b]
+*  X^p = [1,1] se p = 0
+*        [a^p,b^p] se p é impar
+*        [a^p,b^p] se p é par E a >= 0
+*        [b^p,a^p] se p é par E b < 0
+*        [0, max{a^p,b^p}] se p é par E a < 0 <= b
+*  @return: X^p (Interval_t)
+*/
+Interval_t op_pow_interval(Interval_t x, int n);
 
 /*
 Seja X = [a,b] e Y = [c,d]
@@ -119,4 +140,5 @@ Will generate a single interval for a given Float_t.
 */
 Interval_t generate_single_interval(Float_t *number);
 
+IntervalMatrix_t *generate_interval_matrix(int n, int m);
 #endif

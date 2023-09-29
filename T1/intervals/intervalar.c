@@ -165,6 +165,29 @@ Interval_t op_mul_interval(Interval_t X, Interval_t Y)
     return result;
 }
 
+Interval_t op_pow_interval(Interval_t x, int p) {
+    Interval_t y;
+    int p_is_even = p % 2 == 0;
+    if (p == 0) {
+        Interval_t y = {1.0, 1.0};
+        return y;
+    } else if (p == 1) {
+        return x;
+    } else if ((p_is_even) && (x.min.f >= 0)) {
+        y.min.f = pow(x.min.f, p);
+        y.max.f = pow(x.max.f, p);
+        return y;
+    } else if (p_is_even && (x.max.f < 0)) {
+        y.min.f = pow(x.max.f, p);
+        y.max.f = pow(x.min.f, p);
+        return y;
+    } else if (p_is_even && (x.min.f < 0) && (x.max.f >= 0)) {
+        y.min.f = 0;
+        y.max.f = fmax(pow(x.min.f, p), pow(x.max.f, p));
+        return y;
+    }
+}
+
 float find_min(Interval_t X, Interval_t Y)
 {
     Float_t min;
@@ -231,4 +254,29 @@ float find_max(Interval_t X, Interval_t Y)
     }
 
     return max.f;
+}
+
+IntervalMatrix_t *generate_interval_matrix(int n, int m) {
+    IntervalMatrix_t *matrix = malloc(sizeof(IntervalMatrix_t));
+    matrix->rows = n;
+    matrix->cols = m;
+    matrix->independent_terms = malloc(sizeof(Interval_t) * n);
+    matrix->residual = malloc(sizeof(Interval_t) * n);
+    matrix->data = malloc(sizeof(Interval_t *) * n);
+    for (int i = 0; i < n; i++) {
+        matrix->data[i] = malloc(sizeof(Interval_t) * m);
+    }
+
+    return matrix;
+    
+}
+
+void free_intervalMatrix(IntervalMatrix_t *matrix) {
+    for (int i = 0; i < matrix->rows; i++) {
+        free(matrix->data[i]);
+    }
+    free(matrix->data);
+    free(matrix->independent_terms);
+    free(matrix->residual);
+    free(matrix);
 }
