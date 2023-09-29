@@ -256,6 +256,15 @@ float find_max(Interval_t X, Interval_t Y)
     return max.f;
 }
 
+int greater_than(Interval_t X, Interval_t Y)
+{
+    if (X.min.f > Y.max.f)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 IntervalMatrix_t *generate_interval_matrix(int n, int m) {
     IntervalMatrix_t *matrix = malloc(sizeof(IntervalMatrix_t));
     matrix->rows = n;

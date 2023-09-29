@@ -1,6 +1,7 @@
 #ifndef POLADJUST_H
 #define POLADJUST_H
 #include "../intervals/intervalar.h"
+#include "../system/system.h"
 
 /*
 *   Point structure:

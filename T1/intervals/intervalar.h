@@ -81,6 +81,13 @@ float find_max(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
+Will return 1 if X > Y, 0 otherwise
+@return: 1 if X > Y, 0 otherwise
+*/
+int greater_than(Interval_t X, Interval_t Y);
+
+/*
+Seja X = [a,b] e Y = [c,d]
 X / Y = [a,b] * [1/d,1/c], se 0 não pertence ao intervalo Y
 */
 Interval_t op_div_interval(Interval_t X, Interval_t Y);
