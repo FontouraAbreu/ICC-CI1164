@@ -169,7 +169,8 @@ Interval_t op_pow_interval(Interval_t x, int p) {
     Interval_t y;
     int p_is_even = p % 2 == 0;
     if (p == 0) {
-        Interval_t y = {1.0, 1.0};
+        y.min.f = 1.0;
+        y.max.f = 1.0;
         return y;
     } else if (p == 1) {
         return x;
@@ -186,6 +187,8 @@ Interval_t op_pow_interval(Interval_t x, int p) {
         y.max.f = fmax(pow(x.min.f, p), pow(x.max.f, p));
         return y;
     }
+
+    return y;
 }
 
 float find_min(Interval_t X, Interval_t Y)

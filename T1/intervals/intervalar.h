@@ -148,4 +148,6 @@ Will generate a single interval for a given Float_t.
 Interval_t generate_single_interval(Float_t *number);
 
 IntervalMatrix_t *generate_interval_matrix(int n, int m);
+
+void free_intervalMatrix(IntervalMatrix_t *matrix);
 #endif
