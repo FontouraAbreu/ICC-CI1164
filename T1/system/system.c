@@ -1,5 +1,4 @@
 #include "system.h"
-#include "../matrix/matrix.h"
 
 double *retrossubs(IntervalMatrix_t *A)
 {
@@ -57,6 +56,7 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
     return A;
 }
 
+/*
 IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t *A)
 {
     // copying the matrix A to a new matrix x
@@ -85,7 +85,7 @@ IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t 
 
     return x;
 }
-
+*/
 
 int find_partial_pivot(IntervalMatrix_t *A, int row, int col)
 {
@@ -96,6 +96,19 @@ int find_partial_pivot(IntervalMatrix_t *A, int row, int col)
     return imax;
 }
 
+void swap_rows(IntervalMatrix_t *A, int row1, int row2)
+{
+    Interval_t *aux = A->data[row1];
+    A->data[row1] = A->data[row2];
+    A->data[row2] = aux;
+    // swapping the independent terms
+    Interval_t aux2 = A->independent_terms[row1];
+    A->independent_terms[row1] = A->independent_terms[row2];
+    A->independent_terms[row2] = aux2;
+}
+
+
+/*
 void show_residual(IntervalMatrix_t *A, double *results) {
     int n = A->rows;
     double *b = A->independent_terms;
@@ -123,3 +136,4 @@ void show_residual(IntervalMatrix_t *A, double *results) {
     for (int i = 0; i < n; i++)
         printf("%1.8e\n", residual[i]);
 }
+*/
