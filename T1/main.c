@@ -20,8 +20,12 @@ int main(int argc, char *argv[])
 
 
     IntervalPoint_t *table = read_points(k);
-    
+    Interval_t *coefficients = leastSquareMethod(table, k, n);
 
+    for (int i = 0; i <= k; i++)
+    {
+        printf("a_%d = [%1.8e, %1.8e]\n", i, coefficients[i].min.f, coefficients[i].max.f);
+    }
 
 
     return 0;
