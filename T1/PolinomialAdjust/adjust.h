@@ -16,7 +16,7 @@ typedef struct
 } IntervalPoint_t;
 
 
-IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n);
+Interval_t *leastSquareMethod(IntervalPoint_t *table, int k, int n);
 
 IntervalMatrix_t *createIntervalMatrix(int n);
 

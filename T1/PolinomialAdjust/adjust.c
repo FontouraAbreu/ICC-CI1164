@@ -26,34 +26,33 @@ IntervalPoint_t *read_points(int n)
     return points;
 }
 
-IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n) { 
-    // Allocate memory for matrices A and B
+Interval_t *leastSquareMethod(IntervalPoint_t *table, int k, int n) { 
+    // Allocate memory for matrices A
     IntervalMatrix_t *A = generate_interval_matrix(k+1, k+1);
-    IntervalMatrix_t *B = generate_interval_matrix(k+1, 1);
-
-    // Fill in entries of matrices A and B
+    Float_t zero = {0.0};
+    Interval_t zero_interval = generate_single_interval(&zero);
+    // Fill in entries of matrices A
     for (int i = 0; i <= k; i++) {
         for (int j = 0; j <= k; j++) {
             // Compute sum of x^(i+j) for all data points
-            Interval_t sum = {0.0, 0.0};
+            Interval_t sum = zero_interval;
             for (int l = 0; l < n; l++) {
                 sum = op_sum_interval(sum, op_pow_interval(table[l].x, i+j));
             }
             A->data[i][j] = sum;
         }
         // Compute sum of y*x^i for all data points
-        Interval_t sum = {0.0, 0.0};
+        Interval_t sum = zero_interval;
         for (int l = 0; l < n; l++) {
             sum = op_sum_interval(sum, op_mul_interval(table[l].y, op_pow_interval(table[l].x, i)));
         }
-        B->data[i][0] = sum;
+        A->independent_terms[i] = sum;
     }
 
     // Solve system of linear equations using partial pivoting
-    IntervalMatrix_t X = partial_pivoting_system_solver(A, B);
+    IntervalMatrix_t *X = partial_pivoting_system_solver(A);
 
-    // Free memory for matrices A and B
-    interval_matrix_free(A);
-    interval_matrix_free(B);
-    return &X;
+    // Free memory for matrices A
+    free_intervalMatrix(A);
+    return X->independent_terms;
 }
