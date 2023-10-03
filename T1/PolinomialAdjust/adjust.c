@@ -31,20 +31,22 @@ Interval_t *leastSquareMethod(IntervalPoint_t *table, int k, int n) {
     IntervalMatrix_t *A = generate_interval_matrix(k+1, k+1);
     Float_t zero = {0.0};
     Interval_t zero_interval = generate_single_interval(&zero);
+    Interval_t sum;
     // Fill in entries of matrices A
     for (int i = 0; i <= k; i++) {
+        // fill in entries of matrix A (sum of x^(i+j))
         for (int j = 0; j <= k; j++) {
-            // Compute sum of x^(i+j) for all data points
-            Interval_t sum = zero_interval;
+            sum = zero_interval;
             for (int l = 0; l < n; l++) {
                 sum = op_sum_interval(sum, op_pow_interval(table[l].x, i+j));
             }
             A->data[i][j] = sum;
         }
-        // Compute sum of y*x^i for all data points
-        Interval_t sum = zero_interval;
-        for (int l = 0; l < n; l++) {
-            sum = op_sum_interval(sum, op_mul_interval(table[l].y, op_pow_interval(table[l].x, i)));
+
+        // fill in independent terms of matrix A (sum of y*x^i)
+        sum = zero_interval;
+        for (int j = 0; j < n; j++) {
+            sum = op_sum_interval(sum, op_mul_interval(table[j].y, op_pow_interval(table[j].x, i)));
         }
         A->independent_terms[i] = sum;
     }
