@@ -53,7 +53,8 @@ Interval_t *leastSquareMethod(IntervalPoint_t *table, int k, int n) {
 
     // Solve system of linear equations using partial pivoting
     IntervalMatrix_t *X = partial_pivoting_system_solver(A);
-
+    show_residual(X, X->independent_terms);
+    
     // Free memory for matrices A
     free_intervalMatrix(A);
     return X->independent_terms;
