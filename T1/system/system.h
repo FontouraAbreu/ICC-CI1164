@@ -95,7 +95,7 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2);
  *   @brief Will show the residual of a system
  *   @complexity O(n^2)
  */
-void show_residual(IntervalMatrix_t *A, double *results);
+void show_residual(IntervalMatrix_t *A, Interval_t *results);
 
 
 void swap_rows(IntervalMatrix_t *A, int row1, int row2);

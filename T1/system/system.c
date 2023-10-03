@@ -108,32 +108,35 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
 }
 
 
-/*
-void show_residual(IntervalMatrix_t *A, double *results) {
+
+void show_residual(IntervalMatrix_t *A, Interval_t *results) {
     int n = A->rows;
-    double *b = A->independent_terms;
+    int m = A->cols;
+    Interval_t *b = A->independent_terms;
     // r = Ax - b
-    double *r = malloc(sizeof(double) * n);
-    double *Ax = malloc(sizeof(double) * n);
-    double *residual = malloc(sizeof(double) * n);
+    Interval_t *r = malloc(sizeof(Interval_t) * n);
+    Interval_t *Ax = malloc(sizeof(Interval_t) * n);
+    Interval_t *residual = malloc(sizeof(Interval_t) * n);
+    Float_t zero = {0.0};
+    Interval_t zero_interval = generate_single_interval(&zero);
+    Interval_t sum;
     // for each row
     for (int i = 0; i < n; i++)
     {
-        double sum = 0.0;
+        sum = zero_interval;
         // for each column
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < m; j++)
             // calculate the sum of the products
-            sum += A->data[i][j] * results[j];
+            sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], results[j]));
         // calculate the value of Ax
         Ax[i] = sum;
         // calculate the value of r
-        r[i] =Ax[i] - b[i];
+        r[i] = op_sub_interval(Ax[i], b[i]);
         // calculate the value of the residual
-        residual[i] = fabs(r[i] / b[i]);
+        residual[i] = op_div_interval(r[i], b[i]);
     }
 
     printf("residual vector:\n");
     for (int i = 0; i < n; i++)
-        printf("%1.8e\n", residual[i]);
+        printf("[%1.8e,%1.8e]\n", residual[i].min.f, residual[i].max.f);
 }
-*/
