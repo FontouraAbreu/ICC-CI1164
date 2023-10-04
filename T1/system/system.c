@@ -1,6 +1,6 @@
 #include "system.h"
 
-double *retrossubs(IntervalMatrix_t *A)
+Interval_t *retrossubs(IntervalMatrix_t *A)
 {
     int n = A->rows;
     int m = A->cols;
@@ -17,7 +17,7 @@ double *retrossubs(IntervalMatrix_t *A)
             sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], x[j]));
         // calculate the value of x(the independent term)
         x[i] = op_div_interval(op_sub_interval(A->independent_terms[i], sum), A->data[i][i]);
-        //printf("x_%d = %1.8e\n", i, x[i]);
+        // printf("x_%d = %1.8e\n", i, x[i]);
     }
 
     return x;
@@ -47,9 +47,9 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
-                A->data[j][k] = op_sub_interval(A->data[j][k], op_mul_interval(multiplier, A->data[i][k])); 
+                A->data[j][k] = op_sub_interval(A->data[j][k], op_mul_interval(multiplier, A->data[i][k]));
             // calculate the new independent term
-            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(multiplier, A->independent_terms[i])); 
+            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(multiplier, A->independent_terms[i]));
         }
     }
 
@@ -107,36 +107,23 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
     A->independent_terms[row2] = aux2;
 }
 
-
-
-void show_residual(IntervalMatrix_t *A, Interval_t *results) {
+Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table)
+{
     int n = A->rows;
-    int m = A->cols;
-    Interval_t *b = A->independent_terms;
-    // r = Ax - b
-    Interval_t *r = malloc(sizeof(Interval_t) * n);
-    Interval_t *Ax = malloc(sizeof(Interval_t) * n);
     Interval_t *residual = malloc(sizeof(Interval_t) * n);
     Float_t zero = {0.0};
     Interval_t zero_interval = generate_single_interval(&zero);
-    Interval_t sum;
     // for each row
     for (int i = 0; i < n; i++)
     {
-        sum = zero_interval;
+        Interval_t sum = zero_interval;
         // for each column
-        for (int j = 0; j < m; j++)
+        for (int j = 0; j < n; j++)
             // calculate the sum of the products
-            sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], results[j]));
-        // calculate the value of Ax
-        Ax[i] = sum;
-        // calculate the value of r
-        r[i] = op_sub_interval(Ax[i], b[i]);
-        // calculate the value of the residual
-        residual[i] = op_div_interval(r[i], b[i]);
+            sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], table[j].y));
+        // calculate the value of x(the independent term)
+        residual[i] = op_sub_interval(table[i].y, sum);
     }
 
-    printf("residual vector:\n");
-    for (int i = 0; i < n; i++)
-        printf("[%1.8e,%1.8e]\n", residual[i].min.f, residual[i].max.f);
+    return residual;
 }

@@ -7,10 +7,10 @@
  *   retrossubs of a triangular matrix
  *   @param A: IntervalMatrix_t(the triangular matrix)
  *   @brief Solve a system using retrossubs
- *   @return x: double*(the solutions of the system)
+ *   @return x: Interval*(the solutions of the system)
  *   @attention Keep in mind that the matrix must be triangular. Every system solver should use this function after generating a triangular matrix
  */
-double *retrossubs(IntervalMatrix_t *A);
+Interval_t *retrossubs(IntervalMatrix_t *A);
 
 /*
  *   parcial pivoting system solver
@@ -89,14 +89,13 @@ IntervalMatrix_t *copy_matrix(IntervalMatrix_t *A);
 void swap_rows(IntervalMatrix_t *A, int row1, int row2);
 
 /*
- *   show residual of a system
- *   @param A: IntervalMatrix_t(the matrix of the system)
- *   @param x: double*(the solutions of the system)
- *   @brief Will show the residual of a system
- *   @complexity O(n^2)
+ *   Will calculate the residual of a system as y - f(x)
+ *   where y is the real value and f(x) is the value calculated by the system
+ *   @param A: the solution matrix of the system
+ *   @param table: the table of points given
+ *   @return array of residual: the residual of the system
  */
-void show_residual(IntervalMatrix_t *A, Interval_t *results);
-
+Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table);
 
 void swap_rows(IntervalMatrix_t *A, int row1, int row2);
 #endif // SYSTEM_H
