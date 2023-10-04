@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
     Interval_t *solution = retrossubs(coefficients_matrix);
-    Interval_t *residual = show_residual(coefficients_matrix, table, k);
+    Interval_t *residual = show_residual(coefficients_matrix, table, n);
 
     // printing the solution
     for (int i = 0; i <= n; i++)
