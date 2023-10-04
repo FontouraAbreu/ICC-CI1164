@@ -1,4 +1,4 @@
-CFLAGS= -g -Wall -O3 -mavx -march=native
+CFLAGS= -g --debug -Wall -O3 -mavx -march=native
 CC=gcc
 
 all: ajustePol
