@@ -26,6 +26,18 @@ typedef struct
     Float_t max;
 } Interval_t;
 
+/*
+ *   Point structure:
+ *   x: interval_t of x coordinate
+ *   y: interval_t of y coordinate
+ *   BETTER OF AS TWO ARRAYS OF INTERVALS
+ */
+typedef struct
+{
+    Interval_t x;
+    Interval_t y;
+} IntervalPoint_t;
+
 typedef struct
 {
     int rows;
@@ -55,16 +67,15 @@ X * Y = [a,b] * [c,d]  =  [min{a*c,a*d,b*c,b*d}, max{a*c,a*d,b*c,b*d}]
 */
 Interval_t op_mul_interval(Interval_t X, Interval_t Y);
 
-
 /*
-*  Seja X = [a,b]
-*  X^p = [1,1] se p = 0
-*        [a^p,b^p] se p é impar
-*        [a^p,b^p] se p é par E a >= 0
-*        [b^p,a^p] se p é par E b < 0
-*        [0, max{a^p,b^p}] se p é par E a < 0 <= b
-*  @return: X^p (Interval_t)
-*/
+ *  Seja X = [a,b]
+ *  X^p = [1,1] se p = 0
+ *        [a^p,b^p] se p é impar
+ *        [a^p,b^p] se p é par E a >= 0
+ *        [b^p,a^p] se p é par E b < 0
+ *        [0, max{a^p,b^p}] se p é par E a < 0 <= b
+ *  @return: X^p (Interval_t)
+ */
 Interval_t op_pow_interval(Interval_t x, int n);
 
 /*
