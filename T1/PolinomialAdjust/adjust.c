@@ -29,19 +29,19 @@ IntervalPoint_t *read_points(int n)
 IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
 {
     // Allocate memory for matrices A
-    IntervalMatrix_t *A = generate_interval_matrix(k + 1, k + 1);
+    IntervalMatrix_t *A = generate_interval_matrix(n + 1, n + 1);
     Float_t zero = {0.0};
     Interval_t zero_interval = generate_single_interval(&zero);
 
     // Fill in entries of matrices A
-    for (int i = 0; i < k; i++)
+    for (int i = 0; i <= n; i++)
     {
         // fill in entries of matrix A (sum of x^(i+j))
-        for (int j = 0; j < k; j++)
+        for (int j = 0; j <= n; j++)
         {
             Interval_t sum = zero_interval;
             // A->data[i][j] = sum of x^(i+j)
-            for (int l = 0; l < n; l++)
+            for (int l = 0; l < k; l++)
             {
                 sum = op_sum_interval(sum, op_pow_interval(table[l].x, i + j));
             }
