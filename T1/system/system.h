@@ -95,7 +95,7 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2);
  *   @param table: the table of points given
  *   @return array of residual: the residual of the system
  */
-Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table);
+Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n);
 
 void swap_rows(IntervalMatrix_t *A, int row1, int row2);
 #endif // SYSTEM_H

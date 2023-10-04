@@ -107,9 +107,8 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
     A->independent_terms[row2] = aux2;
 }
 
-Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table)
+Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n)
 {
-    int n = A->rows;
     Interval_t *residual = malloc(sizeof(Interval_t) * n);
     Float_t zero = {0.0};
     Interval_t zero_interval = generate_single_interval(&zero);

@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
     IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
     Interval_t *solution = retrossubs(coefficients_matrix);
-    Interval_t *residual = show_residual(coefficients_matrix, table);
+    Interval_t *residual = show_residual(coefficients_matrix, table, k);
 
     // printing the solution
-    for (int i = 0; i < coefficients_matrix->rows; i++)
+    for (int i = 0; i <= n; i++)
         printf("[%1.8e, %1.8e] ", solution[i].min.f, solution[i].max.f);
     printf("\n");
     // printing the residual
-    for (int i = 0; i < coefficients_matrix->rows; i++)
+    for (int i = 0; i <= n; i++)
         printf("[%1.8e, %1.8e] ", residual[i].min.f, residual[i].max.f);
     printf("\n");
 
