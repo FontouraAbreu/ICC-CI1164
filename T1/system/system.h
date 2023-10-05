@@ -97,5 +97,8 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2);
  */
 Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n);
 
+void print_system(IntervalMatrix_t A);
+
 void swap_rows(IntervalMatrix_t *A, int row1, int row2);
+
 #endif // SYSTEM_H

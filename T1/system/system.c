@@ -5,7 +5,8 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     int n = A->rows;
     int m = A->cols;
     Interval_t *x = malloc(sizeof(Interval_t) * n);
-    Float_t zero = {0.0};
+    Float_t zero;
+    zero.f = 0.0;
     Interval_t zero_interval = generate_single_interval(&zero);
     // for each row
     for (int i = n - 1; i >= 0; i--)
@@ -27,7 +28,8 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
     int n = A->rows;
     int m = A->cols;
-    Float_t zero = {0.0};
+    Float_t zero;
+    zero.f = 0.0;
     Interval_t zero_interval = generate_single_interval(&zero);
     // for each row
     for (int i = 0; i < n; i++)
@@ -43,7 +45,8 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
         {
             // calculate the multiplier
             Interval_t multiplier = op_div_interval(A->data[j][i], A->data[i][i]);
-            A->data[j][i] = zero_interval;
+            A->data[j][i].min.f = 0.0;
+            A->data[j][i].max.f = 0.0;
             // for each element in the row
             for (int k = i + 1; k < n; k++)
                 // calculate the new value
@@ -54,6 +57,19 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
     }
 
     return A;
+}
+
+void print_system(IntervalMatrix_t A)
+{
+    for (int i = 0; i < A.rows; i++)
+    {
+        for (int j = 0; j < A.cols; j++)
+        {
+            printf("[%1.8e, %1.8e] ", A.data[i][j].min.f, A.data[i][j].max.f);
+        }
+        printf("= [%1.8e, %1.8e]\n", A.independent_terms[i].min.f, A.independent_terms[i].max.f);
+        printf("\n");
+    }
 }
 
 /*
