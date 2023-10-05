@@ -146,9 +146,9 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
 
         return result;
     }
-
-    Y.min.f = 1 / Y.max.f;
-    Y.max.f = 1 / Y.min.f;
+    double tmp = Y.min.f;
+    Y.min.f = 1.0f / Y.max.f;
+    Y.max.f = 1.0f / tmp;
 
     result = op_mul_interval(X, Y);
 
