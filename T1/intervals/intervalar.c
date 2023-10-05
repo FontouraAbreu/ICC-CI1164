@@ -273,7 +273,9 @@ float find_max(Interval_t X, Interval_t Y)
 
 int greater_than(Interval_t X, Interval_t Y)
 {
-    if (X.min.f > Y.max.f)
+    double x_mean = (X.min.f + X.max.f) / 2;
+    double y_mean = (Y.min.f + Y.max.f) / 2;
+    if (x_mean > y_mean)
     {
         return 1;
     }
