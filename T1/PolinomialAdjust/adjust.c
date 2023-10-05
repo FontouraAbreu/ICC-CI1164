@@ -30,7 +30,8 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
 {
     // Allocate memory for matrices A
     IntervalMatrix_t *A = generate_interval_matrix(n + 1, n + 1);
-    Float_t zero = {0.0};
+    Float_t zero;
+    zero.f = 0.0;
     Interval_t zero_interval = generate_single_interval(&zero);
 
     // Fill in entries of matrices A
@@ -41,10 +42,9 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
         {
             Interval_t sum = zero_interval;
             // A->data[i][j] = sum of x^(i+j)
-            for (int l = 0; l < k; l++)
-            {
+            // WE CAN OPTIMIZE THIS BY USING THE SYMMETRY OF THE MATRIX A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
+            for (int l = 0; l <= k; l++)
                 sum = op_sum_interval(sum, op_pow_interval(table[l].x, i + j));
-            }
             A->data[i][j] = sum;
         }
 
