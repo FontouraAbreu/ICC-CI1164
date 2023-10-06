@@ -5,9 +5,10 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     int n = A->rows;
     int m = A->cols;
     Interval_t *x = malloc(sizeof(Interval_t) * n);
-    Float_t zero;
-    zero.f = 0.0;
-    Interval_t zero_interval = generate_single_interval(&zero);
+    Interval_t zero_interval;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0;
+
     // for each row
     for (int i = n - 1; i >= 0; i--)
     {
@@ -28,9 +29,6 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
     int n = A->rows;
     int m = A->cols;
-    Float_t zero;
-    zero.f = 0.0;
-    Interval_t zero_interval = generate_single_interval(&zero);
     // for each row
     for (int i = 0; i < n; i++)
     {
@@ -45,16 +43,10 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
         {
             // calculate the multiplier
             Interval_t multiplier = op_div_interval(A->data[j][i], A->data[i][i]);
-            printf("i = %d, j = %d, multiplier = [%1.8e, %1.8e]\n", i, j, multiplier.min.f, multiplier.max.f);
             A->data[j][i].min.f = 0.0;
             A->data[j][i].max.f = 0.0;
             // for each element in the row
             for (int k = i + 1; k < m; k++){
-                // if (j == 2 && k == 2){
-                //     printf("A[%d][%d] = [%1.8e, %1.8e]\n", j, k, A->data[j][k].min.f, A->data[j][k].max.f);
-                //     printf("multiplier = [%1.8e, %1.8e]\n", multiplier.min.f, multiplier.max.f);
-                //     printf("m * A[%d][%d] = [%1.8e, %1.8e]\n", i, k, op_mul_interval(multiplier, A->data[i][k]).min.f, op_mul_interval(multiplier, A->data[i][k]).max.f);
-                // }
                 // calculate the new value
                 A->data[j][k] = op_sub_interval(A->data[j][k], op_mul_interval(A->data[i][k], multiplier));
             }
@@ -133,8 +125,10 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
 Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n)
 {
     Interval_t *residual = malloc(sizeof(Interval_t) * n);
-    Float_t zero = {0.0};
-    Interval_t zero_interval = generate_single_interval(&zero);
+    Interval_t zero_interval;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0;
+
     // for each row
     for (int i = 0; i < n; i++)
     {
