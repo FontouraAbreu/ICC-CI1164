@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     // reading inputs
     int n, k;
-
+    double time1, time2;
     if (scanf("%d", &n) != 1)
     {
         fprintf(stderr, "Erro ao ler n\n");
@@ -20,9 +20,16 @@ int main(int argc, char *argv[])
     }
 
     IntervalPoint_t *table = read_points(k);
+
+    time1 = timestamp();
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
+
+    time1 = timestamp()- time1;
+
+    time2 = timestamp();
     IntervalMatrix_t *triangular_matrix = partial_pivoting_system_solver(coefficients_matrix);
     Interval_t *solution = retrossubs(triangular_matrix);
+    time2 = timestamp() - time2;
     Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
     // printing the solution
@@ -33,6 +40,9 @@ int main(int argc, char *argv[])
     for (int i = 0; i < k; i++)
         printf("[%1.8e, %1.8e] ", residual[i].min.f, residual[i].max.f);
     printf("\n");
+
+    printf("%1.8e\n", time1);
+    printf("%1.8e\n", time2);
 
     return 0;
 }
