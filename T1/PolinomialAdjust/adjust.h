@@ -2,6 +2,7 @@
 #define POLADJUST_H
 #include "../intervals/intervalar.h"
 #include "../system/system.h"
+#include "../utils/utils.h"
 
 /*
  * Will generate a matrix of intervals where each point is a sum of x^(i*j)

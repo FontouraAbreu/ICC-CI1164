@@ -21,15 +21,16 @@ int main(int argc, char *argv[])
 
     IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
-    Interval_t *solution = retrossubs(coefficients_matrix);
-    Interval_t *residual = show_residual(coefficients_matrix, table, n);
+    IntervalMatrix_t *triangular_matrix = partial_pivoting_system_solver(coefficients_matrix);
+    Interval_t *solution = retrossubs(triangular_matrix);
+    Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
     // printing the solution
     for (int i = 0; i <= n; i++)
         printf("[%1.8e, %1.8e] ", solution[i].min.f, solution[i].max.f);
     printf("\n");
     // printing the residual
-    for (int i = 0; i <= n; i++)
+    for (int i = 0; i < k; i++)
         printf("[%1.8e, %1.8e] ", residual[i].min.f, residual[i].max.f);
     printf("\n");
 

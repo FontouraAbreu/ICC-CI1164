@@ -4,8 +4,8 @@ CC=gcc
 all: ajustePol
 
 # regras de ligacao
-ajustePol: main.o ajustePol.o utils.o interval.o floatType.o system.o
-	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o floatType.o system.o -lm -o ajustePol
+ajustePol: main.o ajustePol.o utils.o interval.o system.o
+	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o system.o -lm -o ajustePol
 
 # regras de compilacao
 main.o: main.c
@@ -19,9 +19,6 @@ utils.o: utils/utils.c utils/utils.h
 
 interval.o: intervals/intervalar.c intervals/intervalar.h
 	$(CC) $(CFLAGS) -c intervals/intervalar.c -o interval.o
-
-floatType.o: floatType/FloatType.c floatType/FloatType.h
-	$(CC) $(CFLAGS) -c floatType/FloatType.c -o floatType.o
 
 system.o: system/system.c system/system.h
 	$(CC) $(CFLAGS) -c system/system.c -o system.o

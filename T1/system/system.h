@@ -1,7 +1,8 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
-#include "../intervals/intervalar.h"
 #include <math.h>
+#include "../intervals/intervalar.h"
+#include "../utils/utils.h"
 
 /*
  *   retrossubs of a triangular matrix
@@ -95,7 +96,7 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2);
  *   @param table: the table of points given
  *   @return array of residual: the residual of the system
  */
-Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n);
+Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, int n);
 
 void print_system(IntervalMatrix_t A);
 

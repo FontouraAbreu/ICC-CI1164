@@ -12,50 +12,76 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     // for each row
     for (int i = n - 1; i >= 0; i--)
     {
-        Interval_t sum = zero_interval;
+        x[i] = A->independent_terms[i];
         // for each column
         for (int j = i + 1; j < m; j++)
             // calculate the sum of the products
-            sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], x[j]));
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i][j], x[j]));
         // calculate the value of x(the independent term)
-        x[i] = op_div_interval(op_sub_interval(A->independent_terms[i], sum), A->data[i][i]);
-        // printf("x_%d = %1.8e\n", i, x[i]);
+        x[i] = op_div_interval(x[i], A->data[i][i]);
     }
+    return x;
+}
+
+IntervalMatrix_t *copy_matrix(IntervalMatrix_t *A)
+{
+    IntervalMatrix_t *x = malloc(sizeof(IntervalMatrix_t));
+    x->rows = A->rows;
+    x->cols = A->cols;
+    x->data = malloc(sizeof(Interval_t *) * x->rows);
+    x->independent_terms = malloc(sizeof(Interval_t) * x->rows);
+    for (int i = 0; i < x->rows; i++)
+    {
+        x->data[i] = malloc(sizeof(Interval_t) * x->cols);
+        for (int j = 0; j < x->cols; j++)
+        {
+            x->data[i][j] = A->data[i][j];
+        }
+        x->independent_terms[i] = A->independent_terms[i];
+    }
+
+    x->residual = A->residual;
 
     return x;
 }
 
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
+    IntervalMatrix_t *result = copy_matrix(A);
+    Interval_t multiplier;
+
     int n = A->rows;
     int m = A->cols;
     // for each row
     for (int i = 0; i < n; i++)
     {
         // find the pivot
-        int pivot = find_partial_pivot(A, i, i);
+        int pivot = find_partial_pivot(result, i, i);
         // swap rows if necessary
         if (pivot != i)
-            swap_rows(A, i, pivot);
+            swap_rows(result, i, pivot);
 
         // for each column
         for (int j = i + 1; j < m; j++)
         {
             // calculate the multiplier
-            Interval_t multiplier = op_div_interval(A->data[j][i], A->data[i][i]);
-            A->data[j][i].min.f = 0.0;
-            A->data[j][i].max.f = 0.0;
+            multiplier = op_div_interval(result->data[j][i], A->data[i][i]);
+            result->data[j][i].min.f = 0.0;
+            result->data[j][i].max.f = 0.0;
             // for each element in the row
-            for (int k = i + 1; k < m; k++){
+            for (int k = i + 1; k < m; k++)
+            {
                 // calculate the new value
-                A->data[j][k] = op_sub_interval(A->data[j][k], op_mul_interval(A->data[i][k], multiplier));
+                result->data[j][k] = op_sub_interval(result->data[j][k], op_mul_interval(result->data[i][k], multiplier));
             }
             // calculate the new independent term
-            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(multiplier, A->independent_terms[i]));
+            result->independent_terms[j] = op_sub_interval(result->independent_terms[j], op_mul_interval(multiplier, result->independent_terms[i]));
         }
     }
 
-    return A;
+    print_system(*result);
+
+    return result;
 }
 
 void print_system(IntervalMatrix_t A)
@@ -70,7 +96,6 @@ void print_system(IntervalMatrix_t A)
         printf("\n");
     }
 }
-
 
 IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t *A)
 {
@@ -94,13 +119,11 @@ IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t 
                 A->data[j][k] = op_sub_interval(op_mul_interval(A->data[j][k], A->data[i][i]), op_mul_interval(A->data[i][k], A->data[j][i]));
             // calculate the new independent term
             A->independent_terms[j] = op_sub_interval(op_mul_interval(A->independent_terms[j], A->data[i][i]), op_mul_interval(A->independent_terms[i], A->data[j][i]));
-
         }
     }
 
     return A;
 }
-
 
 int find_partial_pivot(IntervalMatrix_t *A, int row, int col)
 {
@@ -122,24 +145,21 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
     A->independent_terms[row2] = aux2;
 }
 
-Interval_t *show_residual(IntervalMatrix_t *A, IntervalPoint_t *table, int n)
+Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, int k)
 {
-    Interval_t *residual = malloc(sizeof(Interval_t) * n);
-    Interval_t zero_interval;
-    zero_interval.min.f = 0.0;
-    zero_interval.max.f = 0.0;
-
-    // for each row
-    for (int i = 0; i < n; i++)
+    int n = A->rows;
+    int m = A->cols;
+    Interval_t *residual = malloc(sizeof(Interval_t) * k);
+    for (int i = 0; i < k; i++)
     {
-        Interval_t sum = zero_interval;
-        // for each column
-        for (int j = 0; j < n; j++)
-            // calculate the sum of the products
-            sum = op_sum_interval(sum, op_mul_interval(A->data[i][j], table[j].y));
-        // calculate the value of x(the independent term)
-        residual[i] = op_sub_interval(table[i].y, sum);
-    }
+        residual[i].max.f = 0.0;
+        residual[i].min.f = 0.0;
 
+        for (int j = 0; j < m; j++)
+        {
+            residual[i] = op_sum_interval(residual[i], op_mul_interval(solution[j], table[i].x));
+        }
+        residual[i] = op_sub_interval(residual[i], table[i].y);
+    }
     return residual;
 }

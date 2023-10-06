@@ -1,16 +1,5 @@
 #include "intervalar.h"
 
-void read_expression(char *operations, Float_t *floats)
-{
-    if (scanf("%f %c %f %c %f %c %f %c %f", &floats[0].f, &operations[0], &floats[1].f, &operations[1], &floats[2].f, &operations[2], &floats[3].f, &operations[3], &floats[4].f) != 9)
-    {
-        fprintf(stderr, "Erro ao ler expressão\n");
-        return;
-    }
-
-    return;
-}
-
 Interval_t *generate_intervals(Float_t *floats)
 {
     Interval_t *intervals = malloc(sizeof(Interval_t) * 5);
@@ -122,14 +111,10 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
 
 int zero_in_interval(Interval_t interval)
 {
-    Float_t zero;
-    zero.f = 0.0;
-    Interval_t intervalZero = generate_single_interval(&zero);
-    if ((interval.min.f <= intervalZero.min.f && interval.max.f >= intervalZero.max.f) || (interval.min.f >= intervalZero.min.f && interval.max.f <= intervalZero.max.f))
+    if (interval.min.f <= 0.0 && interval.max.f >= 0.0)
     {
         return 1;
     }
-
     return 0;
 }
 
@@ -146,11 +131,10 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
 
         return result;
     }
-    double tmp = Y.min.f;
-    Y.min.f = 1.0f / Y.max.f;
-    Y.max.f = 1.0f / tmp;
+    result.min.f = 1.0f / Y.max.f;
+    result.max.f = 1.0f / Y.min.f;
 
-    result = op_mul_interval(X, Y);
+    result = op_mul_interval(X, result);
 
     return result;
 }
@@ -178,25 +162,32 @@ Interval_t op_pow_interval(Interval_t x, int p)
     else if (!p_is_even)
     {
         y.min.f = pow(x.min.f, p);
+        y.min.f = nextafterf(y.min.f, -INFINITY);
         y.max.f = pow(x.max.f, p);
+        y.max.f = nextafterf(y.max.f, INFINITY);
         return y;
     }
     else if ((p_is_even) && (x.min.f >= 0.0))
     {
         y.min.f = pow(x.min.f, p);
+        y.min.f = nextafterf(y.min.f, -INFINITY);
         y.max.f = pow(x.max.f, p);
+        y.max.f = nextafterf(y.max.f, INFINITY);
         return y;
     }
     else if (p_is_even && (x.max.f < 0.0))
     {
         y.min.f = pow(x.max.f, p);
+        y.min.f = nextafterf(y.min.f, -INFINITY);
         y.max.f = pow(x.min.f, p);
+        y.max.f = nextafterf(y.max.f, INFINITY);
         return y;
     }
     else if (p_is_even && (x.min.f < 0.0) && (x.max.f >= 0.0))
     {
         y.min.f = 0.0;
         y.max.f = fmax(pow(x.min.f, p), pow(x.max.f, p));
+        y.max.f = nextafterf(y.max.f, INFINITY);
         return y;
     }
 
@@ -273,8 +264,9 @@ float find_max(Interval_t X, Interval_t Y)
 
 int greater_than(Interval_t X, Interval_t Y)
 {
-    double x_mean = (X.min.f + X.max.f) / 2;
-    double y_mean = (Y.min.f + Y.max.f) / 2;
+
+    double x_mean = (fabs(X.min.f) + fabs(X.max.f)) / 2.0;
+    double y_mean = (fabs(Y.min.f) + fabs(Y.max.f)) / 2.0;
     if (x_mean > y_mean)
     {
         return 1;
