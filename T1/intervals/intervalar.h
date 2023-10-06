@@ -82,13 +82,13 @@ Interval_t op_pow_interval(Interval_t x, int n);
 Seja X = [a,b] e Y = [c,d]
 Will find min{a*c,a*d,b*c,b*d}
 */
-float find_min(Interval_t X, Interval_t Y);
+double find_min(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
 Will find max{a*c,a*d,b*c,b*d}
 */
-float find_max(Interval_t X, Interval_t Y);
+double find_max(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]

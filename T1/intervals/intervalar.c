@@ -17,8 +17,8 @@ Interval_t generate_single_interval(Float_t *number)
 {
     Interval_t interval;
 
-    interval.min.f = nextafterf(number->f, -INFINITY);
-    interval.max.f = nextafterf(number->f, INFINITY);
+    interval.min.f = nextafter(number->f, -INFINITY);
+    interval.max.f = nextafter(number->f, INFINITY);
 
     return interval;
 }
@@ -90,9 +90,9 @@ Interval_t op_sum_interval(Interval_t X, Interval_t Y)
     Interval_t result;
 
     result.min.f = X.min.f + Y.min.f;
-    result.min.f = nextafterf(result.min.f, -INFINITY);
+    result.min.f = nextafter(result.min.f, -INFINITY);
     result.max.f = X.max.f + Y.max.f;
-    result.max.f = nextafterf(result.max.f, INFINITY);
+    result.max.f = nextafter(result.max.f, INFINITY);
 
     return result;
 }
@@ -102,9 +102,9 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     Interval_t result;
 
     result.min.f = X.min.f - Y.max.f;
-    result.min.f = nextafterf(result.min.f, -INFINITY);
+    result.min.f = nextafter(result.min.f, -INFINITY);
     result.max.f = X.max.f - Y.min.f;
-    result.max.f = nextafterf(result.max.f, INFINITY);
+    result.max.f = nextafter(result.max.f, INFINITY);
 
     return result;
 }
@@ -134,8 +134,8 @@ Interval_t op_div_interval(Interval_t X, Interval_t Y)
 
         return result;
     }
-    result.min.f = 1.0f / Y.max.f;
-    result.max.f = 1.0f / Y.min.f;
+    result.min.f = 1.0 / Y.max.f;
+    result.max.f = 1.0 / Y.min.f;
 
     result = op_mul_interval(X, result);
 
@@ -146,8 +146,8 @@ Interval_t op_mul_interval(Interval_t X, Interval_t Y)
 {
     Interval_t result;
 
-    result.min.f = nextafterf(find_min(X, Y), -INFINITY);
-    result.max.f = nextafterf(find_max(X, Y), INFINITY);
+    result.min.f = nextafter(find_min(X, Y), -INFINITY);
+    result.max.f = nextafter(find_max(X, Y), INFINITY);
 
     return result;
 }
@@ -165,39 +165,39 @@ Interval_t op_pow_interval(Interval_t x, int p)
     else if (!p_is_even)
     {
         y.min.f = pow(x.min.f, p);
-        y.min.f = nextafterf(y.min.f, -INFINITY);
+        y.min.f = nextafter(y.min.f, -INFINITY);
         y.max.f = pow(x.max.f, p);
-        y.max.f = nextafterf(y.max.f, INFINITY);
+        y.max.f = nextafter(y.max.f, INFINITY);
         return y;
     }
     else if ((p_is_even) && (x.min.f >= 0.0))
     {
         y.min.f = pow(x.min.f, p);
-        y.min.f = nextafterf(y.min.f, -INFINITY);
+        y.min.f = nextafter(y.min.f, -INFINITY);
         y.max.f = pow(x.max.f, p);
-        y.max.f = nextafterf(y.max.f, INFINITY);
+        y.max.f = nextafter(y.max.f, INFINITY);
         return y;
     }
     else if (p_is_even && (x.max.f < 0.0))
     {
         y.min.f = pow(x.max.f, p);
-        y.min.f = nextafterf(y.min.f, -INFINITY);
+        y.min.f = nextafter(y.min.f, -INFINITY);
         y.max.f = pow(x.min.f, p);
-        y.max.f = nextafterf(y.max.f, INFINITY);
+        y.max.f = nextafter(y.max.f, INFINITY);
         return y;
     }
     else if (p_is_even && (x.min.f < 0.0) && (x.max.f >= 0.0))
     {
         y.min.f = 0.0;
         y.max.f = fmax(pow(x.min.f, p), pow(x.max.f, p));
-        y.max.f = nextafterf(y.max.f, INFINITY);
+        y.max.f = nextafter(y.max.f, INFINITY);
         return y;
     }
 
     return y;
 }
 
-float find_min(Interval_t X, Interval_t Y)
+double find_min(Interval_t X, Interval_t Y)
 {
     Float_t min;
 
@@ -206,10 +206,10 @@ float find_min(Interval_t X, Interval_t Y)
     Float_t c = Y.min;
     Float_t d = Y.max;
 
-    float ac = a.f * c.f;
-    float ad = a.f * d.f;
-    float bc = b.f * c.f;
-    float bd = b.f * d.f;
+    double ac = a.f * c.f;
+    double ad = a.f * d.f;
+    double bc = b.f * c.f;
+    double bd = b.f * d.f;
 
     min.f = ac;
 
@@ -231,7 +231,7 @@ float find_min(Interval_t X, Interval_t Y)
     return min.f;
 }
 
-float find_max(Interval_t X, Interval_t Y)
+double find_max(Interval_t X, Interval_t Y)
 {
     Float_t max;
 
@@ -240,10 +240,10 @@ float find_max(Interval_t X, Interval_t Y)
     Float_t c = Y.min;
     Float_t d = Y.max;
 
-    float ac = a.f * c.f;
-    float ad = a.f * d.f;
-    float bc = b.f * c.f;
-    float bd = b.f * d.f;
+    double ac = a.f * c.f;
+    double ad = a.f * d.f;
+    double bc = b.f * c.f;
+    double bd = b.f * d.f;
 
     max.f = ac;
 
@@ -267,7 +267,7 @@ float find_max(Interval_t X, Interval_t Y)
 
 int greater_than(Interval_t X, Interval_t Y)
 {
-    if (X.min.f > Y.min.f)
+    if (fabs(X.min.f) > fabs(Y.min.f))
     {
         return 1;
     }

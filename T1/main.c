@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
     // printing the solution
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i <= n; i++)
         printf("[%1.8e, %1.8e] ", solution[i].min.f, solution[i].max.f);
     printf("\n");
     // printing the residual

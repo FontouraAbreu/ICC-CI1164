@@ -72,7 +72,7 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
             for (int k = i + 1; k < n; k++)
             {
                 // calculate the new value
-                A->data[j][k] = op_sub_interval(op_mul_interval(A->data[i][k], multiplier), A->data[j][k]);
+                A->data[j][k] = op_sub_interval(A->data[j][k], op_mul_interval(A->data[i][k], multiplier));
             }
             // calculate the new independent term
             A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(A->independent_terms[i], multiplier));
@@ -105,10 +105,10 @@ IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t 
     for (int i = 0; i < n; i++)
     {
         // find the pivot
-        int pivot = find_partial_pivot(A, i, i);
-        // swap rows if necessary
-        if (pivot != i)
-            swap_rows(A, i, pivot);
+        // int pivot = find_partial_pivot(A, i, i);
+        // // swap rows if necessary
+        // if (pivot != i)
+        //     swap_rows(A, i, pivot);
 
         // for each column
         for (int j = i + 1; j < m; j++)
@@ -155,9 +155,10 @@ Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoi
         residual[i].max.f = 0.0;
         residual[i].min.f = 0.0;
 
+        // for each column
         for (int j = 0; j < m; j++)
         {
-            residual[i] = op_sum_interval(residual[i], op_mul_interval(solution[j], table[i].x));
+            residual[i] = op_sum_interval(residual[i], op_mul_interval(solution[j], op_pow_interval(table[i].x, j)));
         }
         residual[i] = op_sub_interval(residual[i], table[i].y);
     }
