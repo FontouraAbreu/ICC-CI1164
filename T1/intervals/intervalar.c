@@ -111,7 +111,10 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
 
 int zero_in_interval(Interval_t interval)
 {
-    if (interval.min.f <= 0.0 && interval.max.f >= 0.0)
+    Float_t zero;
+    zero.f = 0.0;
+    Interval_t intervalZero = generate_single_interval(&zero);
+    if ((interval.min.f <= intervalZero.min.f && interval.max.f >= intervalZero.max.f) || (interval.min.f >= intervalZero.min.f && interval.max.f <= intervalZero.max.f))
     {
         return 1;
     }
@@ -264,10 +267,7 @@ float find_max(Interval_t X, Interval_t Y)
 
 int greater_than(Interval_t X, Interval_t Y)
 {
-
-    double x_mean = (fabs(X.min.f) + fabs(X.max.f)) / 2.0;
-    double y_mean = (fabs(Y.min.f) + fabs(Y.max.f)) / 2.0;
-    if (x_mean > y_mean)
+    if (X.min.f > Y.min.f)
     {
         return 1;
     }

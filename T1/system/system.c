@@ -56,32 +56,32 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
     for (int i = 0; i < n; i++)
     {
         // find the pivot
-        int pivot = find_partial_pivot(result, i, i);
+        int pivot = find_partial_pivot(A, i, i);
         // swap rows if necessary
         if (pivot != i)
-            swap_rows(result, i, pivot);
+            swap_rows(A, i, pivot);
 
         // for each column
-        for (int j = i + 1; j < m; j++)
+        for (int j = i + 1; j < n; j++)
         {
             // calculate the multiplier
-            multiplier = op_div_interval(result->data[j][i], A->data[i][i]);
-            result->data[j][i].min.f = 0.0;
-            result->data[j][i].max.f = 0.0;
+            multiplier = op_div_interval(A->data[j][i], A->data[i][i]);
+            A->data[j][i].min.f = 0.0;
+            A->data[j][i].max.f = 0.0;
             // for each element in the row
-            for (int k = i + 1; k < m; k++)
+            for (int k = i + 1; k < n; k++)
             {
                 // calculate the new value
-                result->data[j][k] = op_sub_interval(result->data[j][k], op_mul_interval(result->data[i][k], multiplier));
+                A->data[j][k] = op_sub_interval(op_mul_interval(A->data[i][k], multiplier), A->data[j][k]);
             }
             // calculate the new independent term
-            result->independent_terms[j] = op_sub_interval(result->independent_terms[j], op_mul_interval(multiplier, result->independent_terms[i]));
+            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(A->independent_terms[i], multiplier));
         }
     }
 
-    print_system(*result);
+    print_system(*A);
 
-    return result;
+    return A;
 }
 
 void print_system(IntervalMatrix_t A)
