@@ -30,9 +30,9 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
 {
     // Allocate memory for matrices A
     IntervalMatrix_t *A = generate_interval_matrix(n + 1, n + 1);
-    Float_t zero;
-    zero.f = 0.0;
-    Interval_t zero_interval = generate_single_interval(&zero);
+    Interval_t zero_interval;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0; 
 
     // Fill in entries of matrices A
     for (int i = 0; i <= n; i++)
