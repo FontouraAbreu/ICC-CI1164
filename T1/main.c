@@ -1,9 +1,12 @@
 #include "utils/utils.h"
 #include "PolinomialAdjust/adjust.h"
 #include "system/system.h"
+#include "likwid.h"
 
 int main(int argc, char *argv[])
 {
+    LIKWID_MARKER_INIT;
+
     // reading inputs
     int n, k;
     double time1, time2;
@@ -19,17 +22,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    IntervalPoint_t *table = read_points(k);
 
     time1 = timestamp();
+    LIKWID_MARKER_START("LEAST SQUARE METHOD");
+    IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
-
+    LIKWID_MARKER_STOP("LEAST SQUARE METHOD");
     time1 = timestamp()- time1;
 
     time2 = timestamp();
+    LIKWID_MARKER_START("SYSTEM SOLVER");
     IntervalMatrix_t *triangular_matrix = partial_pivoting_system_solver(coefficients_matrix);
     Interval_t *solution = retrossubs(triangular_matrix);
+    LIKWID_MARKER_STOP("SYSTEM SOLVER");
     time2 = timestamp() - time2;
+
     Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
     // printing the solution
@@ -44,5 +51,6 @@ int main(int argc, char *argv[])
     printf("%1.8e\n", time1);
     printf("%1.8e\n", time2);
 
+    LIKWID_MARKER_CLOSE;
     return 0;
 }
