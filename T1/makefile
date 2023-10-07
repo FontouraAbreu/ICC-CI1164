@@ -1,11 +1,12 @@
-CFLAGS= -g --debug -Wall -O3 -mavx -march=native
+CFLAGS= -g --debug -Wall -O3 -mavx -march=native -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
+LFLAGS= -lm -L$(LIKWID_HOME)/lib -llikwid
 CC=gcc
 
 all: ajustePol
 
 # regras de ligacao
 ajustePol: main.o ajustePol.o utils.o interval.o system.o
-	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o system.o -lm -o ajustePol
+	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o system.o $(LFLAGS) -o ajustePol
 
 # regras de compilacao
 main.o: main.c
