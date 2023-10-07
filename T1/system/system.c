@@ -74,8 +74,6 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
         }
     }
 
-    print_system(*A);
-
     return A;
 }
 
