@@ -38,6 +38,14 @@ typedef struct
     Interval_t y;
 } IntervalPoint_t;
 
+/*
+    *   Interval Matrix structure:
+    *   rows: number of rows
+    *   cols: number of columns
+    *   data: matrix of intervals
+    *   independent_terms: independent terms of the system
+    *   residual: residual of the system
+*/
 typedef struct
 {
     int rows;
@@ -104,26 +112,6 @@ X / Y = [a,b] * [1/d,1/c], se 0 não pertence ao intervalo Y
 Interval_t op_div_interval(Interval_t X, Interval_t Y);
 
 // Auxiliar functions
-
-/*
-This function is used to select the operation to be performed.
-
-For example:
-if char == '+', then select_operation = op_sum_interval
-if char == '-', then select_operation = op_sub_interval
-...
-
-@param char: the operation to be performed. It can be [+,-,*,/]
-
-*/
-// float (*operation)(char);
-Interval_t (*select_operation(char operation))(Interval_t, Interval_t);
-
-Float_t absolute_error(Interval_t interval);
-
-Float_t relative_error(Interval_t interval);
-
-int how_many_ulps_between(Interval_t interval);
 
 /*
 Will loop through the array of floats and generate the intervals for each one of them.

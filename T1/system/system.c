@@ -20,27 +20,6 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     return x;
 }
 
-IntervalMatrix_t *copy_matrix(IntervalMatrix_t *A)
-{
-    IntervalMatrix_t *x = malloc(sizeof(IntervalMatrix_t));
-    x->rows = A->rows;
-    x->cols = A->cols;
-    x->data = malloc(sizeof(Interval_t *) * x->rows);
-    x->independent_terms = malloc(sizeof(Interval_t) * x->rows);
-    for (int i = 0; i < x->rows; i++)
-    {
-        x->data[i] = malloc(sizeof(Interval_t) * x->cols);
-        for (int j = 0; j < x->cols; j++)
-        {
-            x->data[i][j] = A->data[i][j];
-        }
-        x->independent_terms[i] = A->independent_terms[i];
-    }
-
-    x->residual = A->residual;
-
-    return x;
-}
 
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
@@ -88,34 +67,6 @@ void print_system(IntervalMatrix_t A)
         printf("= [%1.8e, %1.8e]\n", A.independent_terms[i].min.f, A.independent_terms[i].max.f);
         printf("\n");
     }
-}
-
-IntervalMatrix_t *partial_pivoting_system_solver_no_multiplier(IntervalMatrix_t *A)
-{
-    int n = A->rows;
-    int m = A->cols;
-    // for each row
-    for (int i = 0; i < n; i++)
-    {
-        // find the pivot
-        // int pivot = find_partial_pivot(A, i, i);
-        // // swap rows if necessary
-        // if (pivot != i)
-        //     swap_rows(A, i, pivot);
-
-        // for each column
-        for (int j = i + 1; j < m; j++)
-        {
-            // for each element in the row
-            for (int k = i + 1; k < n; k++)
-                // calculate the new value
-                A->data[j][k] = op_sub_interval(op_mul_interval(A->data[j][k], A->data[i][i]), op_mul_interval(A->data[i][k], A->data[j][i]));
-            // calculate the new independent term
-            A->independent_terms[j] = op_sub_interval(op_mul_interval(A->independent_terms[j], A->data[i][i]), op_mul_interval(A->independent_terms[i], A->data[j][i]));
-        }
-    }
-
-    return A;
 }
 
 int find_partial_pivot(IntervalMatrix_t *A, int row, int col)
