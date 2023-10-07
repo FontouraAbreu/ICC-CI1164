@@ -57,8 +57,5 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
         A->independent_terms[i] = sum;
     }
 
-    print_system(*A);
-    printf("\n");
-
     return A;
 }
