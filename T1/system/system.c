@@ -5,9 +5,6 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     int n = A->rows;
     int m = A->cols;
     Interval_t *x = malloc(sizeof(Interval_t) * n);
-    Interval_t zero_interval;
-    zero_interval.min.f = 0.0;
-    zero_interval.max.f = 0.0;
 
     // for each row
     for (int i = n - 1; i >= 0; i--)
@@ -47,11 +44,9 @@ IntervalMatrix_t *copy_matrix(IntervalMatrix_t *A)
 
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
-    IntervalMatrix_t *result = copy_matrix(A);
     Interval_t multiplier;
 
     int n = A->rows;
-    int m = A->cols;
     // for each row
     for (int i = 0; i < n; i++)
     {
@@ -147,7 +142,6 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2)
 
 Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, int k)
 {
-    int n = A->rows;
     int m = A->cols;
     Interval_t *residual = malloc(sizeof(Interval_t) * k);
     for (int i = 0; i < k; i++)
