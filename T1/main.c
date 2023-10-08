@@ -24,17 +24,17 @@ int main(int argc, char *argv[])
 
 
     time1 = timestamp();
-    LIKWID_MARKER_START("LEAST SQUARE METHOD");
+    LIKWID_MARKER_START("LEAST_SQUARE_METHOD");
     IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
-    LIKWID_MARKER_STOP("LEAST SQUARE METHOD");
+    LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD");
     time1 = timestamp()- time1;
 
     time2 = timestamp();
-    LIKWID_MARKER_START("SYSTEM SOLVER");
+    LIKWID_MARKER_START("SYSTEM_SOLVER");
     IntervalMatrix_t *triangular_matrix = partial_pivoting_system_solver(coefficients_matrix);
     Interval_t *solution = retrossubs(triangular_matrix);
-    LIKWID_MARKER_STOP("SYSTEM SOLVER");
+    LIKWID_MARKER_STOP("SYSTEM_SOLVER");
     time2 = timestamp() - time2;
 
     Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
