@@ -25,4 +25,4 @@ cat result.out | sed -n '123,124p'
 echo "region: SYSTEM_SOLVER"
 cat result.out | sed -n '159,160p'
 
-# rm result.out
+rm result.out
