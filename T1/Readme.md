@@ -120,9 +120,11 @@ Para executar o programa, basta executar o comando `make` na pasta raiz do proje
 
 ### Likwid
 
-Para executar o programa com o likwid, basta executar o comando `python3 likwid.py ./ajustePol` na pasta raiz do projeto.
+Para executar o programa com o likwid, basta executar o comando `./likwid.sh ./ajustePol <arquivo de teste>` na pasta raiz do projeto, com o **programa já compilado**.
 
 O script irá executar o programa com o likwid e mostrar os resultados para os grupos de eventos `ENERGY` e `FLOPS_DP`.
+
+Dividimos em duas regiões, uma para a leitura dos pontos de entrada e geração da matriz de coeficientes e outra para a resolução do sistema linear. A primeira foi chamada de `LEAST_SQUARE_METHOD` e a segunda de `SYSTEM_SOLVER`.
 
 ## Testes
 
