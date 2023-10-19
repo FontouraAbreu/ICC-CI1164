@@ -46,14 +46,16 @@ int main (int argc, char *argv[])
       
   res = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
   /* Optimized result var */
-  // resOptimized = res;
-  // memcpy(resOptimized, res, n*sizeof(Vetor));
-  resOptimized = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
+  //resOptimized = res;
+  resOptimized = geraVetor (n,1);
+  memcpy(resOptimized, res, n*sizeof(Vetor));
+  //resOptimized = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
 
 
   resMat = geraMatRow(n, n, 1);
   /* Optimized result var */
-  resMatOptimized = resMat;
+  //resMatOptimized = resMat;
+  resMatOptimized = geraMatRow(n, n, 1);
   memcpy(resMatOptimized, resMat, n*sizeof(MatRow));
 
     

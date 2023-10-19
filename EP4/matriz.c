@@ -41,7 +41,6 @@ static inline real_t generateRandomB( )
  *  @return  ponteiro para a matriz gerada
  *
  */
-
 MatRow geraMatRow (int m, int n, int zerar)
 {
   MatRow matriz = (real_t *) malloc(m*n*sizeof(real_t));
