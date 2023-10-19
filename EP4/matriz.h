@@ -1,10 +1,13 @@
 /* Constantes */
 
 #define DBL_FIELD "%15.10lg"
-#define SEP_RES "\n\n\n"
+#define SEP_RES "\n"
 
 #define DEF_SIZE 128
 #define BASE 32
+
+/*optimization factors*/
+#define UF 4
 
 
 #define ABS(num)  ((num) < 0.0 ? -(num) : (num))
@@ -24,6 +27,9 @@ Vetor geraVetor (int n, int zerar);
 void liberaVetor (void *vet);
 
 void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res);
+
+/*multMatVet optimized using loop_unroll of size 4*/
+void optimezedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res);
 void multMatMat(MatRow A, MatRow B, int n, MatRow C);
 
 void prnMat (MatRow mat, int m, int n);

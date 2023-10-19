@@ -68,7 +68,6 @@ MatRow geraMatRow (int m, int n, int zerar)
  *  @return  ponteiro para vetor gerado
  *
  */
-
 Vetor geraVetor (int n, int zerar)
 {
   Vetor vetor = (real_t *) malloc(n*sizeof(real_t));
@@ -107,10 +106,10 @@ void liberaVetor (void *vet)
  *  @return vetor de 'm' elementos
  *
  */
-
 void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res)
 {
-    
+  // FAZER LOOP UNROLL
+  // PARA TAMANHO 4 (quantidade de registradores que cabem na instrução AVX512)
   /* Efetua a multiplicação */
   if (res) {
     for (int i=0; i < m; ++i)
@@ -119,6 +118,17 @@ void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res)
   }
 }
 
+void optimezedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res) {
+  if (res) {
+    for (int i=0; i<m; i+=4)
+      for (int j=0; j < n; j+=4){
+          res[i] += mat[n*i + j] * v[j];
+          res[i+1] += mat[n*(i+1) + j + 1] * v[j + 1];
+          res[i+2] += mat[n*(i+2) + j + 2] * v[j + 2];
+          res[i+3] += mat[n*(i+3) + j + 3] * v[j + 3];
+        }
+  }
+}
 
 /**
  *  Funcao multMatMat: Efetua multiplicacao de duas matrizes 'n x n' 
