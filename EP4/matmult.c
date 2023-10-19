@@ -30,8 +30,8 @@ int main (int argc, char *argv[])
 {
   int n=DEF_SIZE;
   
-  MatRow mRow_1, mRow_2, resMat;
-  Vetor vet, res;
+  MatRow mRow_1, mRow_2, resMat, resMatOptimized;
+  Vetor vet, vetToOptimize, res, resOptimized;
   
   /* =============== TRATAMENTO DE LINHA DE COMANDO =============== */
 
@@ -45,44 +45,77 @@ int main (int argc, char *argv[])
   srandom(20232);
       
   res = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
+  /* Optimized result var */
+  // resOptimized = res;
+  // memcpy(resOptimized, res, n*sizeof(Vetor));
+  resOptimized = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
+
+
   resMat = geraMatRow(n, n, 1);
+  /* Optimized result var */
+  resMatOptimized = resMat;
+  memcpy(resMatOptimized, resMat, n*sizeof(MatRow));
+
     
   mRow_1 = geraMatRow (n, n, 0);
   mRow_2 = geraMatRow (n, n, 0);
 
   vet = geraVetor (n, 0);
+  vetToOptimize = geraVetor (n, 0);
 
-  if (!res || !resMat || !mRow_1 || !mRow_2 || !vet) {
+
+  if (!res || !resMat || !mRow_1 || !mRow_2 || !vet || !resOptimized || !resMatOptimized) {
     fprintf(stderr, "Falha em alocação de memória !!\n");
     liberaVetor ((void*) mRow_1);
     liberaVetor ((void*) mRow_2);
     liberaVetor ((void*) resMat);
+    liberaVetor ((void*) resMatOptimized);
     liberaVetor ((void*) vet);
     liberaVetor ((void*) res);
+    liberaVetor ((void*) resOptimized);
     exit(2);
   }
     
 #ifdef _DEBUG_
+    printf("não otimizado:\n");
+
+    printf("\tMatriz:\n");
     prnMat (mRow_1, n, n);
-    prnMat (mRow_2, n, n);
+    // prnMat (mRow_2, n, n);
+    printf("\t*\n\tVetor:\n");
     prnVetor (vet, n);
+
+    printf("\t*\n\tVetor p/ otimizar:\n");
+    prnVetor (vetToOptimize, n);
     printf ("=================================\n\n");
 #endif /* _DEBUG_ */
 
   multMatVet (mRow_1, vet, n, n, res);
+  optimezedMultMatVet_unroll (mRow_1, vet, n, n, resOptimized);
     
-  multMatMat (mRow_1, mRow_2, n, resMat);
+  // multMatMat (mRow_1, mRow_2, n, resMat);
+  // multMatMat (mRow_1, mRow_2, n, resMatOptimized);
+
     
 #ifdef _DEBUG_
+    printf("resultado não otimizado\n");
     prnVetor (res, n);
-    prnMat (resMat, n, n);
+
+    printf("resultado otimizado com loop unrolling(fator 4)\n");
+    prnVetor (resOptimized, n);
+
+    // prnMat (resMat, n, n);
+    // prnMat (resMatOptimized, n, n);
 #endif /* _DEBUG_ */
 
   liberaVetor ((void*) mRow_1);
   liberaVetor ((void*) mRow_2);
   liberaVetor ((void*) resMat);
+  liberaVetor ((void*) resMatOptimized);
+
   liberaVetor ((void*) vet);
   liberaVetor ((void*) res);
+  liberaVetor ((void*) resOptimized);
 
   return 0;
 }
