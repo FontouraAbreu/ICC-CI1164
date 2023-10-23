@@ -28,7 +28,6 @@ static inline real_t generateRandomB( )
 }
 
 
-
 /* ----------- FUNÇÕES ---------------- */
 
 /**
@@ -117,15 +116,38 @@ void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res)
   }
 }
 
-void optimezedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res) {
+
+// PRECISAMOS CUIDAR DOS CASOS EM QUE M NÃO É DIVISIVEL POR UF
+
+
+void optimizedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res) {
+  // FAZER LOOP UNROLL usando o fator UF
+  // PARA TAMANHO 4 (quantidade de registradores que cabem na instrução AVX512)
+  /* Efetua a multiplicação */
   if (res) {
-    for (int i=0; i<m; i+=4)
-      for (int j=0; j < n; j+=4){
-          res[i] += mat[n*i + j] * v[j];
-          res[i+1] += mat[n*(i+1) + j + 1] * v[j + 1];
-          res[i+2] += mat[n*(i+2) + j + 2] * v[j + 2];
-          res[i+3] += mat[n*(i+3) + j + 3] * v[j + 3];
-        }
+    for (int i=0; i < m; i+=UF){
+      for (int j=0; j < n; ++j) {
+        UNROLL_LOOP(UF);
+      }
+    }
+  }
+}
+
+// função que utiliza loop unrolling e blocking
+void optimizedMultMatVet_unroll_blocking (MatRow mat, Vetor v, int m, int n, Vetor res) {
+  if (res) {
+    for (int i=0; i < (m - n%m); i+=m){
+      for (int j=0; j<n; ++j) {
+        UNROLL_LOOP(UF);
+      }
+    }
+
+    // residuo
+    for (int i=(m - n%m); i < m; ++i) {
+      for (int j=0; j<n; ++j) {
+        res[i] += mat[n*i + j] * v[j];
+      }
+    }
   }
 }
 

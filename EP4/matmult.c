@@ -31,7 +31,7 @@ int main (int argc, char *argv[])
   int n=DEF_SIZE;
   
   MatRow mRow_1, mRow_2, resMat, resMatOptimized;
-  Vetor vet, vetToOptimize, res, resOptimized;
+  Vetor vet, res, resOptimized;
   
   /* =============== TRATAMENTO DE LINHA DE COMANDO =============== */
 
@@ -46,7 +46,6 @@ int main (int argc, char *argv[])
       
   res = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
   /* Optimized result var */
-  //resOptimized = res;
   resOptimized = geraVetor (n,1);
   memcpy(resOptimized, res, n*sizeof(Vetor));
   //resOptimized = geraVetor (n, 0); // (real_t *) malloc (n*sizeof(real_t));
@@ -54,7 +53,6 @@ int main (int argc, char *argv[])
 
   resMat = geraMatRow(n, n, 1);
   /* Optimized result var */
-  //resMatOptimized = resMat;
   resMatOptimized = geraMatRow(n, n, 1);
   memcpy(resMatOptimized, resMat, n*sizeof(MatRow));
 
@@ -63,7 +61,8 @@ int main (int argc, char *argv[])
   mRow_2 = geraMatRow (n, n, 0);
 
   vet = geraVetor (n, 0);
-  vetToOptimize = geraVetor (n, 0);
+  // vetToOptimize = geraVetor (n, 0);
+  // memcpy(vetToOptimize, vet, n*sizeof(Vetor));
 
 
   if (!res || !resMat || !mRow_1 || !mRow_2 || !vet || !resOptimized || !resMatOptimized) {
@@ -87,13 +86,13 @@ int main (int argc, char *argv[])
     printf("\t*\n\tVetor:\n");
     prnVetor (vet, n);
 
-    printf("\t*\n\tVetor p/ otimizar:\n");
-    prnVetor (vetToOptimize, n);
+    // printf("\t*\n\tVetor p/ otimizar:\n");
+    // prnVetor (vetToOptimize, n);
     printf ("=================================\n\n");
 #endif /* _DEBUG_ */
 
   multMatVet (mRow_1, vet, n, n, res);
-  optimezedMultMatVet_unroll (mRow_1, vet, n, n, resOptimized);
+  optimizedMultMatVet_unroll_blocking (mRow_1, vet, n, n, resOptimized);
     
   // multMatMat (mRow_1, mRow_2, n, resMat);
   // multMatMat (mRow_1, mRow_2, n, resMatOptimized);

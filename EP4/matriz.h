@@ -9,6 +9,15 @@
 /*optimization factors*/
 #define UF 4
 
+/* Macros */
+#define UNROLL_LOOP(UF) \
+  for (int i=0; i < m; i+=UF){ \
+    for (int j=0; j < n; ++j) { \
+      for (int k=0; k < UF; ++k) { \
+        res[i+k] += mat[n*(i+k) + j] * v[j]; \
+      } \
+    } \
+  }
 
 #define ABS(num)  ((num) < 0.0 ? -(num) : (num))
 
@@ -28,8 +37,9 @@ void liberaVetor (void *vet);
 
 void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res);
 
+void optimizedMultMatVet_unroll_blocking (MatRow mat, Vetor v, int m, int n, Vetor res);
 /*multMatVet optimized using loop_unroll of size 4*/
-void optimezedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res);
+void optimizedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res);
 void multMatMat(MatRow A, MatRow B, int n, MatRow C);
 
 void prnMat (MatRow mat, int m, int n);
