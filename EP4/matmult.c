@@ -3,7 +3,9 @@
 #include <string.h>
 #include <getopt.h> /* getopt */
 #include <time.h>
+#ifdef _LIKWID_PERFMON
 #include "likwid.h"
+#endif
 #include "utils.h"
 
 #include "matriz.h"
@@ -29,13 +31,15 @@ static void usage(char *progname)
 int main(int argc, char *argv[])
 {
 
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_INIT;
+#endif
 
   int n = DEF_SIZE;
 
   MatRow mRow_1, mRow_2, resMat, resMatOptimized;
   Vetor vet, res, resOptimized;
-  double time1, time2;
+  double time_mxv, time_mxv_optimized, time_mxm, time_mxm_optimized;
 
   /* =============== TRATAMENTO DE LINHA DE COMANDO =============== */
 
@@ -82,52 +86,89 @@ int main(int argc, char *argv[])
 #ifdef _DEBUG_
   printf("não otimizado:\n");
 
-  printf("\tMatriz:\n");
+  printf("\tMatriz 1:\n");
   prnMat(mRow_1, n, n);
-  // prnMat (mRow_2, n, n);
-  printf("\t*\n\tVetor:\n");
+  printf("\tMatriz 2:\n");
+  prnMat(mRow_2, n, n);
+  printf("\tVetor:\n");
   prnVetor(vet, n);
 
-  // printf("\t*\n\tVetor p/ otimizar:\n");
-  // prnVetor (vetToOptimize, n);
   printf("=================================\n\n");
 #endif /* _DEBUG_ */
 
-  time1 = timestamp();
+  // MATxVET
+  time_mxv = timestamp();
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
+#endif
   multMatVet(mRow_1, vet, n, n, res);
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
-  time1 = timestamp() - time1;
+#endif
+  time_mxv = timestamp() - time_mxv;
 
-  time2 = timestamp();
+  time_mxv_optimized = timestamp();
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_START("OPTIMIZED_MATxVET");
-  optimizedMultMatVet_unroll_blocking(mRow_1, vet, n, n, resOptimized);
+#endif
+  optimizedMultMatVet_unroll_jam_blocking(mRow_1, vet, n, n, resOptimized);
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_STOP("OPTIMIZED_MATxVET");
-  time2 = timestamp() - time2;
+#endif
+  time_mxv_optimized = timestamp() - time_mxv_optimized;
 
-  // multMatMat (mRow_1, mRow_2, n, resMat);
-  // multMatMat (mRow_1, mRow_2, n, resMatOptimized);
+  // MATxMAT
+  time_mxm = timestamp();
+#ifdef _LIKWID_PERFMON
+  LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
+#endif
+  multMatMat(mRow_1, mRow_2, n, resMat);
+#ifdef _LIKWID_PERFMON
+  LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
+#endif
+  time_mxm = timestamp() - time_mxm;
+
+  // MATxMAT
+  time_mxm_optimized = timestamp();
+#ifdef _LIKWID_PERFMON
+  LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
+#endif
+  multMatMat(mRow_1, mRow_2, n, resMatOptimized);
+#ifdef _LIKWID_PERFMON
+  LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
+#endif
+  time_mxm_optimized = timestamp() - time_mxm_optimized;
 
 #ifdef _DEBUG_
   printf("resultado não otimizado\n");
   prnVetor(res, n);
+  printf("%lf\n", time_mxv);
 
-  printf("resultado otimizado com loop unrolling(fator 4)\n");
+  printf("resultado otimizado com loop unrolling e JAM + blocking\n");
   prnVetor(resOptimized, n);
+  printf("%lf\n", time_mxv_optimized);
 
-  // prnMat (resMat, n, n);
-  // prnMat (resMatOptimized, n, n);
+  printf("=================================\n\n");
+
+  printf("resultado não otimizado\n");
+  prnMat(resMat, n, n);
+  printf("%lf\n", time_mxm);
+
+  printf("resultado otimizado com loop unrolling e JAM + blocking\n");
+  prnMat(resMatOptimized, n, n);
+  printf("%lf\n", time_mxm_optimized);
 #endif /* _DEBUG_ */
 
   liberaVetor((void *)mRow_1);
   liberaVetor((void *)mRow_2);
   liberaVetor((void *)resMat);
   liberaVetor((void *)resMatOptimized);
-
   liberaVetor((void *)vet);
   liberaVetor((void *)res);
   liberaVetor((void *)resOptimized);
 
+#ifdef _LIKWID_PERFMON
   LIKWID_MARKER_CLOSE;
+#endif
   return 0;
 }
