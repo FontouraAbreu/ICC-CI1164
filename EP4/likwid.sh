@@ -1,10 +1,17 @@
 #!/bin/bash
 
-# groups
+# executable name
+EXECUTABLE="matmult"
+# test sizes
+SIZES="64, 100, 128,  200, 256, 512, 600, 900, 1024, 2000, 2048, 3000, 4000"
+# likwid groups
 GROUPS="FLOPS_DP MEM CACHE ENERGY"
 
 for group in $GROUPS; do
-    likwid-perfctr -g $group -f ./interpola $n > $group.txt
+    for n in $SIZES; do
+        likwid-perfctr -g $group -f ./$EXECUTABLE $n > $group.txt
+        parse_output $group
+    done
 done
 
 # function to parse the output based on the metric needed using switch case
