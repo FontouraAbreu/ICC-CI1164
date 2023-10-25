@@ -4,8 +4,13 @@ OBJS = $(PROG).o matriz.o utils.o
 
 # Compilador
 CC = gcc -Wall 
-CFLAGS = -O3 -mavx2 -march=native -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
-LFLAGS = -lm -L$(LIKWID_HOME)/lib -llikwid
+CFLAGS = -O3 -mavx2 -march=native
+LFLAGS = -lm
+#include these flags only if you have likwid installed
+ifneq ($(LIKWID_HOME),)
+	CFLAGS += -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
+	LFLAGS += -L$(LIKWID_HOME)/lib -llikwid
+endif
 OPTIMIZINGFLAGS = -fopt-info-vec -fopt-info-vec-missed
 
 # Lista de arquivos para distribuição
