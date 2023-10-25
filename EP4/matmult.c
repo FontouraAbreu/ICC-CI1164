@@ -4,6 +4,7 @@
 #include <getopt.h> /* getopt */
 #include <time.h>
 #include "likwid.h"
+#include "utils.h"
 
 #include "matriz.h"
 
