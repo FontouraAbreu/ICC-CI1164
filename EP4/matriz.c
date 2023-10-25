@@ -2,18 +2,17 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h> // Para uso de função 'memset()'
-
 #include "matriz.h"
 
 /**
  * Função que gera valores para para ser usado em uma matriz
  * @param i,j coordenadas do elemento a ser calculado (0<=i,j<n)
-*  @return valor gerado para a posição i,j
-  */
-static inline real_t generateRandomA( unsigned int i, unsigned int j)
+ *  @return valor gerado para a posição i,j
+ */
+static inline real_t generateRandomA(unsigned int i, unsigned int j)
 {
   static real_t invRandMax = 1.0 / (real_t)RAND_MAX;
-  return ( (i==j) ? (real_t)(BASE<<1) : 1.0 )  * (real_t)random() * invRandMax;
+  return ((i == j) ? (real_t)(BASE << 1) : 1.0) * (real_t)random() * invRandMax;
 }
 
 /**
@@ -21,18 +20,17 @@ static inline real_t generateRandomA( unsigned int i, unsigned int j)
  * @return valor gerado
  *
  */
-static inline real_t generateRandomB( )
+static inline real_t generateRandomB()
 {
   static real_t invRandMax = 1.0 / (real_t)RAND_MAX;
-  return (real_t)(BASE<<2) * (real_t)random() * invRandMax;
+  return (real_t)(BASE << 2) * (real_t)random() * invRandMax;
 }
-
 
 /* ----------- FUNÇÕES ---------------- */
 
 /**
  *  Funcao geraMatRow: gera matriz como vetor único, 'row-oriented'
- * 
+ *
  *  @param m     número de linhas da matriz
  *  @param n     número de colunas da matriz
  *  @param zerar se 0, matriz  tem valores aleatórios, caso contrário,
@@ -40,58 +38,58 @@ static inline real_t generateRandomB( )
  *  @return  ponteiro para a matriz gerada
  *
  */
-MatRow geraMatRow (int m, int n, int zerar)
+MatRow geraMatRow(int m, int n, int zerar)
 {
-  MatRow matriz = (real_t *) malloc(m*n*sizeof(real_t));
+  MatRow matriz = (real_t *)malloc(m * n * sizeof(real_t));
 
-  if (matriz) {
+  if (matriz)
+  {
     if (zerar)
-      memset(matriz,0,m*n*sizeof(real_t));
+      memset(matriz, 0, m * n * sizeof(real_t));
     else
-      for (int i=0; i < m; ++i)
-	for (int j=0; j < n; ++j)
-	  matriz[i*n + j] = generateRandomA(i, j);
+      for (int i = 0; i < m; ++i)
+        for (int j = 0; j < n; ++j)
+          matriz[i * n + j] = generateRandomA(i, j);
   }
-  
+
   return (matriz);
 }
 
-
 /**
  *  Funcao geraVetor: gera vetor de tamanho 'n'
- * 
+ *
  *  @param n  número de elementos do vetor
  *  @param zerar se 0, vetor  tem valores aleatórios, caso contrário,
  *               vetor tem valores todos nulos
  *  @return  ponteiro para vetor gerado
  *
  */
-Vetor geraVetor (int n, int zerar)
+Vetor geraVetor(int n, int zerar)
 {
-  Vetor vetor = (real_t *) malloc(n*sizeof(real_t));
+  Vetor vetor = (real_t *)malloc(n * sizeof(real_t));
 
-  if (vetor) {
+  if (vetor)
+  {
     if (zerar)
-      memset(vetor,0,n*sizeof(real_t));
+      memset(vetor, 0, n * sizeof(real_t));
     else
-      for (int i=0; i < n; ++i)
-	vetor[i] = generateRandomB();
+      for (int i = 0; i < n; ++i)
+        vetor[i] = generateRandomB();
   }
-  
+
   return (vetor);
 }
 
 /**
  *  \brief: libera vetor
- * 
+ *
  *  @param  ponteiro para vetor
  *
  */
-void liberaVetor (void *vet)
+void liberaVetor(void *vet)
 {
-	free(vet);
+  free(vet);
 }
-
 
 /**
  *  Funcao multMatVet:  Efetua multiplicacao entre matriz 'mxn' por vetor
@@ -104,55 +102,47 @@ void liberaVetor (void *vet)
  *  @return vetor de 'm' elementos
  *
  */
-void multMatVet (MatRow mat, Vetor v, int m, int n, Vetor res)
+void multMatVet(MatRow mat, Vetor v, int m, int n, Vetor res)
 {
   // FAZER LOOP UNROLL
   // PARA TAMANHO 4 (quantidade de registradores que cabem na instrução AVX512)
   /* Efetua a multiplicação */
-  if (res) {
-    for (int i=0; i < m; ++i)
-      for (int j=0; j < n; ++j)
-        res[i] += mat[n*i + j] * v[j];
+  if (res)
+  {
+    for (int i = 0; i < m; ++i)
+      for (int j = 0; j < n; ++j)
+        res[i] += mat[n * i + j] * v[j];
   }
 }
-
 
 // PRECISAMOS CUIDAR DOS CASOS EM QUE M NÃO É DIVISIVEL POR UF
-
-
-void optimizedMultMatVet_unroll (MatRow mat, Vetor v, int m, int n, Vetor res) {
-  // FAZER LOOP UNROLL usando o fator UF
-  // PARA TAMANHO 4 (quantidade de registradores que cabem na instrução AVX512)
+void optimizedMultMatVet_unroll_jam_blocking(MatRow mat, Vetor v, int m, int n, Vetor res)
+{
   /* Efetua a multiplicação */
-  if (res) {
-    for (int i=0; i < m; i+=UF){
-      for (int j=0; j < n; ++j) {
-        UNROLL_LOOP(UF);
-      }
-    }
-  }
-}
-
-// função que utiliza loop unrolling e blocking
-void optimizedMultMatVet_unroll_blocking (MatRow mat, Vetor v, int m, int n, Vetor res) {
-  if (res) {
-    for (int i=0; i < (m - n%m); i+=m){
-      for (int j=0; j<n; ++j) {
-        UNROLL_LOOP(UF);
-      }
-    }
-
-    // residuo
-    for (int i=(m - n%m); i < m; ++i) {
-      for (int j=0; j<n; ++j) {
-        res[i] += mat[n*i + j] * v[j];
+  if (res)
+  {
+    // percorre a matriz em blocos de tamanho BK
+    for (int i = 0; i < m; i += UF)
+    {
+      // para cada bloco
+      for (int j = 0; j < n; j += BK)
+      {
+        // percorre o bloco
+        for (int k = 0; k < UF; ++k)
+        {
+          // percorre a linha do bloco
+          for (int l = 0; l < BK; ++l)
+          {
+            res[i + k] += mat[n * (i + k) + j + l] * v[j + l];
+          }
+        }
       }
     }
   }
 }
 
 /**
- *  Funcao multMatMat: Efetua multiplicacao de duas matrizes 'n x n' 
+ *  Funcao multMatMat: Efetua multiplicacao de duas matrizes 'n x n'
  *  @param A matriz 'n x n'
  *  @param B matriz 'n x n'
  *  @param n ordem da matriz quadrada
@@ -161,16 +151,40 @@ void optimizedMultMatVet_unroll_blocking (MatRow mat, Vetor v, int m, int n, Vet
  *
  */
 
-void multMatMat (MatRow A, MatRow B, int n, MatRow C)
+void multMatMat(MatRow A, MatRow B, int n, MatRow C)
 {
 
   /* Efetua a multiplicação */
-  for (int i=0; i < n; ++i)
-    for (int j=0; j < n; ++j)
-      for (int k=0; k < n; ++k)
-	C[i*n+j] += A[i*n+k] * B[k*n+j];
+  for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j)
+      for (int k = 0; k < n; ++k)
+        C[i * n + j] += A[i * n + k] * B[k * n + j];
 }
 
+void mulMatMat_unroll_jam_blocking(MatRow A, MatRow B, int n, MatRow C)
+{
+  int istart, iend, jstart, jend;
+  for (int ii = 0; ii < n / BK; ++ii)
+  {
+    istart = ii * BK;
+    iend = istart + BK;
+    for (int jj = 0; jj < n / BK; ++jj)
+    {
+      jstart = jj * BK;
+      jend = jstart + BK;
+      for (int i = istart; i < iend; ++i)
+      {
+        for (int j = jstart; j < jend; ++j)
+        {
+          for (int k = 0; k < n; ++k)
+          {
+            C[i * n + j] += A[i * n + k] * B[k * n + j];
+          }
+        }
+      }
+    }
+  }
+}
 
 /**
  *  Funcao prnMat:  Imprime o conteudo de uma matriz em stdout
@@ -180,11 +194,12 @@ void multMatMat (MatRow A, MatRow B, int n, MatRow C)
  *
  */
 
-void prnMat (MatRow mat, int m, int n)
+void prnMat(MatRow mat, int m, int n)
 {
-  for (int i=0; i < m; ++i) {
-    for (int j=0; j < n; ++j)
-      printf(DBL_FIELD, mat[n*i + j]);
+  for (int i = 0; i < m; ++i)
+  {
+    for (int j = 0; j < n; ++j)
+      printf(DBL_FIELD, mat[n * i + j]);
     printf("\n");
   }
   printf(SEP_RES);
@@ -197,10 +212,9 @@ void prnMat (MatRow mat, int m, int n)
  *
  */
 
-void prnVetor (Vetor vet, int n)
+void prnVetor(Vetor vet, int n)
 {
-  for (int i=0; i < n; ++i)
+  for (int i = 0; i < n; ++i)
     printf(DBL_FIELD, vet[i]);
   printf(SEP_RES);
 }
-
