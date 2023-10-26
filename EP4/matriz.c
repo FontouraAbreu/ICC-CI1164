@@ -161,7 +161,7 @@ void multMatMat(MatRow A, MatRow B, int n, MatRow C)
         C[i * n + j] += A[i * n + k] * B[k * n + j];
 }
 
-void mulMatMat_unroll_jam_blocking(MatRow A, MatRow B, int n, MatRow C)
+void optimizedMulMatMat_unroll_jam_blocking(MatRow A, MatRow B, int n, MatRow C)
 {
   int istart, iend, jstart, jend;
   for (int ii = 0; ii < n / BK; ++ii)
