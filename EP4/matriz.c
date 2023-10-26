@@ -161,24 +161,27 @@ void multMatMat(MatRow A, MatRow B, int n, MatRow C)
         C[i * n + j] += A[i * n + k] * B[k * n + j];
 }
 
-void optimizedMulMatMat_unroll_jam_blocking(MatRow A, MatRow B, int n, MatRow C)
+void optimizedMulMatMat_blocking(MatRow A, MatRow B, int n, MatRow C)
 {
-  int istart, iend, jstart, jend;
-  for (int ii = 0; ii < n / BK; ++ii)
-  {
-    istart = ii * BK;
+  int istart, jstart, kstart, iend, jend, kend;
+
+  /* Efetua a multiplicação */
+  for (int ii=0; ii<n/BK; ii++) {
+    istart = ii*BK;
     iend = istart + BK;
-    for (int jj = 0; jj < n / BK; ++jj)
-    {
-      jstart = jj * BK;
+    for (int jj=0; jj<n/BK; jj++) {
+      jstart = jj*BK;
       jend = jstart + BK;
-      for (int i = istart; i < iend; ++i)
-      {
-        for (int j = jstart; j < jend; ++j)
-        {
-          for (int k = 0; k < n; ++k)
-          {
-            C[i * n + j] += A[i * n + k] * B[k * n + j];
+      for (int kk=0; kk<n/BK; kk++) {
+        kstart = kk*BK;
+        kend = kstart + BK;
+        for (int i=istart; i<iend; i++) {
+          for (int j=jstart; j<jend; j+=UF) {
+            for (int k=kstart; k<kend; k++) {
+              for (int l=0; l<UF; l++) {
+                C[i*n+j+l] += A[i*n+k] * B[k*n+j+l];
+              }
+            }
           }
         }
       }

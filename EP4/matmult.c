@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 #ifdef LIKWID_PERFMON
   LIKWID_MARKER_START("OPTIMIZED_MATxMAT");
 #endif
-  optimizedMulMatMat_unroll_jam_blocking(mRow_1, mRow_2, n, resMatOptimized);
+  optimizedMulMatMat_blocking(mRow_1, mRow_2, n, resMatOptimized);
 #ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("OPTIMIZED_MATxMAT");
 #endif

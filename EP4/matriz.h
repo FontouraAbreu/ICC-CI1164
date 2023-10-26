@@ -34,7 +34,7 @@ void optimizedMultMatVet_unroll_jam_blocking(MatRow mat, Vetor v, int m, int n, 
 void optimizedMultMatVet_unroll(MatRow mat, Vetor v, int m, int n, Vetor res);
 
 void multMatMat(MatRow A, MatRow B, int n, MatRow C);
-void optimizedMulMatMat_unroll_jam_blocking(MatRow A, MatRow B, int n, MatRow C);
+void optimizedMulMatMat_blocking(MatRow A, MatRow B, int n, MatRow C);
 
 void prnMat(MatRow mat, int m, int n);
 void prnVetor(Vetor vet, int n);
