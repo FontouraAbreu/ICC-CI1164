@@ -3,7 +3,7 @@
 #include <string.h>
 #include <getopt.h> /* getopt */
 #include <time.h>
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
 #include "likwid.h"
 #endif
 #include "utils.h"
@@ -31,7 +31,7 @@ static void usage(char *progname)
 int main(int argc, char *argv[])
 {
 
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_INIT;
 #endif
 
@@ -98,44 +98,43 @@ int main(int argc, char *argv[])
 
   // MATxVET
   time_mxv = timestamp();
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
 #endif
   multMatVet(mRow_1, vet, n, n, res);
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
 #endif
   time_mxv = timestamp() - time_mxv;
 
   time_mxv_optimized = timestamp();
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_START("OPTIMIZED_MATxVET");
 #endif
   optimizedMultMatVet_unroll_jam_blocking(mRow_1, vet, n, n, resOptimized);
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("OPTIMIZED_MATxVET");
 #endif
   time_mxv_optimized = timestamp() - time_mxv_optimized;
 
   // MATxMAT
   time_mxm = timestamp();
-#ifdef _LIKWID_PERFMON
-  LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
+#ifdef LIKWID_PERFMON
+  LIKWID_MARKER_START("NOT_OPTIMIZED_MATxMAT");
 #endif
   multMatMat(mRow_1, mRow_2, n, resMat);
-#ifdef _LIKWID_PERFMON
-  LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
+#ifdef LIKWID_PERFMON
+  LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxMAT");
 #endif
   time_mxm = timestamp() - time_mxm;
 
-  // MATxMAT
   time_mxm_optimized = timestamp();
-#ifdef _LIKWID_PERFMON
-  LIKWID_MARKER_START("NOT_OPTIMIZED_MATxVET");
+#ifdef LIKWID_PERFMON
+  LIKWID_MARKER_START("OPTIMIZED_MATxMAT");
 #endif
-  multMatMat(mRow_1, mRow_2, n, resMatOptimized);
-#ifdef _LIKWID_PERFMON
-  LIKWID_MARKER_STOP("NOT_OPTIMIZED_MATxVET");
+  optimizedMulMatMat_unroll_jam_blocking(mRow_1, mRow_2, n, resMatOptimized);
+#ifdef LIKWID_PERFMON
+  LIKWID_MARKER_STOP("OPTIMIZED_MATxMAT");
 #endif
   time_mxm_optimized = timestamp() - time_mxm_optimized;
 
@@ -167,7 +166,7 @@ int main(int argc, char *argv[])
   liberaVetor((void *)res);
   liberaVetor((void *)resOptimized);
 
-#ifdef _LIKWID_PERFMON
+#ifdef LIKWID_PERFMON
   LIKWID_MARKER_CLOSE;
 #endif
   return 0;
