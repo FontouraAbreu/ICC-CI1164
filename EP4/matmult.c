@@ -138,24 +138,25 @@ int main(int argc, char *argv[])
 #endif
   time_mxm_optimized = timestamp() - time_mxm_optimized;
 
+  printf("%lf\n", time_mxv);
+  printf("%lf\n", time_mxv_optimized);
+  printf("%lf\n", time_mxm);
+  printf("%lf\n", time_mxm_optimized);
+  
 #ifdef _DEBUG_
   printf("resultado não otimizado\n");
   prnVetor(res, n);
-  printf("%lf\n", time_mxv);
 
   printf("resultado otimizado com loop unrolling e JAM + blocking\n");
   prnVetor(resOptimized, n);
-  printf("%lf\n", time_mxv_optimized);
 
   printf("=================================\n\n");
 
   printf("resultado não otimizado\n");
   prnMat(resMat, n, n);
-  printf("%lf\n", time_mxm);
 
   printf("resultado otimizado com loop unrolling e JAM + blocking\n");
   prnMat(resMatOptimized, n, n);
-  printf("%lf\n", time_mxm_optimized);
 #endif /* _DEBUG_ */
 
   liberaVetor((void *)mRow_1);
