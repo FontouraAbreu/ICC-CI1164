@@ -66,35 +66,35 @@ Region MMM, Group 1: L2CACHE
 |     L2 miss ratio    |    0.0335 |
 +----------------------+-----------+
 
-Region MMM, Group 1: L2CACHE
+Region MVM, Group 1: L2CACHE
 +-------------------+----------+
 |    Region Info    |  Core 3  |
 +-------------------+----------+
-| RDTSC Runtime [s] | 0.000214 |
+| RDTSC Runtime [s] | 0.000017 |
 |     call count    |        1 |
 +-------------------+----------+
 
-+-----------------------+---------+---------+
-|         Event         | Counter |  Core 3 |
-+-----------------------+---------+---------+
-|   INSTR_RETIRED_ANY   |  FIXC0  | 1884379 |
-| CPU_CLK_UNHALTED_CORE |  FIXC1  |  821820 |
-|  CPU_CLK_UNHALTED_REF |  FIXC2  |  739110 |
-| L2_TRANS_ALL_REQUESTS |   PMC0  |   87334 |
-|     L2_RQSTS_MISS     |   PMC1  |    2927 |
-+-----------------------+---------+---------+
++-----------------------+---------+--------+
+|         Event         | Counter | Core 3 |
++-----------------------+---------+--------+
+|   INSTR_RETIRED_ANY   |  FIXC0  |  30331 |
+| CPU_CLK_UNHALTED_CORE |  FIXC1  |  29064 |
+|  CPU_CLK_UNHALTED_REF |  FIXC2  |  25560 |
+| L2_TRANS_ALL_REQUESTS |   PMC0  |   5381 |
+|     L2_RQSTS_MISS     |   PMC1  |   1832 |
++-----------------------+---------+--------+
 
-+----------------------+-----------+
-|        Metric        |   Core 3  |
-+----------------------+-----------+
-|  Runtime (RDTSC) [s] |    0.0002 |
-| Runtime unhalted [s] |    0.0002 |
-|      Clock [MHz]     | 3788.5863 |
-|          CPI         |    0.4361 |
-|    L2 request rate   |    0.0463 |
-|     L2 miss rate     |    0.0016 |
-|     L2 miss ratio    |    0.0335 |
-+----------------------+-----------+
++----------------------+--------------+
+|        Metric        |    Core 3    |
++----------------------+--------------+
+|  Runtime (RDTSC) [s] | 1.694985e-05 |
+| Runtime unhalted [s] | 8.529937e-06 |
+|      Clock [MHz]     |    3874.3967 |
+|          CPI         |       0.9582 |
+|    L2 request rate   |       0.1774 |
+|     L2 miss rate     |       0.0604 |
+|     L2 miss ratio    |       0.3405 |
++----------------------+--------------+
 
 Region MMM, Group 1: L2CACHE
 +-------------------+----------+
