@@ -7,7 +7,7 @@ SIZES="64 100 128 200 256 512 600 900 1024 2000 2048 3000 4000"
 # likwid groups
 EVENTS="FLOPS_DP ENERGY"
 #CPU core
-CORE=3
+CORE=15
 TIME_SAVED=0
 
 # function to parse the output based on the metric needed using switch case
@@ -17,7 +17,7 @@ function parse_output() {
             likwid_output=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1)} NR%3==2 {avx_dp = $(NF-1); printf "%s %s ", dp, avx_dp}')
             
             # if time saved == 1, do not save the time spent
-            if [ $TIME_SAVED == 1 ]; then
+            if [ $TIME_SAVED == 0 ]; then
                 time_spent=$(cat $g_$n.txt | awk '/^-+$/ {count++; if (count == 2) flag=1; else flag=0; next} flag && !/^-+$/ {printf "%s ", $0} flag && /^-+$/ {exit}')
             fi
             ;;
@@ -25,7 +25,7 @@ function parse_output() {
             likwid_output=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ')
             
             # if time saved == 1, do not save the time spent
-            if [ $TIME_SAVED == 1 ]; then
+            if [ $TIME_SAVED == 0 ]; then
                 time_spent=$(cat $g_$n.txt | awk '/^-+$/ {count++; if (count == 2) flag=1; else flag=0; next} flag && !/^-+$/ {printf "%s ", $0} flag && /^-+$/ {exit}')
             fi
             ;;
@@ -33,7 +33,7 @@ function parse_output() {
             likwid_output=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
             
             # if time saved == 1, do not save the time spent
-            if [ $TIME_SAVED == 1 ]; then
+            if [ $TIME_SAVED == 0 ]; then
                 time_spent=$(cat $g_$n.txt | awk '/^-+$/ {count++; if (count == 2) flag=1; else flag=0; next} flag && !/^-+$/ {printf "%s ", $0} flag && /^-+$/ {exit}')
             fi
             ;;
@@ -42,7 +42,7 @@ function parse_output() {
             likwid_output=$(cat "$g_$n.txt" | grep "L3\ bandwidth\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
 
             # if time saved == 1, do not save the time spent
-            if [ $TIME_SAVED == 1 ]; then
+            if [ $TIME_SAVED == 0 ]; then
                 time_spent=$(cat $g_$n.txt | awk '/^-+$/ {count++; if (count == 2) flag=1; else flag=0; next} flag && !/^-+$/ {printf "%s ", $0} flag && /^-+$/ {exit}')
             fi
             ;;
@@ -65,15 +65,15 @@ for g in $EVENTS; do
     for n in $SIZES; do
         likwid-perfctr -C $CORE -g $g -m -f ./$EXECUTABLE $n > $g_$n.txt
         parse_output $g $n
-        echo "$n, $likwid_output" >> $g.csv
+        echo "$n $likwid_output" >> $g.csv
         # if is the first group, save the time spent
         first_group=$(echo $EVENTS | awk '{print $1}')
         if [ $g == $first_group ]; then
-            echo "$n, $time_spent" >> time.csv
-            TIME_SAVED=1
+            echo "$n $time_spent" >> time.csv
         fi
         rm $g_$n.txt
     done
+    TIME_SAVED=1
 done
 
 
