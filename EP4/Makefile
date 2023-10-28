@@ -11,7 +11,7 @@ ifneq ($(LIKWID_HOME),)
 	CFLAGS += -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
 	LFLAGS += -L$(LIKWID_HOME)/lib -llikwid
 endif
-OPTIMIZINGFLAGS = -fopt-info-vec -fopt-info-vec-missed
+# OPTIMIZINGFLAGS = -fopt-info-vec -fopt-info-vec-missed
 
 # Lista de arquivos para distribuição
 DISTFILES = *.c *.h README.md Makefile perfctr
