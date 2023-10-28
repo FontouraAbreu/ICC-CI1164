@@ -104,8 +104,6 @@ void liberaVetor(void *vet)
  */
 void multMatVet(MatRow mat, Vetor v, int m, int n, Vetor res)
 {
-  // FAZER LOOP UNROLL
-  // PARA TAMANHO 4 (quantidade de registradores que cabem na instrução AVX512)
   /* Efetua a multiplicação */
   if (res)
   {
@@ -122,9 +120,9 @@ void optimizedMultMatVet_unroll_jam_blocking(MatRow mat, Vetor v, int m, int n, 
   if (res)
   {
     // percorre a matriz em blocos de tamanho BK
+    // considerando operações de vetorização de tamanho UF
     for (int i = 0; i < m; i += UF)
     {
-      // para cada bloco
       for (int j = 0; j < n; j += BK)
       {
         // percorre o bloco
@@ -166,17 +164,22 @@ void optimizedMulMatMat_blocking(MatRow A, MatRow B, int n, MatRow C)
   int istart, jstart, kstart, iend, jend, kend;
 
   /* Efetua a multiplicação */
+  // percorre a matriz em blocos de tamanho BK
   for (int ii=0; ii<n/BK; ii++) {
     istart = ii*BK;
     iend = istart + BK;
     for (int jj=0; jj<n/BK; jj++) {
       jstart = jj*BK;
       jend = jstart + BK;
+      // percorre o bloco
       for (int kk=0; kk<n/BK; kk++) {
         kstart = kk*BK;
         kend = kstart + BK;
+        // percorre a linha do bloco
         for (int i=istart; i<iend; i++) {
+          // percorre a coluna do bloco
           for (int j=jstart; j<jend; j+=UF) {
+            // unrrroling
             for (int k=kstart; k<kend; k++) {
               for (int l=0; l<UF; l++) {
                 C[i*n+j+l] += A[i*n+k] * B[k*n+j+l];
