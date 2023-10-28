@@ -29,7 +29,7 @@ for file in "${files[@]}"; do
             YLABEL="L3 Bandwidth"
             ;;
         "time.csv")
-            YLABEL="Time (s)"
+            YLABEL="Time (ms)"
             ;;
     esac
     
