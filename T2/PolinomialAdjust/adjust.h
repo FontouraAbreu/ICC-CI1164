@@ -8,6 +8,13 @@
 typedef long long int lli;
 
 /*
+* Look up table for powers of x
+*/
+typedef struct {
+    OptIntervalPoint_t *powers;
+    int size;
+} PowerLookupTable_t;
+/*
  * Will generate a matrix of intervals where each point is a sum of x^(i*j)
  * and each independent term is a sum of y*x^(i)
  * @param table: table of points
@@ -20,7 +27,7 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n);
 
 /*
  * [OPTMIZED] Will generate a matrix of intervals where each point is a sum of x^(i*j)
- * and each independent term is a sum of y*x^(i)
+ * and each independent term is a sum of y*x^(i) using a lookup table to avoid calculating the same power multiple times
  * @param table: table of points
  * @param k: degree of the polynomial
  * @param n: number of points

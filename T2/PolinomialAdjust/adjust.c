@@ -85,3 +85,21 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n)
 
     return A;
 }
+
+OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n) {
+
+}
+
+PowerLookupTable_t* calculatePowerLookupTable(OptIntervalPoint_t base, lli maxPower) {
+    PowerLookupTable_t* table = malloc(sizeof(PowerLookupTable_t));
+    table->size = maxPower + 1;
+    Interval_t power, current_x, current_y;
+
+    table->powers[0] = base;  // base^0 is always base
+    for (int i = 1; i <= maxPower; i++) {
+        power = op_mul_interval(table->powers[i-1].x, base);
+        table->powers[i] = ;
+    }
+
+    return table;
+}
