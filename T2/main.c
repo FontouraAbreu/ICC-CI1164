@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     LIKWID_MARKER_INIT;
 
     // reading inputs
-    int n, k;
+    lli n, k;
     double timeLS_non_optmized, timeSS_non_optmized, timeLS_optmized, timeSS_optmized;
     if (scanf("%d", &n) != 1)
     {
@@ -29,6 +29,13 @@ int main(int argc, char *argv[])
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
     LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD");
     timeLS_non_optmized = timestamp()- timeLS_non_optmized;
+
+    timeLS_optmized = timestamp();
+    LIKWID_MARKER_START("LEAST_SQUARE_METHOD_OPTMIZED");
+    OptIntervalPoint_t optTable = optRead_points(k);
+    OptIntervalMatrix_t *optCoefficients_matrix = optLeastSquareMethod(optTable, k, n);
+    LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD_OPTMIZED");
+    timeLS_optmized = timestamp() - timeLS_optmized;
 
     timeSS_non_optmized = timestamp();
     LIKWID_MARKER_START("SYSTEM_SOLVER");

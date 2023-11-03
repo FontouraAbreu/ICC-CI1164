@@ -8,6 +8,9 @@
 #include <math.h>
 #include "../utils/utils.h"
 
+typedef long long int lli;
+
+
 /*
 Atributos
 @param min;
@@ -58,8 +61,8 @@ typedef struct {
 */
 typedef struct
 {
-    int rows;
-    int cols;
+    lli rows;
+    lli cols;
     Interval_t **data;
     Interval_t *independent_terms;
     Interval_t *residual;
@@ -73,8 +76,8 @@ typedef struct
 typedef struct
 {
     /* data */
-    int rows;
-    int cols;
+    lli rows;
+    lli cols;
     Interval_t *data;
     Interval_t *independent_terms;
     Interval_t *residual;
@@ -110,7 +113,7 @@ Interval_t op_mul_interval(Interval_t X, Interval_t Y);
  *        [0, max{a^p,b^p}] se p é par E a < 0 <= b
  *  @return: X^p (Interval_t)
  */
-Interval_t op_pow_interval(Interval_t x, int n);
+Interval_t op_pow_interval(Interval_t x, lli n);
 
 /*
 Seja X = [a,b] e Y = [c,d]
@@ -129,7 +132,7 @@ Seja X = [a,b] e Y = [c,d]
 Will return 1 if X > Y, 0 otherwise
 @return: 1 if X > Y, 0 otherwise
 */
-int greater_than(Interval_t X, Interval_t Y);
+lli greater_than(Interval_t X, Interval_t Y);
 
 /*
 Seja X = [a,b] e Y = [c,d]
@@ -153,7 +156,7 @@ Will generate a single interval for a given Float_t.
 */
 Interval_t generate_single_interval(Float_t *number);
 
-IntervalMatrix_t *generate_interval_matrix(int n, int m);
+IntervalMatrix_t *generate_interval_matrix(lli n, lli m);
 
 void free_intervalMatrix(IntervalMatrix_t *matrix);
 #endif

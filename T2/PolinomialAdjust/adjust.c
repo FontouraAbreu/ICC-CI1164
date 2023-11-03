@@ -1,6 +1,6 @@
 #include "adjust.h"
 
-IntervalPoint_t *read_points(int n)
+IntervalPoint_t *read_points(lli n)
 {
 
     IntervalPoint_t *points = malloc(n * sizeof(IntervalPoint_t));
@@ -12,7 +12,7 @@ IntervalPoint_t *read_points(int n)
 
     Float_t x, y;
 
-    for (int i = 0; i < n; i++)
+    for (lli i = 0; i < n; i++)
     {
         if (scanf("%lf %lf", &x.f, &y.f) != 2)
         {
@@ -26,7 +26,7 @@ IntervalPoint_t *read_points(int n)
     return points;
 }
 
-OptIntervalPoint_t optRead_points(int n) {
+OptIntervalPoint_t optRead_points(lli n) {
     OptIntervalPoint_t points;
     points.x = malloc(sizeof(Interval_t) * n);
     points.y = malloc(sizeof(Interval_t) * n);
@@ -38,7 +38,7 @@ OptIntervalPoint_t optRead_points(int n) {
 
     Float_t x, y;
 
-    for (int i = 0; i < n; i++)
+    for (lli i = 0; i < n; i++)
     {
         if (scanf("%lf %lf", &x.f, &y.f) != 2)
         {
@@ -52,7 +52,7 @@ OptIntervalPoint_t optRead_points(int n) {
     return points;
 }
 
-IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
+IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n)
 {
     // Allocate memory for matrices A
     IntervalMatrix_t *A = generate_interval_matrix(n + 1, n + 1);
@@ -61,22 +61,22 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
     zero_interval.max.f = 0.0;
 
     // Fill in entries of matrices A
-    for (int i = 0; i <= n; i++)
+    for (lli i = 0; i <= n; i++)
     {
         // fill in entries of matrix A (sum of x^(i+j))
-        for (int j = 0; j <= n; j++)
+        for (lli j = 0; j <= n; j++)
         {
             sum = zero_interval;
             // A->data[i][j] = sum of x^(i+j)
             // WE CAN OPTIMIZE THIS BY USING THE SYMMETRY OF THE MATRIX A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
-            for (int l = 0; l < k; l++)
+            for (lli l = 0; l < k; l++)
                 sum = op_sum_interval(sum, op_pow_interval(table[l].x, i + j));
             A->data[i][j] = sum;
         }
 
         // fill in independent terms of matrix A (sum of y*x^i)
         sum = zero_interval;
-        for (int j = 0; j < k; j++)
+        for (lli j = 0; j < k; j++)
         {
             sum = op_sum_interval(sum, op_mul_interval(table[j].y, op_pow_interval(table[j].x, i)));
         }

@@ -4,6 +4,9 @@
 #include "../system/system.h"
 #include "../utils/utils.h"
 
+// alias for long long int
+typedef long long int lli;
+
 /*
  * Will generate a matrix of intervals where each point is a sum of x^(i*j)
  * and each independent term is a sum of y*x^(i)
@@ -12,31 +15,31 @@
  * @param n: number of points
  * @return: matrix of intervals of size k+1
  */
-IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n);
+IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n);
 
 
 /*
- * [OPTMIZED ]Will generate a matrix of intervals where each point is a sum of x^(i*j)
+ * [OPTMIZED] Will generate a matrix of intervals where each point is a sum of x^(i*j)
  * and each independent term is a sum of y*x^(i)
  * @param table: table of points
  * @param k: degree of the polynomial
  * @param n: number of points
  * @return: matrix of intervals of size k+1
  */
-OptIntervalMatrix_t *leastSquareMethod(OptIntervalPoint_t *table, int k, int n);
+OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n);
 
 /*
  * Will generate an array of N IntervalPoints_t
  * @param n: number of points
  * @return: array of IntervalPoints_t
  */
-IntervalPoint_t *read_points(int n);
+IntervalPoint_t *read_points(lli n);
 
 /*
  * [OPTMIZED] Will fill a struct of arrays of intervals
  * @param n: number of points
  * @return: OptIntervalPoints_t struct
  */
-OptIntervalPoint_t optRead_points(int n);
+OptIntervalPoint_t optRead_points(lli n);
 
 #endif // POLADJUST_H

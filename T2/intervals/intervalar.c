@@ -4,7 +4,7 @@ Interval_t *generate_intervals(Float_t *floats)
 {
     Interval_t *intervals = malloc(sizeof(Interval_t) * 5);
 
-    for (int i = 0; i < 5; i++)
+    for (lli i = 0; i < 5; i++)
     {
 
         intervals[i] = generate_single_interval(&floats[i]);
@@ -71,9 +71,9 @@ Float_t relative_error(Interval_t interval)
     return result;
 }
 
-int how_many_ulps_between(Interval_t interval)
+lli how_many_ulps_between(Interval_t interval)
 {
-    int result;
+    lli result;
 
     result = abs(interval.min.i - interval.max.i) - 1;
 
@@ -109,7 +109,7 @@ Interval_t op_sub_interval(Interval_t X, Interval_t Y)
     return result;
 }
 
-int zero_in_interval(Interval_t interval)
+lli zero_in_interval(Interval_t interval)
 {
     Float_t zero;
     zero.f = 0.0;
@@ -152,10 +152,10 @@ Interval_t op_mul_interval(Interval_t X, Interval_t Y)
     return result;
 }
 
-Interval_t op_pow_interval(Interval_t x, int p)
+Interval_t op_pow_interval(Interval_t x, lli p)
 {
     Interval_t y;
-    int p_is_even = p % 2 == 0;
+    lli p_is_even = p % 2 == 0;
     if (p == 0)
     {
         y.min.f = 1.0;
@@ -265,7 +265,7 @@ double find_max(Interval_t X, Interval_t Y)
     return max.f;
 }
 
-int greater_than(Interval_t X, Interval_t Y)
+lli greater_than(Interval_t X, Interval_t Y)
 {
     if (fabs(X.min.f) > fabs(Y.min.f))
     {
@@ -274,7 +274,7 @@ int greater_than(Interval_t X, Interval_t Y)
     return 0;
 }
 
-IntervalMatrix_t *generate_interval_matrix(int n, int m)
+IntervalMatrix_t *generate_interval_matrix(lli n, lli m)
 {
     IntervalMatrix_t *matrix = malloc(sizeof(IntervalMatrix_t));
     matrix->rows = n;
@@ -282,7 +282,7 @@ IntervalMatrix_t *generate_interval_matrix(int n, int m)
     matrix->independent_terms = malloc(sizeof(Interval_t) * n);
     matrix->residual = malloc(sizeof(Interval_t) * n);
     matrix->data = malloc(sizeof(Interval_t *) * n);
-    for (int i = 0; i < n; i++)
+    for (lli i = 0; i < n; i++)
     {
         matrix->data[i] = malloc(sizeof(Interval_t) * m);
     }
@@ -292,7 +292,7 @@ IntervalMatrix_t *generate_interval_matrix(int n, int m)
 
 void free_intervalMatrix(IntervalMatrix_t *matrix)
 {
-    for (int i = 0; i < matrix->rows; i++)
+    for (lli i = 0; i < matrix->rows; i++)
     {
         free(matrix->data[i]);
     }

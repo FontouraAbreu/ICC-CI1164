@@ -4,6 +4,9 @@
 #include "../intervals/intervalar.h"
 #include "../utils/utils.h"
 
+typedef long long int lli;
+
+
 /*
  *   retrossubs of a triangular matrix
  *   @param A: IntervalMatrix_t(the triangular matrix)
@@ -40,7 +43,7 @@ OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A);
  *   @brief Will loop through the rows of a matrix and find the pivot
  *   @complexity O(n)
  */
-int find_partial_pivot(IntervalMatrix_t *A, int row, int col);
+lli find_partial_pivot(IntervalMatrix_t *A, lli row, lli col);
 
 /*
  *   swap rows of a matrix
@@ -50,7 +53,7 @@ int find_partial_pivot(IntervalMatrix_t *A, int row, int col);
  *   @brief Will swap two rows of a matrix, changing their pointers
  *   @complexity O(n)
  */
-void swap_rows(IntervalMatrix_t *A, int row1, int row2);
+void swap_rows(IntervalMatrix_t *A, lli row1, lli row2);
 
 /*
  *   Will calculate the residual of a system as y - f(x)
@@ -59,7 +62,7 @@ void swap_rows(IntervalMatrix_t *A, int row1, int row2);
  *   @param table: the table of points given
  *   @return array of residual: the residual of the system
  */
-Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, int n);
+Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, lli n);
 
 /*
  *   print a system
@@ -76,6 +79,6 @@ void print_system(IntervalMatrix_t A);
 *   @param index of row2: int
 *   @brief Will swap two rows of a matrix, changing their pointers
 */
-void swap_rows(IntervalMatrix_t *A, int row1, int row2);
+void swap_rows(IntervalMatrix_t *A, lli row1, lli row2);
 
 #endif // SYSTEM_H
