@@ -23,6 +23,15 @@ Interval_t *retrossubs(IntervalMatrix_t *A);
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A);
 
 /*
+ *   parcial pivoting system solver
+ *   @param A: IntervalMatrix_t
+ *   @return x: IntervalMatrix_t
+ *   @brief [OPTMIZED] Will generate a triangular matrix using parcial pivoting method
+ *   @complexity O(n^3)
+ */
+OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A);
+
+/*
  *   find pivot of a column
  *   @param A: IntervalMatrix_t
  *   @param row: int
