@@ -26,6 +26,32 @@ IntervalPoint_t *read_points(int n)
     return points;
 }
 
+OptIntervalPoint_t optRead_points(int n) {
+    OptIntervalPoint_t points;
+    points.x = malloc(sizeof(Interval_t) * n);
+    points.y = malloc(sizeof(Interval_t) * n);
+    if (points.x == NULL || points.y == NULL)
+    {
+        fprintf(stderr, "Erro ao alocar memória para os pontos\n");
+        return points;
+    }
+
+    Float_t x, y;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (scanf("%lf %lf", &x.f, &y.f) != 2)
+        {
+            fprintf(stderr, "Erro ao ler ponto %d\n", i);
+            return points;
+        }
+        points.x[i] = generate_single_interval(&x);
+        points.y[i] = generate_single_interval(&y);
+    }
+
+    return points;
+}
+
 IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, int k, int n)
 {
     // Allocate memory for matrices A
