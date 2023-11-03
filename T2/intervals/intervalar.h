@@ -39,6 +39,16 @@ typedef struct
 } IntervalPoint_t;
 
 /*
+* Optimized version of IntervalPoint_t
+* An array of x and y coordinates
+* where x[i] is the x Interval_t of the i-th point
+*/
+typedef struct {
+    Interval_t *x;
+    Interval_t *y;
+} OptIntervalPoint_t;
+
+/*
     *   Interval Matrix structure:
     *   rows: number of rows
     *   cols: number of columns
@@ -54,6 +64,22 @@ typedef struct
     Interval_t *independent_terms;
     Interval_t *residual;
 } IntervalMatrix_t;
+
+/*
+* Optmized version of IntervalMatrix_t
+* access the matrix as a single array
+* data[i][j] = data[i * cols + j]
+*/
+typedef struct
+{
+    /* data */
+    int rows;
+    int cols;
+    Interval_t *data;
+    Interval_t *independent_terms;
+    Interval_t *residual;
+} OptIntervalMatrix_t;
+
 
 // Seja X = [a,b] e Y = [c,d]. As operações básicas intervalares são dadas por:
 
