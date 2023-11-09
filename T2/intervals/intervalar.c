@@ -193,7 +193,6 @@ Interval_t op_pow_interval(Interval_t x, lli p)
         y.max.f = nextafter(y.max.f, INFINITY);
         return y;
     }
-
     return y;
 }
 
@@ -290,6 +289,19 @@ IntervalMatrix_t *generate_interval_matrix(lli n, lli m)
     return matrix;
 }
 
+OptIntervalMatrix_t *optGenerate_interval_matrix(lli n, lli m)
+{
+    OptIntervalMatrix_t *matrix = malloc(sizeof(OptIntervalMatrix_t));
+    matrix->rows = n;
+    matrix->cols = m;
+    matrix->independent_terms = malloc(sizeof(Interval_t) * n);
+    matrix->residual = malloc(sizeof(Interval_t) * n);
+    matrix->data = malloc(sizeof(Interval_t) * n * m);
+
+    return matrix;
+}
+    
+
 void free_intervalMatrix(IntervalMatrix_t *matrix)
 {
     for (lli i = 0; i < matrix->rows; i++)
@@ -300,4 +312,16 @@ void free_intervalMatrix(IntervalMatrix_t *matrix)
     free(matrix->independent_terms);
     free(matrix->residual);
     free(matrix);
+}
+
+void *printSolution(Interval_t *solution, lli n) {
+  for (lli i = 0; i <= n; i++)
+      printf("[%1.8e, %1.8e] ", solution[i].min.f, solution[i].max.f);
+  printf("\n");
+}
+
+void *printResidual(Interval_t *residual, lli k) {
+  for (lli i = 0; i < k; i++)
+        printf("[%1.8e, %1.8e] ", residual[i].min.f, residual[i].max.f);
+    printf("\n");
 }

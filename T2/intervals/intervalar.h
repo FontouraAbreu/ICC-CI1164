@@ -156,7 +156,40 @@ Will generate a single interval for a given Float_t.
 */
 Interval_t generate_single_interval(Float_t *number);
 
+/*
+Will generate matrix of intervals of size n x m
+
+@param n: number of rows
+@param m: number of columns
+*/
 IntervalMatrix_t *generate_interval_matrix(lli n, lli m);
 
+/*
+Will generate matrix of intervals of size n x m
+in the form of a single array where data[i][j] = data[i * cols + j]
+
+@param n: number of rows
+@param m: number of columns
+*/
+OptIntervalMatrix_t *optGenerate_interval_matrix(lli n, lli m);
+
+
 void free_intervalMatrix(IntervalMatrix_t *matrix);
+
+/*
+Will print the solution array of intervals
+
+@param solution: array of intervals
+@param n: the degree of the polynomial
+*/
+void *printSolution(Interval_t *solution, lli n);
+
+
+/*
+Will print the residual array of intervals
+
+@param residual: array of intervals
+@param k: the number of points
+*/
+void *printResidual(Interval_t *residual, lli k);
 #endif
