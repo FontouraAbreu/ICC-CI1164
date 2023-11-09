@@ -16,7 +16,7 @@ IntervalPoint_t *read_points(lli n)
     {
         if (scanf("%lf %lf", &x.f, &y.f) != 2)
         {
-            fprintf(stderr, "Erro ao ler ponto %d\n", i);
+            fprintf(stderr, "Erro ao ler ponto %lld\n", i);
             return NULL;
         }
         points[i].x = generate_single_interval(&x);
@@ -26,30 +26,16 @@ IntervalPoint_t *read_points(lli n)
     return points;
 }
 
-OptIntervalPoint_t optRead_points(lli n) {
-    OptIntervalPoint_t points;
-    points.x = malloc(sizeof(Interval_t) * n);
-    points.y = malloc(sizeof(Interval_t) * n);
-    if (points.x == NULL || points.y == NULL)
-    {
-        fprintf(stderr, "Erro ao alocar memória para os pontos\n");
-        return points;
+OptIntervalPoint_t optRead_points(IntervalPoint_t *table, lli n) {
+    OptIntervalPoint_t optTable;
+    optTable.x = malloc(sizeof(Interval_t) * n);
+    optTable.y = malloc(sizeof(Interval_t) * n);
+    for (lli i = 0; i < n; i++) {
+        optTable.x[i] = table[i].x;
+        optTable.y[i] = table[i].y;
     }
 
-    Float_t x, y;
-
-    for (lli i = 0; i < n; i++)
-    {
-        if (scanf("%lf %lf", &x.f, &y.f) != 2)
-        {
-            fprintf(stderr, "Erro ao ler ponto %d\n", i);
-            return points;
-        }
-        points.x[i] = generate_single_interval(&x);
-        points.y[i] = generate_single_interval(&y);
-    }
-
-    return points;
+    return optTable;
 }
 
 IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n)
@@ -87,19 +73,53 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n)
 }
 
 OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n) {
+    // optimized matrix A
+    OptIntervalMatrix_t *A = optGenerate_interval_matrix(n + 1, n + 1);
+    Interval_t zero_interval, sum;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0;
+    PowerLookupTable_t *powerTable = calculatePowerLookupTable(table, k, n);
 
-}
-
-PowerLookupTable_t* calculatePowerLookupTable(OptIntervalPoint_t base, lli maxPower) {
-    PowerLookupTable_t* table = malloc(sizeof(PowerLookupTable_t));
-    table->size = maxPower + 1;
-    Interval_t power, current_x, current_y;
-
-    table->powers[0] = base;  // base^0 is always base
-    for (int i = 1; i <= maxPower; i++) {
-        power = op_mul_interval(table->powers[i-1].x, base);
-        table->powers[i] = ;
+    // printing the lookup table
+    for (lli i = 0; i < powerTable->size; i++) {
+        printf("powerTable[%lld] = [%1.8e, %1.8e]\n", i, powerTable->powers[i].min.f, powerTable->powers[i].max.f);
     }
 
-    return table;
+    // Fill in entries of matrices A
+    for (lli i = 0; i <= n; i++)
+    {
+        // fill in entries of matrix A (sum of x^(i+j))
+        for (lli j = 0; j <= n; j++)
+        {
+            sum = zero_interval;
+            // A->data[i][j] = sum of x^(i+j)
+            // WE CAN OPTIMIZE THIS BY USING THE SYMMETRY OF THE MATRIX A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
+            for (lli l = 0; l < k; l++)
+                sum = op_sum_interval(sum, op_mul_interval(powerTable->powers[i+j], table.x[l]));
+            A->data[i * A->cols + j] = sum;
+        }
+
+        // fill in independent terms of matrix A (sum of y*x^i)
+        sum = zero_interval;
+        for (lli j = 0; j < k; j++)
+        {
+            sum = op_sum_interval(sum, op_mul_interval(table.y[j], powerTable->powers[i]));
+        }
+        A->independent_terms[i] = sum;
+    }
+
+
+    return A;
+}
+
+PowerLookupTable_t* calculatePowerLookupTable(OptIntervalPoint_t table, lli k ,lli n) {
+    PowerLookupTable_t* lookup_table = malloc(sizeof(PowerLookupTable_t));
+    lookup_table->size = 2 * n + 1;
+    lookup_table->powers = malloc(sizeof(Interval_t) * lookup_table->size);
+    lookup_table->powers[0].min.f = 1.0;
+    lookup_table->powers[0].max.f = 1.0;
+    // for each x in table, calculate x^i for i in [1, 2n]
+    
+
+    return lookup_table;
 }
