@@ -79,11 +79,8 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
     PowerLookupTable_t *powerTable = calculatePowerLookupTable(table, k, n);
-
-    // printing the lookup table
-    for (lli i = 0; i < powerTable->size; i++) {
-        printf("powerTable[%lld] = [%1.8e, %1.8e]\n", i, powerTable->powers[i].min.f, powerTable->powers[i].max.f);
-    }
+    
+        
 
     // Fill in entries of matrices A
     for (lli i = 0; i <= n; i++)
@@ -95,7 +92,7 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
             // A->data[i][j] = sum of x^(i+j)
             // WE CAN OPTIMIZE THIS BY USING THE SYMMETRY OF THE MATRIX A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
             for (lli l = 0; l < k; l++)
-                sum = op_sum_interval(sum, op_mul_interval(powerTable->powers[i+j], table.x[l]));
+                sum = op_sum_interval(sum, powerTable->powers[i * n + k]);
             A->data[i * A->cols + j] = sum;
         }
 
@@ -103,7 +100,7 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
         sum = zero_interval;
         for (lli j = 0; j < k; j++)
         {
-            sum = op_sum_interval(sum, op_mul_interval(table.y[j], powerTable->powers[i]));
+            sum = op_sum_interval(sum, powerTable->powers[i * n + j]);
         }
         A->independent_terms[i] = sum;
     }
@@ -113,13 +110,51 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
 }
 
 PowerLookupTable_t* calculatePowerLookupTable(OptIntervalPoint_t table, lli k ,lli n) {
-    PowerLookupTable_t* lookup_table = malloc(sizeof(PowerLookupTable_t));
-    lookup_table->size = 2 * n + 1;
+    PowerLookupTable_t *lookup_table = malloc(sizeof(PowerLookupTable_t));
+    lookup_table->size = n * k;
     lookup_table->powers = malloc(sizeof(Interval_t) * lookup_table->size);
-    lookup_table->powers[0].min.f = 1.0;
-    lookup_table->powers[0].max.f = 1.0;
-    // for each x in table, calculate x^i for i in [1, 2n]
-    
+
+    //powers is a matrix where powers[i][j] = powers[i * n + j]
+    // where i is the x value and j is the power so powers[i][j] = x[i]^j
+    for (lli i = 0; i < n; i++) {
+        for (lli j = 0; j < k; j++) {
+            lookup_table->powers[i * n + j] = op_pow_interval(table.x[i], j);
+        }
+    }   
+
+    // printing the lookup table
+    printf("Lookup table:\n");
+    for (lli i = 0; i < n; i++) {
+        for (lli j = 0; j < k; j++) {
+            printf("[%1.8e, %1.8e] ", lookup_table->powers[i * n + j].min.f, lookup_table->powers[i * n + j].max.f);
+        }
+        printf("\n");
+    }    
+    printf("\n");
 
     return lookup_table;
+}
+
+void print_matrix(IntervalMatrix_t *matrix)
+{
+    for (lli i = 0; i < matrix->rows; i++)
+    {
+        for (lli j = 0; j < matrix->cols; j++)
+        {
+            printf("[%1.8e, %1.8e] ", matrix->data[i][j].min.f, matrix->data[i][j].max.f);
+        }
+        printf("\n");
+    }
+}
+
+void print_opt_matrix(OptIntervalMatrix_t *matrix)
+{
+    for (lli i = 0; i < matrix->rows; i++)
+    {
+        for (lli j = 0; j < matrix->cols; j++)
+        {
+            printf("[%1.8e, %1.8e] ", matrix->data[i * matrix->cols + j].min.f, matrix->data[i * matrix->cols + j].max.f);
+        }
+        printf("\n");
+    }
 }

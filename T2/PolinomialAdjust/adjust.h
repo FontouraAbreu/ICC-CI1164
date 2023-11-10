@@ -9,6 +9,9 @@ typedef long long int lli;
 
 /*
 * Look up table for powers of x
+* where powers is a matrix accessed as an array (powers[i][j] = powers[i * n + j])
+* where i is the x value and j is the power
+* powers will have n rows and k columns where k is the degree of the polynomial
 */
 typedef struct {
     Interval_t *powers;
@@ -58,5 +61,8 @@ IntervalPoint_t *read_points(lli n);
  * @return: OptIntervalPoints_t struct
  */
 OptIntervalPoint_t optRead_points(IntervalPoint_t *table ,lli n);
+
+void print_matrix(IntervalMatrix_t *matrix);
+void print_opt_matrix(OptIntervalMatrix_t *matrix);
 
 #endif // POLADJUST_H
