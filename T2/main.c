@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     #endif
     OptIntervalPoint_t optTable = optRead_points(table, k);
     OptIntervalMatrix_t *optCoefficients_matrix = optLeastSquareMethod(optTable, k, n);
+    printf("\n");
     print_opt_matrix(optCoefficients_matrix);
     #ifdef LIKWID_PERFMON
         LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD_OPTMIZED");
