@@ -1,5 +1,9 @@
-CFLAGS= -g --debug -Wall -O3 -mavx -march=native -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
-LFLAGS= -lm -L$(LIKWID_HOME)/lib -llikwid
+CFLAGS= -g --debug -Wall -O3 -mavx -march=native 
+LFLAGS= -lm 
+ifneq ($(LIKWID_HOME),)
+	CFLAGS += -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
+	LFLAGS += -L$(LIKWID_HOME)/lib -llikwid
+endif
 CC=gcc
 
 all: ajustePol
