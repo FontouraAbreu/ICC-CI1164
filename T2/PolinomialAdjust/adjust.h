@@ -7,16 +7,7 @@
 // alias for long long int
 typedef long long int lli;
 
-/*
-* Look up table for powers of x
-* where powers is a matrix accessed as an array (powers[i][j] = powers[i * n + j])
-* where i is the x value and j is the power
-* powers will have n rows and k columns where k is the degree of the polynomial
-*/
-typedef struct {
-    Interval_t *powers;
-    lli size;
-} PowerLookupTable_t;
+
 /*
  * Will generate a matrix of intervals where each point is a sum of x^(i*j)
  * and each independent term is a sum of y*x^(i)
@@ -29,8 +20,9 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n);
 
 
 /*
- * [OPTMIZED] Will generate a matrix of intervals where each point is a sum of x^(i*j)
- * and each independent term is a sum of y*x^(i) using a lookup table to avoid calculating the same power multiple times
+ * [OPTMIZED] Will generate a matrix of intervals.
+ * calculating only the first line and the last column.
+ * Using the fact that the matrix is symmetrical and every value is a repetition of the first line or the last column.
  * @param table: table of points
  * @param k: degree of the polynomial
  * @param n: number of points
@@ -39,14 +31,6 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n);
 OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n);
 
 
-/*
-WIll calculate the lookup table for powers all k values of the table up to 2n-th-1 power
-@param table: table of points
-@param k: degree of the polynomial
-@param n: number of points
-@return: PowerLookupTable_t struct
-*/
-PowerLookupTable_t* calculatePowerLookupTable(OptIntervalPoint_t table, lli k ,lli n);
 
 /*
  * Will generate an array of N IntervalPoints_t
