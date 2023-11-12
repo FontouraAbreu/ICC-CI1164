@@ -11,8 +11,8 @@ typedef long long int lli;
 /*
  * Will generate a matrix of intervals where each point is a sum of x^(i*j)
  * and each independent term is a sum of y*x^(i)
- * @param table: table of points
  * @param k: degree of the polynomial
+ * @param table: table of points
  * @param n: number of points
  * @return: matrix of intervals of size k+1
  */
