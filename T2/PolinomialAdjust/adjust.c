@@ -82,7 +82,25 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
 
-    // FILL THE FIRST ROW
+    fill_first_row(A, table, k);
+
+    fill_last_column(A, table, k);
+
+    // REPLICATE THE NEEDED ROWS THROUGH ITS DIAGONAL
+    replicate_diagonal_values(A);
+
+    // fill in independent terms of matrix A (sum of y*x^i)
+    fill_independent_terms(A, table, k);
+
+    return A;
+}
+
+void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
+{
+    Interval_t zero_interval;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0;
+
     // for each column, of the first row
     for (lli i = 0; i < A->cols; i++)
     {
@@ -94,8 +112,10 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
             A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
         }
     }
+}
 
-    // FILL THE LAST COLUMN
+void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
+{
     // for each row, except the first
     for (lli i = 1; i < A->rows; i++)
     {
@@ -106,8 +126,10 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
             A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
         }
     }
+}
 
-    // REPLICATE THE NEEDED ROWS THROUGH ITS DIAGONAL
+void replicate_diagonal_values(OptIntervalMatrix_t *A)
+{
     lli I;
     Interval_t replicate;
     // for the first half of the matrix
@@ -126,6 +148,13 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
             }
         }
     }
+}
+
+void fill_independent_terms(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
+{
+    Interval_t zero_interval;
+    zero_interval.min.f = 0.0;
+    zero_interval.max.f = 0.0;
 
     // fill in independent terms of matrix A (sum of y*x^i)
     for (lli i = 0; i < A->rows; i++)
@@ -136,8 +165,6 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
             A->independent_terms[i] = op_sum_interval(A->independent_terms[i], op_mul_interval(table.y[j], op_pow_interval(table.x[j], i)));
         }
     }
-
-    return A;
 }
 
 void print_matrix(IntervalMatrix_t *matrix)
