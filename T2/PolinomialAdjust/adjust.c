@@ -78,9 +78,6 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
 {
     // optimized matrix A
     OptIntervalMatrix_t *A = optGenerate_interval_matrix(n + 1, n + 1);
-    Interval_t zero_interval;
-    zero_interval.min.f = 0.0;
-    zero_interval.max.f = 0.0;
 
     fill_first_row(A, table, k);
 
@@ -132,20 +129,29 @@ void replicate_diagonal_values(OptIntervalMatrix_t *A)
 {
     lli I;
     Interval_t replicate;
-    // for the first half of the matrix
-    for (lli i = 0; i < A->rows / 2 + 1; i++)
+    // for each column from 1 to the end
+    for (lli j = 1; j < A->cols; j++)
     {
-        // for each column from i+1 to the end
-        for (lli j = i + 1; j < A->cols; j++)
+        I = 1;
+        replicate = A->data[0 * A->rows + j];
+        // replicate the value of the first row through its diagonal
+        for (lli l = j - 1; l >= 0; l--)
         {
-            I = i + 1;
-            replicate = A->data[i * A->rows + j];
-            // replicate the value of the first row through its diagonal
-            for (lli l = j - 1; l >= 0; l--)
-            {
-                A->data[I * A->rows + l] = replicate;
-                I++;
-            }
+            A->data[I * A->rows + l] = replicate;
+            I++;
+        }
+    }
+
+    // for each row from 1 to the end
+    for (lli i = 1; i < A->rows; i++)
+    {
+        I = 1;
+        replicate = A->data[i * A->rows + A->rows - 1];
+        // replicate the value of the last column through its diagonal
+        for (lli l = i + 1; l < A->rows; l++)
+        {
+            A->data[l * A->rows + (A->rows - I - 1)] = replicate;
+            I++;
         }
     }
 }

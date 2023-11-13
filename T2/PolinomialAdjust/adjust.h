@@ -28,11 +28,41 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n);
  */
 OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n);
 
+/*
+* Auxiliary function used in optLeastSquareMethod
+* Will fill the first row of the coefficients matrix with its values
+* @param A: coefficients matrix
+* @param table: table of points
+* @param k: degree of the polynomial (quantity of points)
+*/
 void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k);
 
+
+/*
+* Auxiliary function used in optLeastSquareMethod
+* Will fill the last column of the coefficients matrix with its values
+* @param A: coefficients matrix
+* @param table: table of points
+* @param k: degree of the polynomial (quantity of points)
+*/
 void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k);
 
+/*
+* Auxiliary function used in optLeastSquareMethod
+* Will fill the rest of the coefficients matrix with its values
+* copying the values of the first row and the last column
+* @param A: coefficients matrix
+*/
 void replicate_diagonal_values(OptIntervalMatrix_t *A);
+
+/*
+* Auxiliary function used in optLeastSquareMethod
+* Will fill the independent terms of the coefficients matrix with its values
+* @param A: coefficients matrix
+* @param table: table of points
+* @param k: degree of the polynomial (quantity of points)
+*/
+void fill_independent_terms(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k);
 
 /*
  * Will generate an array of N IntervalPoints_t
