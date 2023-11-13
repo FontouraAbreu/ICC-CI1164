@@ -45,6 +45,19 @@ OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A);
  */
 lli find_partial_pivot(IntervalMatrix_t *A, lli row, lli col);
 
+
+/*
+*   find pivot of a column
+*   @param A: OptIntervalMatrix_t
+*   @param row: int
+*   @param col: int
+*   @return max: int
+*   @brief Will loop through the rows of a matrix and find the pivot
+*   @complexity O(n)
+*/
+lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col);
+
+
 /*
  *   swap rows of a matrix
  *   @param A: IntervalMatrix_t

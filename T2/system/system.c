@@ -61,7 +61,7 @@ OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
     for (lli i = 0; i < n; i++)
     {
         // Find pivot
-        lli pivot = find_partial_pivot(A, i, i);
+        lli pivot = op_find_partial_pivot(A, i, i);
         // Swap rows if necessary
         if (pivot != i)
         {
@@ -116,9 +116,10 @@ lli find_partial_pivot(IntervalMatrix_t *A, lli row, lli col)
     return imax;
 }
 
-lli opt_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col, lli n)
+lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col)
 {
     lli imax = row;
+    lli n = A->rows;
     for (lli i = row; i < n; i++)
         if (greater_than(A->data[i * n + col], A->data[imax * n + col]))
             imax = i;
