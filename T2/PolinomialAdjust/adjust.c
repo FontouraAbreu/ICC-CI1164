@@ -26,11 +26,13 @@ IntervalPoint_t *read_points(lli n)
     return points;
 }
 
-OptIntervalPoint_t optRead_points(IntervalPoint_t *table, lli n) {
+OptIntervalPoint_t optRead_points(IntervalPoint_t *table, lli n)
+{
     OptIntervalPoint_t optTable;
     optTable.x = malloc(sizeof(Interval_t) * n);
     optTable.y = malloc(sizeof(Interval_t) * n);
-    for (lli i = 0; i < n; i++) {
+    for (lli i = 0; i < n; i++)
+    {
         optTable.x[i] = table[i].x;
         optTable.y[i] = table[i].y;
     }
@@ -72,66 +74,74 @@ IntervalMatrix_t *leastSquareMethod(IntervalPoint_t *table, lli k, lli n)
     return A;
 }
 
-OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n) {
+OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n)
+{
     // optimized matrix A
     OptIntervalMatrix_t *A = optGenerate_interval_matrix(n + 1, n + 1);
     Interval_t zero_interval;
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
 
-
     // for each column, of the first line
     // calculate the sum of x^(i+j)
-    for (lli i = 0; i <= n; i++) {
+    for (lli i = 0; i < A->cols; i++)
+    {
         // fill in each first element of the column
-        A->data[0 * n + i] = zero_interval;
-        for (lli j = 0; j < k; j++) {
+        A->data[0 * A->rows + i] = zero_interval;
+        for (lli j = 0; j < k; j++)
+        {
             // filling line 0
-            A->data[0 * n + i] = op_sum_interval(A->data[0 * n + i], op_pow_interval(table.x[j], i));                
+            A->data[0 * A->rows + i] = op_sum_interval(A->data[0 * A->rows + i], op_pow_interval(table.x[j], i));
         }
-
     }
 
     // for each line, except the first
     // calculate the sum of x^(i+j)
-    for (lli i = 1; i <= n+1; i++) {
-        // fill in each first element of the line
-        for (lli j = 0; j < k; j++) {
-            // filling column n+1
-            A->data[i * 2*n + 1] = op_sum_interval(A->data[i * 2*n + 1], op_pow_interval(table.x[j], i+n)); 
+    for (lli i = 1; i < A->rows; i++)
+    {
+        // fill in each last element of the line
+        for (lli j = 0; j < k; j++)
+        {
+            // filling last column
+            A->data[i * 2 * A->rows - 1] = op_sum_interval(A->data[i * 2 * A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
         }
-
     }
 
-    // Now, the first line and the last column (except the last element of the last column) should be filled
+    // Now, the first line and the last column (except the last element of the last column) are filled
     // we will try to fill the rest of the matrix using the symmetry of the matrix
     // A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
     // fill in the rest of the matrix using the symmetry of the matrix
-    for (lli i = 0; i <= n; i++) {
-        for (lli j = 1; j <= n; j++) {
-            lli I = i;
-            for (lli l = j-1; l >= 0; l--) {
+    lli I;
+    Interval_t replicate;
+    // for the first half of the matrix
+    for (lli i = 0; i < A->rows / 2 + 1; i++)
+    {
+        // for each column from i+1 to the end
+        for (lli j = i + 1; j < A->cols; j++)
+        {
+            I = i + 1;
+            replicate = A->data[i * A->rows + j];
+            // replicate the value of the first line through its diagonal
+            for (lli l = j - 1; l >= 0; l--)
+            {
+                A->data[I * A->rows + l] = replicate;
                 I++;
-                A->data[I * n + l] = A->data[i * n + j];
             }
         }
     }
 
-
     // fill in independent terms of matrix A (sum of y*x^i)
-    for (lli i = 0; i <= n; i++) {
+    for (lli i = 0; i < A->rows; i++)
+    {
         A->independent_terms[i] = zero_interval;
-        for (lli j = 0; j < k; j++) {
+        for (lli j = 0; j < k; j++)
+        {
             A->independent_terms[i] = op_sum_interval(A->independent_terms[i], op_mul_interval(table.y[j], op_pow_interval(table.x[j], i)));
         }
     }
 
-
-
-
     return A;
 }
-
 
 void print_matrix(IntervalMatrix_t *matrix)
 {
