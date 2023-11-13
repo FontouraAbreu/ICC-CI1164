@@ -82,35 +82,32 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
 
-    // for each column, of the first line
-    // calculate the sum of x^(i+j)
+    // FILL THE FIRST ROW
+    // for each column, of the first row
     for (lli i = 0; i < A->cols; i++)
     {
         // fill in each first element of the column
-        A->data[0 * A->rows + i] = zero_interval;
+        A->data[0 * A->cols + i] = zero_interval;
         for (lli j = 0; j < k; j++)
         {
-            // filling line 0
-            A->data[0 * A->rows + i] = op_sum_interval(A->data[0 * A->rows + i], op_pow_interval(table.x[j], i));
+            // filling row 0
+            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
         }
     }
 
-    // for each line, except the first
-    // calculate the sum of x^(i+j)
+    // FILL THE LAST COLUMN
+    // for each row, except the first
     for (lli i = 1; i < A->rows; i++)
     {
-        // fill in each last element of the line
+        // fill in each last element of the row
         for (lli j = 0; j < k; j++)
         {
             // filling last column
-            A->data[i * 2 * A->rows - 1] = op_sum_interval(A->data[i * 2 * A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
+            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
         }
     }
 
-    // Now, the first line and the last column (except the last element of the last column) are filled
-    // we will try to fill the rest of the matrix using the symmetry of the matrix
-    // A[0][2] = A[2][0]; A[1][3] = A[3][1] ...
-    // fill in the rest of the matrix using the symmetry of the matrix
+    // REPLICATE THE NEEDED ROWS THROUGH ITS DIAGONAL
     lli I;
     Interval_t replicate;
     // for the first half of the matrix
@@ -121,7 +118,7 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
         {
             I = i + 1;
             replicate = A->data[i * A->rows + j];
-            // replicate the value of the first line through its diagonal
+            // replicate the value of the first row through its diagonal
             for (lli l = j - 1; l >= 0; l--)
             {
                 A->data[I * A->rows + l] = replicate;
