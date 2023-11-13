@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 #endif
     IntervalPoint_t *table = read_points(k);
     IntervalMatrix_t *coefficients_matrix = leastSquareMethod(table, k, n);
-    printf("\ncoefficients matrix:");
+    printf("\ncoefficients matrix:\n");
     print_matrix(coefficients_matrix);
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD");
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     LIKWID_MARKER_START("SYSTEM_SOLVER");
 #endif
     IntervalMatrix_t *triangular_matrix = partial_pivoting_system_solver(coefficients_matrix);
-    printf("\ntriangular matrix:");
+    printf("\ntriangular matrix:\n");
     print_matrix(triangular_matrix);
     Interval_t *solution = retrossubs(triangular_matrix);
 #ifdef LIKWID_PERFMON
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 #endif
     OptIntervalPoint_t optTable = optRead_points(table, k);
     OptIntervalMatrix_t *optCoefficients_matrix = optLeastSquareMethod(optTable, k, n);
-    printf("\nOptimized coefficients matrix:");
+    printf("\nOptimized coefficients matrix:\n");
     print_opt_matrix(optCoefficients_matrix);
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("LEAST_SQUARE_METHOD_OPTMIZED");
@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_START("SYSTEM_SOLVER_OPTMIZED");
 #endif
+
+    printf("\nOptimized triangular matrix:\n");
     OptIntervalMatrix_t *optTriangular_matrix = optPartial_pivoting_system_solver(optCoefficients_matrix);
     print_opt_matrix(optTriangular_matrix);
 // Interval_t *optSolution = optRetrossubs(optTriangular_matrix);
