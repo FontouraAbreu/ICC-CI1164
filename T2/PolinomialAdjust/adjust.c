@@ -92,6 +92,26 @@ OptIntervalMatrix_t *optLeastSquareMethod(OptIntervalPoint_t table, lli k, lli n
     return A;
 }
 
+//void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
+//{
+//    Interval_t zero_interval;
+//    zero_interval.min.f = 0.0;
+//    zero_interval.max.f = 0.0;
+//
+//    // for each column, of the first row
+//    for (lli i = 0; i < A->cols; i++)
+//    {
+//        // fill in each first element of the column
+//        A->data[0 * A->cols + i] = zero_interval;
+//        for (lli j = 0; j < k; j++)
+//        {
+//            // filling row 0
+//            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
+//        }
+//    }
+//}
+
+
 void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
 {
     Interval_t zero_interval;
@@ -103,13 +123,38 @@ void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
     {
         // fill in each first element of the column
         A->data[0 * A->cols + i] = zero_interval;
-        for (lli j = 0; j < k; j++)
+        // Unroll the loop by a factor of 4
+        lli j;
+        for (j = 0; j < k - 3; j += 4)
         {
             // filling row 0
+            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
+            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j+1], i));
+            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j+2], i));
+            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j+3], i));
+        }
+        // Handle the remaining elements
+        for (; j < k; j++)
+        {
             A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
         }
     }
 }
+
+//void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
+//{
+//    // for each row, except the first
+//    for (lli i = 1; i < A->rows; i++)
+//    {
+//        // fill in each last element of the row
+//        for (lli j = 0; j < k; j++)
+//        {
+//            // filling last column
+//            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
+//        }
+//    }
+//}
+
 
 void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
 {
@@ -117,13 +162,53 @@ void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
     for (lli i = 1; i < A->rows; i++)
     {
         // fill in each last element of the row
-        for (lli j = 0; j < k; j++)
+        lli j;
+        for (j = 0; j < k - 3; j += 4)
         {
             // filling last column
+            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
+            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+1], i + A->cols - 1));
+            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+2], i + A->cols - 1));
+            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+3], i + A->cols - 1));
+        }
+        // Handle the remaining elements
+        for (; j < k; j++)
+        {
             A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
         }
     }
 }
+
+//void replicate_diagonal_values(OptIntervalMatrix_t *A)
+//{
+//    lli I;
+//    Interval_t replicate;
+//    // for each column from 1 to the end
+//    for (lli j = 1; j < A->cols; j++)
+//    {
+//        I = 1;
+//        replicate = A->data[0 * A->rows + j];
+//        // replicate the value of the first row through its diagonal
+//        for (lli l = j - 1; l >= 0; l--)
+//        {
+//            A->data[I * A->rows + l] = replicate;
+//            I++;
+//        }
+//    }
+//
+//    // for each row from 1 to the end
+//    for (lli i = 1; i < A->rows; i++)
+//    {
+//        I = 1;
+//        replicate = A->data[i * A->rows + A->rows - 1];
+//        // replicate the value of the last column through its diagonal
+//        for (lli l = i + 1; l < A->rows; l++)
+//        {
+//            A->data[l * A->rows + (A->rows - I - 1)] = replicate;
+//            I++;
+//        }
+//    }
+//}
 
 void replicate_diagonal_values(OptIntervalMatrix_t *A)
 {
@@ -135,7 +220,17 @@ void replicate_diagonal_values(OptIntervalMatrix_t *A)
         I = 1;
         replicate = A->data[0 * A->rows + j];
         // replicate the value of the first row through its diagonal
-        for (lli l = j - 1; l >= 0; l--)
+        lli l;
+        for (l = j - 1; l >= 3; l -= 4)
+        {
+            A->data[I * A->rows + l] = replicate;
+            A->data[(I+1) * A->rows + l - 1] = replicate;
+            A->data[(I+2) * A->rows + l - 2] = replicate;
+            A->data[(I+3) * A->rows + l - 3] = replicate;
+            I += 4;
+        }
+        // Handle the remaining elements
+        for (; l >= 0; l--)
         {
             A->data[I * A->rows + l] = replicate;
             I++;
@@ -148,7 +243,17 @@ void replicate_diagonal_values(OptIntervalMatrix_t *A)
         I = 1;
         replicate = A->data[i * A->rows + A->rows - 1];
         // replicate the value of the last column through its diagonal
-        for (lli l = i + 1; l < A->rows; l++)
+        lli l;
+        for (l = i + 1; l < A->rows - 3; l += 4)
+        {
+            A->data[l * A->rows + (A->rows - I - 1)] = replicate;
+            A->data[(l+1) * A->rows + (A->rows - I - 2)] = replicate;
+            A->data[(l+2) * A->rows + (A->rows - I - 3)] = replicate;
+            A->data[(l+3) * A->rows + (A->rows - I - 4)] = replicate;
+            I += 4;
+        }
+        // Handle the remaining elements
+        for (; l < A->rows; l++)
         {
             A->data[l * A->rows + (A->rows - I - 1)] = replicate;
             I++;
