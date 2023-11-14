@@ -57,41 +57,57 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 
 OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
 {
+    Interval_t multiplier;
+    lli pivot;
+
     lli n = A->rows;
+    // for each row
     for (lli i = 0; i < n; i++)
     {
-        // Find pivot
-        lli pivot = op_find_partial_pivot(A, i, i);
-        // Swap rows if necessary
+        // find the pivot
+        pivot = op_find_partial_pivot(A, i, i);
+        // swap rows if necessary
         if (pivot != i)
-        {
-            // Swap rows
-            for (lli j = 0; j < n; j++)
-            {
-                Interval_t temp = A->data[i * n + j];
-                A->data[i * n + j] = A->data[pivot * n + j];
-                A->data[pivot * n + j] = temp;
-            }
-        }
+            op_swap_rows(A, i, pivot);
 
-        // Zero out below pivot
+        // for each column
         for (lli j = i + 1; j < n; j++)
         {
-            Interval_t factor = op_div_interval(A->data[j * n + i], A->data[i * n + i]);
-            for (lli k = i; k < n; k += 4)
-            { // loop unrolling
-                A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], factor));
-                if (k + 1 < n)
-                    A->data[j * n + k + 1] = op_sub_interval(A->data[j * n + k + 1], op_mul_interval(A->data[i * n + k + 1], factor));
-                if (k + 2 < n)
-                    A->data[j * n + k + 2] = op_sub_interval(A->data[j * n + k + 2], op_mul_interval(A->data[i * n + k + 2], factor));
-                if (k + 3 < n)
-                    A->data[j * n + k + 3] = op_sub_interval(A->data[j * n + k + 3], op_mul_interval(A->data[i * n + k + 3], factor));
+            // calculate the multiplier
+            multiplier = op_div_interval(A->data[j * n + i], A->data[i * n + i]);
+            A->data[j * n + i].min.f = 0.0;
+            A->data[j * n + i].max.f = 0.0;
+            // for each element in the row
+            for (lli k = i + 1; k < n; k++)
+            {
+                // calculate the new value
+                A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], multiplier));
             }
+            // calculate the new independent term
+            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(A->independent_terms[i], multiplier));
         }
     }
 
     return A;
+}
+
+void op_swap_rows(OptIntervalMatrix_t *A, lli row1, lli row2)
+{
+    Interval_t aux;
+
+    for (lli j = 0; j < A->cols; j++)
+    {
+        aux = A->data[row1 * A->cols + j];
+        A->data[row1 * A->cols + j] = A->data[row2 * A->cols + j];
+        A->data[row2 * A->cols + j] = aux;
+    }
+
+    // swapping the independent terms
+    aux = A->independent_terms[row1];
+    A->independent_terms[row1] = A->independent_terms[row2];
+    A->independent_terms[row2] = aux;
+
+    return;
 }
 
 void print_system(IntervalMatrix_t A)

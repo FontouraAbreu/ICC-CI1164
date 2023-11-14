@@ -26,7 +26,7 @@ Interval_t *retrossubs(IntervalMatrix_t *A);
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A);
 
 /*
- *   parcial pivoting system solver
+ *   Optimized parcial pivoting system solver
  *   @param A: IntervalMatrix_t
  *   @return x: IntervalMatrix_t
  *   @brief [OPTMIZED] Will generate a triangular matrix using parcial pivoting method
@@ -45,19 +45,6 @@ OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A);
  */
 lli find_partial_pivot(IntervalMatrix_t *A, lli row, lli col);
 
-
-/*
-*   find pivot of a column
-*   @param A: OptIntervalMatrix_t
-*   @param row: int
-*   @param col: int
-*   @return max: int
-*   @brief Will loop through the rows of a matrix and find the pivot
-*   @complexity O(n)
-*/
-lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col);
-
-
 /*
  *   swap rows of a matrix
  *   @param A: IntervalMatrix_t
@@ -67,6 +54,28 @@ lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col);
  *   @complexity O(n)
  */
 void swap_rows(IntervalMatrix_t *A, lli row1, lli row2);
+
+/*
+*   Optimized version of finding a pivot of a column
+*   @param A: OptIntervalMatrix_t
+*   @param row: int
+*   @param col: int
+*   @return max: int
+*   @brief [OPTIMIZED] Will loop through the rows of a matrix and find the pivot
+*   @complexity O(n)
+*/
+lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col);
+
+
+/*
+* Optimized version of swap_rows
+* swap rows of a matrix of type OptIntervalMatrix_t
+* @param A: OptIntervalMatrix_t
+* @param row1: int
+* @param row2: int
+*/
+void op_swap_rows(OptIntervalMatrix_t *A, lli row1, lli row2);
+
 
 /*
  *   Will calculate the residual of a system as y - f(x)
@@ -85,13 +94,5 @@ Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoi
  */
 void print_system(IntervalMatrix_t A);
 
-/*
-*   swap two rows of a matrix
-*   @param A: IntervalMatrix_t
-*   @param index of row1: int
-*   @param index of row2: int
-*   @brief Will swap two rows of a matrix, changing their pointers
-*/
-void swap_rows(IntervalMatrix_t *A, lli row1, lli row2);
 
 #endif // SYSTEM_H
