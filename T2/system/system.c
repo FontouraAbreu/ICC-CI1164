@@ -20,25 +20,6 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     return x;
 }
 
-//Interval_t *op_retrossubs(OptIntervalMatrix_t *A) {
-//    lli n = A->rows;
-//    lli m = A->cols;
-//    Interval_t *x = malloc(sizeof(Interval_t) * n);
-//
-//    // for each row
-//    for (lli i = n - 1; i >= 0; i--)
-//    {
-//        x[i] = A->independent_terms[i];
-//        // for each column
-//        for (lli j = i + 1; j < m; j++)
-//            // calculate the sum of the products
-//            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
-//        // calculate the value of x(the independent term)
-//        x[i] = op_div_interval(x[i], A->data[i * m + i]);
-//    }
-//    return x;
-//}
-
 Interval_t *op_retrossubs(OptIntervalMatrix_t *A) {
     lli n = A->rows;
     lli m = A->cols;
@@ -115,41 +96,6 @@ void swap_rows(IntervalMatrix_t *A, lli row1, lli row2)
     A->independent_terms[row2] = aux2;
 }
 
-//OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
-//{
-//    Interval_t multiplier;
-//    lli pivot;
-//
-//    lli n = A->rows;
-//    // for each row
-//    for (lli i = 0; i < n; i++)
-//    {
-//        // find the pivot
-//        pivot = op_find_partial_pivot(A, i, i);
-//        // swap rows if necessary
-//        if (pivot != i)
-//            op_swap_rows(A, i, pivot);
-//
-//        // for each column
-//        for (lli j = i + 1; j < n; j++)
-//        {
-//            // calculate the multiplier
-//            multiplier = op_div_interval(A->data[j * n + i], A->data[i * n + i]);
-//            A->data[j * n + i].min.f = 0.0;
-//            A->data[j * n + i].max.f = 0.0;
-//            // for each element in the row
-//            for (lli k = i + 1; k < n; k++)
-//            {
-//                // calculate the new value
-//                A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], multiplier));
-//            }
-//            // calculate the new independent term
-//            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(A->independent_terms[i], multiplier));
-//        }
-//    }
-//
-//    return A;
-//}
 
 OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
 {

@@ -98,9 +98,6 @@ int main(int argc, char *argv[])
     printf("\nOptimized Solution:\n");
     printSolution(optSolution, n);
 
-    // printing the residual
-    // printResidual(residual, k);
-
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_CLOSE;
 #endif
