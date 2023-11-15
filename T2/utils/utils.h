@@ -1,10 +1,11 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
-
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
 
+#define UF 4
+#define BK 2
 typedef union
 {
     __int64_t i;
