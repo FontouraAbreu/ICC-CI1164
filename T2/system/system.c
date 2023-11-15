@@ -55,6 +55,42 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
     return A;
 }
 
+//OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
+//{
+//    Interval_t multiplier;
+//    lli pivot;
+//
+//    lli n = A->rows;
+//    // for each row
+//    for (lli i = 0; i < n; i++)
+//    {
+//        // find the pivot
+//        pivot = op_find_partial_pivot(A, i, i);
+//        // swap rows if necessary
+//        if (pivot != i)
+//            op_swap_rows(A, i, pivot);
+//
+//        // for each column
+//        for (lli j = i + 1; j < n; j++)
+//        {
+//            // calculate the multiplier
+//            multiplier = op_div_interval(A->data[j * n + i], A->data[i * n + i]);
+//            A->data[j * n + i].min.f = 0.0;
+//            A->data[j * n + i].max.f = 0.0;
+//            // for each element in the row
+//            for (lli k = i + 1; k < n; k++)
+//            {
+//                // calculate the new value
+//                A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], multiplier));
+//            }
+//            // calculate the new independent term
+//            A->independent_terms[j] = op_sub_interval(A->independent_terms[j], op_mul_interval(A->independent_terms[i], multiplier));
+//        }
+//    }
+//
+//    return A;
+//}
+
 OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
 {
     Interval_t multiplier;
@@ -78,9 +114,18 @@ OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
             A->data[j * n + i].min.f = 0.0;
             A->data[j * n + i].max.f = 0.0;
             // for each element in the row
-            for (lli k = i + 1; k < n; k++)
+            lli k;
+            for (k = i + 1; k < n - 3; k += 4)
             {
                 // calculate the new value
+                A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], multiplier));
+                A->data[j * n + k + 1] = op_sub_interval(A->data[j * n + k + 1], op_mul_interval(A->data[i * n + k + 1], multiplier));
+                A->data[j * n + k + 2] = op_sub_interval(A->data[j * n + k + 2], op_mul_interval(A->data[i * n + k + 2], multiplier));
+                A->data[j * n + k + 3] = op_sub_interval(A->data[j * n + k + 3], op_mul_interval(A->data[i * n + k + 3], multiplier));
+            }
+            // Handle the remaining elements
+            for (; k < n; k++)
+            {
                 A->data[j * n + k] = op_sub_interval(A->data[j * n + k], op_mul_interval(A->data[i * n + k], multiplier));
             }
             // calculate the new independent term
