@@ -213,13 +213,25 @@ void fill_independent_terms(OptIntervalMatrix_t *A, OptIntervalPoint_t table, ll
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
 
-    // fill in independent terms of matrix A (sum of y*x^i)
-    for (lli i = 0; i < A->rows; i++)
+    // for each block
+    for (lli b = 0; b < A->rows; b += BK)
     {
-        A->independent_terms[i] = zero_interval;
-        for (lli j = 0; j < k; j++)
+        // for each row within the block
+        for (lli i = b; i < b + BK && i < A->rows; i++)
         {
-            A->independent_terms[i] = op_sum_interval(A->independent_terms[i], op_mul_interval(table.y[j], op_pow_interval(table.x[j], i)));
+            A->independent_terms[i] = zero_interval;
+            lli j;
+            for (j = 0; j < k - UF + 1; j += UF)
+            {
+                for (lli u = 0; u < UF; u++) {
+                    A->independent_terms[i] = op_sum_interval(A->independent_terms[i], op_mul_interval(table.y[j+u], op_pow_interval(table.x[j+u], i)));
+                }
+            }
+            // Handle the remaining elements
+            for (; j < k; j++)
+            {
+                A->independent_terms[i] = op_sum_interval(A->independent_terms[i], op_mul_interval(table.y[j], op_pow_interval(table.x[j], i)));
+            }
         }
     }
 }
