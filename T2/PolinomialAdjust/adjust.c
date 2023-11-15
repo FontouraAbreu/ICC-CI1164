@@ -145,13 +145,12 @@ void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
     {
         // fill in each last element of the row
         lli j;
-        for (j = 0; j < k - 3; j += 4)
+        for (j = 0; j < k - UF + 1; j += UF)
         {
-            // filling last column
-            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
-            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+1], i + A->cols - 1));
-            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+2], i + A->cols - 1));
-            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+3], i + A->cols - 1));
+            for (lli u = 0; u < UF; u++) {
+                // filling last column
+                A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+u], i + A->cols - 1));
+            }
         }
         // Handle the remaining elements
         for (; j < k; j++)
