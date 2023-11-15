@@ -123,73 +123,33 @@ void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
     }
 }
 
-//void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
-//{
-//    // for each row, except the first
-//    for (lli i = 1; i < A->rows; i++)
-//    {
-//        // fill in each last element of the row
-//        for (lli j = 0; j < k; j++)
-//        {
-//            // filling last column
-//            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
-//        }
-//    }
-//}
-
 
 void fill_last_column(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
 {
-    // for each row, except the first
-    for (lli i = 1; i < A->rows; i++)
+    // for each block
+    for (lli b = 1; b < A->rows; b += BK)
     {
-        // fill in each last element of the row
-        lli j;
-        for (j = 0; j < k - UF + 1; j += UF)
+        // for each row within the block
+        for (lli i = b; i < b + BK && i < A->rows; i++)
         {
-            for (lli u = 0; u < UF; u++) {
-                // filling last column
-                A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+u], i + A->cols - 1));
+            // fill in each last element of the row
+            lli j;
+            for (j = 0; j < k - UF + 1; j += UF)
+            {
+                for (lli u = 0; u < UF; u++) {
+                    // filling last column
+                    A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j+u], i + A->cols - 1));
+                }
             }
-        }
-        // Handle the remaining elements
-        for (; j < k; j++)
-        {
-            A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
+            // Handle the remaining elements
+            for (; j < k; j++)
+            {
+                A->data[i * A->rows + (A->rows - 1)] = op_sum_interval(A->data[i * A->rows + A->rows - 1], op_pow_interval(table.x[j], i + A->cols - 1));
+            }
         }
     }
 }
 
-//void replicate_diagonal_values(OptIntervalMatrix_t *A)
-//{
-//    lli I;
-//    Interval_t replicate;
-//    // for each column from 1 to the end
-//    for (lli j = 1; j < A->cols; j++)
-//    {
-//        I = 1;
-//        replicate = A->data[0 * A->rows + j];
-//        // replicate the value of the first row through its diagonal
-//        for (lli l = j - 1; l >= 0; l--)
-//        {
-//            A->data[I * A->rows + l] = replicate;
-//            I++;
-//        }
-//    }
-//
-//    // for each row from 1 to the end
-//    for (lli i = 1; i < A->rows; i++)
-//    {
-//        I = 1;
-//        replicate = A->data[i * A->rows + A->rows - 1];
-//        // replicate the value of the last column through its diagonal
-//        for (lli l = i + 1; l < A->rows; l++)
-//        {
-//            A->data[l * A->rows + (A->rows - I - 1)] = replicate;
-//            I++;
-//        }
-//    }
-//}
 
 void replicate_diagonal_values(OptIntervalMatrix_t *A)
 {
