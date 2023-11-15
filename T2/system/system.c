@@ -20,6 +20,55 @@ Interval_t *retrossubs(IntervalMatrix_t *A)
     return x;
 }
 
+//Interval_t *op_retrossubs(OptIntervalMatrix_t *A) {
+//    lli n = A->rows;
+//    lli m = A->cols;
+//    Interval_t *x = malloc(sizeof(Interval_t) * n);
+//
+//    // for each row
+//    for (lli i = n - 1; i >= 0; i--)
+//    {
+//        x[i] = A->independent_terms[i];
+//        // for each column
+//        for (lli j = i + 1; j < m; j++)
+//            // calculate the sum of the products
+//            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
+//        // calculate the value of x(the independent term)
+//        x[i] = op_div_interval(x[i], A->data[i * m + i]);
+//    }
+//    return x;
+//}
+
+Interval_t *op_retrossubs(OptIntervalMatrix_t *A) {
+    lli n = A->rows;
+    lli m = A->cols;
+    Interval_t *x = malloc(sizeof(Interval_t) * n);
+
+    // for each row
+    for (lli i = n - 1; i >= 0; i--)
+    {
+        x[i] = A->independent_terms[i];
+        // for each column
+        lli j;
+        for (j = i + 1; j < m - 3; j += 4)
+        {
+            // calculate the sum of the products
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 1], x[j + 1]));
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 2], x[j + 2]));
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 3], x[j + 3]));
+        }
+        // Handle the remaining elements
+        for (; j < m; j++)
+        {
+            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
+        }
+        // calculate the value of x(the independent term)
+        x[i] = op_div_interval(x[i], A->data[i * m + i]);
+    }
+    return x;
+}
+
 IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
 {
     Interval_t multiplier;
@@ -53,6 +102,17 @@ IntervalMatrix_t *partial_pivoting_system_solver(IntervalMatrix_t *A)
     }
 
     return A;
+}
+
+void swap_rows(IntervalMatrix_t *A, lli row1, lli row2)
+{
+    Interval_t *aux = A->data[row1];
+    A->data[row1] = A->data[row2];
+    A->data[row2] = aux;
+    // swapping the independent terms
+    Interval_t aux2 = A->independent_terms[row1];
+    A->independent_terms[row1] = A->independent_terms[row2];
+    A->independent_terms[row2] = aux2;
 }
 
 //OptIntervalMatrix_t *optPartial_pivoting_system_solver(OptIntervalMatrix_t *A)
@@ -187,16 +247,6 @@ lli op_find_partial_pivot(OptIntervalMatrix_t *A, lli row, lli col)
     return imax;
 }
 
-void swap_rows(IntervalMatrix_t *A, lli row1, lli row2)
-{
-    Interval_t *aux = A->data[row1];
-    A->data[row1] = A->data[row2];
-    A->data[row2] = aux;
-    // swapping the independent terms
-    Interval_t aux2 = A->independent_terms[row1];
-    A->independent_terms[row1] = A->independent_terms[row2];
-    A->independent_terms[row2] = aux2;
-}
 
 Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, lli k)
 {

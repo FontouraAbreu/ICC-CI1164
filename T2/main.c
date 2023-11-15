@@ -51,13 +51,10 @@ int main(int argc, char *argv[])
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("SYSTEM_SOLVER");
 #endif
-
     timeSS_non_optmized = timestamp() - timeSS_non_optmized;
 
-    Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
+    //Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
-    printf("Time Least Square Method:%1.8e\n", timeLS_non_optmized);
-    printf("Time System Solver:%1.8e\n", timeSS_non_optmized);
 
     // OPTMIZED VERSION
     timeLS_optmized = timestamp();
@@ -73,7 +70,7 @@ int main(int argc, char *argv[])
 #endif
     timeLS_optmized = timestamp() - timeLS_optmized;
 
-// timeSS_optmized = timestamp();
+        timeSS_optmized = timestamp();
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_START("SYSTEM_SOLVER_OPTMIZED");
 #endif
@@ -81,17 +78,26 @@ int main(int argc, char *argv[])
     printf("\nOptimized triangular matrix:\n");
     OptIntervalMatrix_t *optTriangular_matrix = optPartial_pivoting_system_solver(optCoefficients_matrix);
     print_opt_matrix(optTriangular_matrix);
-// Interval_t *optSolution = optRetrossubs(optTriangular_matrix);
+    Interval_t *optSolution = op_retrossubs(optTriangular_matrix);
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("SYSTEM_SOLVER_OPTMIZED");
 #endif
+    timeSS_optmized = timestamp() - timeSS_optmized;
 
-    // timeSS_optmized = timestamp() - timeSS_optmized;
 
+    printf("Time Least Square Method:%1.8e\n", timeLS_non_optmized);
     printf("Time Optimized Least Square Method:%1.8e\n", timeLS_optmized);
+    printf("\n");
+    printf("Time System Solver:%1.8e\n", timeSS_non_optmized);
+    printf("Time Optimized System Solver:%1.8e\n", timeSS_optmized);
 
     // printing the solution
-    // printSolution(solution, k);
+    printf("\nSolution:\n");
+    printSolution(solution, n);
+
+    printf("\nOptimized Solution:\n");
+    printSolution(optSolution, n);
+
     // printing the residual
     // printResidual(residual, k);
 

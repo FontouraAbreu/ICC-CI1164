@@ -17,6 +17,15 @@ typedef long long int lli;
 Interval_t *retrossubs(IntervalMatrix_t *A);
 
 /*
+ *   Optimized retrossubs of a triangular matrix
+ *   @param A: OptIntervalMatrix_t(the triangular matrix)
+ *   @brief [OPTIMIZED] Solve a system using retrossubs
+ *   @return x: Interval*(the solutions of the system)
+ *   @attention Keep in mind that the matrix must be triangular. Every system solver should use this function after generating a triangular matrix
+ */
+Interval_t *op_retrossubs(OptIntervalMatrix_t *A);
+
+/*
  *   parcial pivoting system solver
  *   @param A: IntervalMatrix_t
  *   @return x: IntervalMatrix_t
