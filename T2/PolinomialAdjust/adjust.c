@@ -98,23 +98,27 @@ void fill_first_row(OptIntervalMatrix_t *A, OptIntervalPoint_t table, lli k)
     zero_interval.min.f = 0.0;
     zero_interval.max.f = 0.0;
 
-    // for each column, of the first row
-    for (lli i = 0; i < A->cols; i++)
+    // for each block
+    for (lli b = 0; b < A->cols; b += BK)
     {
-        // fill in each first element of the column
-        A->data[0 * A->cols + i] = zero_interval;
-        // Unroll the loop by a factor of UF
-        lli j;
-        for (j = 0; j < k - UF + 1; j += UF)
+        // for each column within the block
+        for (lli i = b; i < b + BK && i < A->cols; i++)
         {
-            for (lli u = 0; u < UF; u++) {
-                A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j+u], i));
+            // fill in each first element of the column
+            A->data[0 * A->cols + i] = zero_interval;
+            // Unroll the loop by a factor of UF
+            lli j;
+            for (j = 0; j < k - UF + 1; j += UF)
+            {
+                for (lli u = 0; u < UF; u++) {
+                    A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j+u], i));
+                }
             }
-        }
-        // Handle the remaining elements
-        for (; j < k; j++)
-        {
-            A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
+            // Handle the remaining elements
+            for (; j < k; j++)
+            {
+                A->data[0 * A->cols + i] = op_sum_interval(A->data[0 * A->cols + i], op_pow_interval(table.x[j], i));
+            }
         }
     }
 }
