@@ -162,13 +162,12 @@ void replicate_diagonal_values(OptIntervalMatrix_t *A)
         replicate = A->data[0 * A->rows + j];
         // replicate the value of the first row through its diagonal
         lli l;
-        for (l = j - 1; l >= 3; l -= 4)
+        for (l = j - 1; l >= UF - 1; l -= UF)
         {
-            A->data[I * A->rows + l] = replicate;
-            A->data[(I+1) * A->rows + l - 1] = replicate;
-            A->data[(I+2) * A->rows + l - 2] = replicate;
-            A->data[(I+3) * A->rows + l - 3] = replicate;
-            I += 4;
+            for (lli u = 0; u < UF; u++) {
+                A->data[(I+u) * A->rows + l - u] = replicate;
+            }
+            I += UF;
         }
         // Handle the remaining elements
         for (; l >= 0; l--)
@@ -185,13 +184,12 @@ void replicate_diagonal_values(OptIntervalMatrix_t *A)
         replicate = A->data[i * A->rows + A->rows - 1];
         // replicate the value of the last column through its diagonal
         lli l;
-        for (l = i + 1; l < A->rows - 3; l += 4)
+        for (l = i + 1; l < A->rows - UF + 1; l += UF)
         {
-            A->data[l * A->rows + (A->rows - I - 1)] = replicate;
-            A->data[(l+1) * A->rows + (A->rows - I - 2)] = replicate;
-            A->data[(l+2) * A->rows + (A->rows - I - 3)] = replicate;
-            A->data[(l+3) * A->rows + (A->rows - I - 4)] = replicate;
-            I += 4;
+            for (lli u = 0; u < UF; u++) {
+                A->data[(l+u) * A->rows + (A->rows - I - 1 - u)] = replicate;
+            }
+            I += UF;
         }
         // Handle the remaining elements
         for (; l < A->rows; l++)
