@@ -182,7 +182,7 @@ Will print the solution array of intervals
 @param solution: array of intervals
 @param n: the degree of the polynomial
 */
-void *printSolution(Interval_t *solution, lli n);
+void printSolution(Interval_t *solution, lli n);
 
 
 /*
@@ -191,5 +191,5 @@ Will print the residual array of intervals
 @param residual: array of intervals
 @param k: the number of points
 */
-void *printResidual(Interval_t *residual, lli k);
+void printResidual(Interval_t *residual, lli k);
 #endif

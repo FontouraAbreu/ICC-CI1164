@@ -314,14 +314,18 @@ void free_intervalMatrix(IntervalMatrix_t *matrix)
     free(matrix);
 }
 
-void *printSolution(Interval_t *solution, lli n) {
-  for (lli i = 0; i <= n; i++)
+void printSolution(Interval_t *solution, lli n) {
+    for (lli i = 0; i <= n; i++)
       printf("[%1.8e, %1.8e] ", solution[i].min.f, solution[i].max.f);
-  printf("\n");
+    printf("\n");
+
+    return;
 }
 
-void *printResidual(Interval_t *residual, lli k) {
-  for (lli i = 0; i < k; i++)
+void printResidual(Interval_t *residual, lli k) {
+    for (lli i = 0; i < k; i++)
         printf("[%1.8e, %1.8e] ", residual[i].min.f, residual[i].max.f);
     printf("\n");
+
+    return;
 }
