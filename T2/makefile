@@ -1,4 +1,4 @@
-CFLAGS= -g --debug -Wall -O3 -mavx -march=native 
+CFLAGS= -g -Wall -O3 -mavx -march=native 
 LFLAGS= -lm 
 ifneq ($(LIKWID_HOME),)
 	CFLAGS += -I$(LIKWID_HOME)/include -DLIKWID_PERFMON
@@ -6,11 +6,14 @@ ifneq ($(LIKWID_HOME),)
 endif
 CC=gcc
 
-all: ajustePol
+all: ajustePol gerador
 
 # regras de ligacao
 ajustePol: main.o ajustePol.o utils.o interval.o system.o
 	$(CC) $(CFLAGS) main.o ajustePol.o utils.o interval.o system.o $(LFLAGS) -o ajustePol
+
+gerador: gera_entrada.c
+	$(CC) $(CFLAGS) gera_entrada.c -o gera_entrada
 
 # regras de compilacao
 main.o: main.c
@@ -32,7 +35,7 @@ run: ajustePol
 	./ajustePol
 
 clean:
-	rm -f *.o ajustePol
+	rm -f *.o
 
 purge: clean
-	rm -f ajustePol
+	rm -f ajustePol gera_entrada
