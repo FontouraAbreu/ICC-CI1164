@@ -25,27 +25,30 @@ Interval_t *op_retrossubs(OptIntervalMatrix_t *A) {
     lli m = A->cols;
     Interval_t *x = malloc(sizeof(Interval_t) * n);
 
-    // for each row
-    for (lli i = n - 1; i >= 0; i--)
+    // for each block
+    for (lli b = n - 1; b >= 0; b -= BK)
     {
-        x[i] = A->independent_terms[i];
-        // for each column
-        lli j;
-        for (j = i + 1; j < m - 3; j += 4)
+        // for each row within the block
+        for (lli i = b; i > b - BK && i >= 0; i--)
         {
-            // calculate the sum of the products
-            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
-            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 1], x[j + 1]));
-            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 2], x[j + 2]));
-            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + 3], x[j + 3]));
+            x[i] = A->independent_terms[i];
+            // for each column
+            lli j;
+            for (j = i + 1; j < m - UF + 1; j += UF)
+            {
+                for (lli u = 0; u < UF; u++) {
+                    // calculate the sum of the products
+                    x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j + u], x[j + u]));
+                }
+            }
+            // Handle the remaining elements
+            for (; j < m; j++)
+            {
+                x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
+            }
+            // calculate the value of x(the independent term)
+            x[i] = op_div_interval(x[i], A->data[i * m + i]);
         }
-        // Handle the remaining elements
-        for (; j < m; j++)
-        {
-            x[i] = op_sub_interval(x[i], op_mul_interval(A->data[i * m + j], x[j]));
-        }
-        // calculate the value of x(the independent term)
-        x[i] = op_div_interval(x[i], A->data[i * m + i]);
     }
     return x;
 }
