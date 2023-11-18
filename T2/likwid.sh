@@ -18,18 +18,11 @@ function parse_output() {
     case $1 in
         FLOPS_DP)
             likwid_output=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}')
-
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
-            if [ "$likwid_output" == "0 0 0 0" ]; then
-                likwid_output="1 1 1 1"
-            fi
+            echo $likwid_output | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
 
             likwid_output_flops_avx=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}')
-
-            # if likwid output is '0 0 0 0', change it to '1 1 1 1'
-            if [ "$likwid_output_flops_avx" == "0 0 0 0" ]; then
-                likwid_output_flops_avx="1 1 1 1"
-            fi
+            echo $likwid_output_flops_avx | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
 
             # if time saved == 1, do not save the time spent
             if [ $TIME_SAVED == 0 ]; then
@@ -40,9 +33,8 @@ function parse_output() {
             likwid_output=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
-            if [ "$likwid_output" == "0 0 0 0" ]; then
-                likwid_output="1 1 1 1"
-            fi
+            echo $likwid_output | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
+
 
             # if time saved == 1, do not save the time spent
             if [ $TIME_SAVED == 0 ]; then
@@ -53,9 +45,8 @@ function parse_output() {
             likwid_output=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
-            if [ "$likwid_output" == "0 0 0 0" ]; then
-                likwid_output="1 1 1 1"
-            fi
+            echo $likwid_output | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
+
 
             # if time saved == 1, do not save the time spent
             if [ $TIME_SAVED == 0 ]; then
@@ -67,9 +58,8 @@ function parse_output() {
             likwid_output=$(cat "$g_$n.txt" | grep "L3\ bandwidth\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
 
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
-            if [ "$likwid_output" == "0 0 0 0" ]; then
-                likwid_output="1 1 1 1"
-            fi
+            echo $likwid_output | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
+
 
             # if time saved == 1, do not save the time spent
             if [ $TIME_SAVED == 0 ]; then
