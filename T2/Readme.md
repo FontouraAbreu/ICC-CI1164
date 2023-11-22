@@ -104,14 +104,46 @@ typedef struct
 
 ### Loop unrolling + JAM e Blocking
 
-Nas funções que calculam a matriz de coeficientes, utilização pivoteamento parcial e fazem a restrossubstituição, utilizamos a técnica de loop unrolling + JAM para melhorar o acesso à memória e diminuir o número de instruções de desvio. Além disso, utilizamos blocking para melhorar o acesso à memória.
+Nas funções que calculam a matriz de coeficientes, triangularizam o sistema e fazem a restrossubstituição, utilizamos a técnica de loop unrolling + JAM para melhorar o acesso à memória e diminuir o número de instruções de desvio. Além disso, utilizamos blocking para melhorar o acesso à memória nestas mesmas funções.
+
+É possível alterar o tamanho do bloco utilizado para o blocking e o fator de unrrolling através de macros no arquivo `utils/utils.h`.
+
+```c
+#define UF 4
+#define BK 2
+```
 
 ## Execução
 
+Temos 4 arquivos executáveis onde 2 deles são scripts em bash:
+
+- gera_entrada: arquivo dos professores que gera uma entrada para o programa
+- ajustePol: programa que realiza o ajuste polinomial
+- likwid.sh: script que executa `ajustePol` utilizando entradas geradas pelo `gera_entrada` com os tamanhos especificados, e gera os arquivos `.csv` com os resultados
+- plot.sh: script que consome os arquivos `.csv` indicados em seu código e gera os gráficos
+
 ### Compilação
+
+Para compilar o programa, basta executar o comando `make` na pasta raiz do projeto. Isso irá gerar os arquivos executáveis `gera_entrada` e `ajustePol`.
 
 ### Scripts de execução e geração de gráficos
 
+Para executar o programa utilizando o likwid, basta executar o comando `./likwid.sh` na pasta raiz do projeto. Isso irá gerar os arquivos `.csv` com os resultados da execução do programa.
+
+Para gerar os gráficos, basta executar o comando `./generate_plot.sh` na pasta raiz do projeto. Isso irá gerar os gráficos com os resultados da execução do programa.
+
 ## Resultados
 
+Vamos analisar os resultados obtidos com o likwid para cada uma das metricas indicadas no enunciado do trabalho:
+
+- FLOPS DP:
+
+- FLOPS AVX DP:
+
+- MEM:
+
+- DATA CACHE MISS RATIO:
+
 ## Conclusão
+
+Com a implementação das otimizações propostas, conseguimos melhorar o desempenho do programa em relação ao T1. Isso pode ser visto nos gráficos gerados, onde o tempo de execução do programa diminuiu consideravelmente. Além disso, o número de FLOPS aumentou, o que indica que o programa está utilizando melhor os recursos da CPU. Por fim, o número de cache misses também diminuiu, o que indica que o programa está utilizando melhor a memória cache.
