@@ -9,7 +9,9 @@ EVENTS="FLOPS_DP ENERGY"
 #CPU core
 CORE=15
 TIME_SAVED=0
-CSV_FORMAT="N LEAST_SQUARE_METHOD SYSTEM_SOLVER LEAST_SQUARE_METHOD_OPTMIZED SYSTEM_SOLVER_OPTMIZED"
+GENERAL_CSV_FORMAT="N LEAST_SQUARE_METHOD SYSTEM_SOLVER LEAST_SQUARE_METHOD_OPTMIZED SYSTEM_SOLVER_OPTMIZED"
+RESIDUAL_CSV_FORMAT="N RESIDUAL RESIDUAL_OPTMIZED"
+
 
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 
@@ -17,6 +19,8 @@ echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
 function parse_output() {
     case $1 in
         FLOPS_DP)
+            # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO, FLOPS_DP OU FLOPS_AVX
             likwid_output=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}')
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
             echo $likwid_output | grep -q "0 0 0 0" && likwid_output_flops_avx="1 1 1 1"
@@ -30,6 +34,8 @@ function parse_output() {
             fi
             ;;
         ENERGY)
+            # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
             likwid_output=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
@@ -42,6 +48,8 @@ function parse_output() {
             fi
             ;;
         L2CACHE)
+            # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
             likwid_output=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
@@ -55,6 +63,8 @@ function parse_output() {
             ;;
         # cache miss ratio
         L3)
+            # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
             likwid_output=$(cat "$g_$n.txt" | grep "L3\ bandwidth\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
 
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
@@ -73,7 +83,7 @@ function parse_output() {
 }
 
 # creating time.csv only once
-echo $CSV_FORMAT > time.csv
+echo $GENERAL_CSV_FORMAT > time.csv
 
 # for each group, run the executable for each size and parse the output
 for g in $EVENTS; do
@@ -82,9 +92,9 @@ for g in $EVENTS; do
     fi
 
     # FLOPS_AVX is a special case, so we need to create a new csv file
-    echo $CSV_FORMAT > $g.csv
+    echo $GENERAL_CSV_FORMAT > $g.csv
     if [ $g == "FLOPS_DP" ]; then
-            echo $CSV_FORMAT > FLOPS_AVX.csv
+            echo $GENERAL_CSV_FORMAT > FLOPS_AVX.csv
         fi
 
     # for each size, run the executable and parse the output
