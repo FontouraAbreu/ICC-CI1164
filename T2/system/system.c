@@ -218,3 +218,22 @@ Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoi
     }
     return residual;
 }
+
+Interval_t *op_show_residual(OptIntervalMatrix_t *A, Interval_t *solution, OptIntervalPoint_t table, lli k)
+{
+    lli m = A->cols;
+    Interval_t *residual = malloc(sizeof(Interval_t) * k);
+    for (lli i = 0; i < k; i++)
+    {   
+        residual[i].max.f = 0.0;
+        residual[i].min.f = 0.0;
+
+        // for each column
+        for (lli j = 0; j < m; j++)
+        {
+            residual[i] = op_sum_interval(residual[i], op_mul_interval(solution[j], op_pow_interval(table.x[i], j)));
+        }
+        residual[i] = op_sub_interval(residual[i], table.y[i]);
+    }
+    return residual;
+}

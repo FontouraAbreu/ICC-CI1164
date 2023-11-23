@@ -96,6 +96,16 @@ void op_swap_rows(OptIntervalMatrix_t *A, lli row1, lli row2);
 Interval_t *show_residual(IntervalMatrix_t *A, Interval_t *solution, IntervalPoint_t *table, lli n);
 
 /*
+ *   Optimized version of show_residual
+ *   Will calculate the residual of a system as y - f(x)
+ *   where y is the real value and f(x) is the value calculated by the system
+ *   @param A: the solution matrix of the system
+ *   @param table: the table of points given
+ *   @return array of residual: the residual of the system
+ */
+Interval_t *op_show_residual(OptIntervalMatrix_t *A, Interval_t *solution, OptIntervalPoint_t table, lli n);
+
+/*
  *   print a system
  *   @param A: IntervalMatrix_t
  *   @brief Will print a system
