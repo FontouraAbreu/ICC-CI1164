@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     // reading inputs
     lli n, k;
-    double timeLS_non_optmized, timeSS_non_optmized, timeLS_optmized, timeSS_optmized;
+    double timeLS_non_optmized, timeSS_non_optmized, timeLS_optmized, timeSS_optmized, timeResidual, timeResidual_optmized;
     if (scanf("%lld", &n) != 1)
     {
         fprintf(stderr, "Erro ao ler n\n");
@@ -49,8 +49,16 @@ int main(int argc, char *argv[])
 #endif
     timeSS_non_optmized = timestamp() - timeSS_non_optmized;
 
-    //Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
 
+    timeResidual = timestamp();
+#ifdef LIKWID_PERFMON
+    LIKWID_MARKER_START("RESIDUAL");
+#endif
+    Interval_t *residual = show_residual(coefficients_matrix, solution, table, k);
+#ifdef LIKWID_PERFMON
+    LIKWID_MARKER_STOP("RESIDUAL");
+#endif
+    timeResidual = timestamp() - timeResidual;
 
     // OPTMIZED VERSION
     timeLS_optmized = timestamp();
@@ -76,6 +84,15 @@ int main(int argc, char *argv[])
 #endif
     timeSS_optmized = timestamp() - timeSS_optmized;
 
+    timeResidual_optmized = timestamp();
+#ifdef LIKWID_PERFMON
+    LIKWID_MARKER_START("RESIDUAL_OPTMIZED");
+#endif
+    Interval_t *optResidual = op_show_residual(optCoefficients_matrix, optSolution, optTable, k);
+#ifdef LIKWID_PERFMON
+    LIKWID_MARKER_STOP("RESIDUAL_OPTMIZED");
+#endif
+    timeResidual_optmized = timestamp() - timeResidual_optmized;
     // avoiding compiling warnings
     if (optSolution && solution) {
         //do nothing
@@ -83,10 +100,16 @@ int main(int argc, char *argv[])
                 
     }
 
+    // printing results
+    printf("Least Square Method:\n");
     printf("%1.8e\n", timeLS_non_optmized);
     printf("%1.8e\n", timeLS_optmized);
+    printf("System Solver:\n");
     printf("%1.8e\n", timeSS_non_optmized);
     printf("%1.8e\n", timeSS_optmized);
+    printf("Residual:\n");
+    printf("%1.8e\n", timeResidual);
+    printf("%1.8e\n", timeResidual_optmized);
 
 
     // // NON OPTMIZED RESULTS
