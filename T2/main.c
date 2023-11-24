@@ -101,34 +101,15 @@ int main(int argc, char *argv[])
     }
 
     // printing results
-    printf("Least Square Method:\n");
+    //printf("Least Square Method:\n");
     printf("%1.8e\n", timeLS_non_optmized);
     printf("%1.8e\n", timeLS_optmized);
-    printf("System Solver:\n");
+    //printf("System Solver:\n");
     printf("%1.8e\n", timeSS_non_optmized);
     printf("%1.8e\n", timeSS_optmized);
-    printf("Residual:\n");
+    //printf("Residual:\n");
     printf("%1.8e\n", timeResidual);
     printf("%1.8e\n", timeResidual_optmized);
-
-
-    // // NON OPTMIZED RESULTS
-    // printf("\ncoefficients matrix:\n");
-    // print_matrix(coefficients_matrix);
-    // printf("\ntriangular matrix:\n");
-    // print_matrix(triangular_matrix);
-
-    // // OPTMIZED RESULTS
-    // printf("\nOptimized coefficients matrix:\n");
-    // print_opt_matrix(optCoefficients_matrix);
-    // printf("\nOptimized triangular matrix:\n");
-    // print_opt_matrix(optTriangular_matrix);
-
-    // // SOLUTIONS
-    // printf("\nSolution:\n");
-    // printSolution(solution, n);
-    // printf("\nOptimized Solution:\n");
-    // printSolution(optSolution, n);
 
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_CLOSE;
