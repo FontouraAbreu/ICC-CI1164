@@ -9,8 +9,8 @@ EVENTS="FLOPS_DP ENERGY"
 #CPU core
 CORE=15
 TIME_SAVED=0
-GENERAL_CSV_FORMAT="N LEAST_SQUARE_METHOD SYSTEM_SOLVER LEAST_SQUARE_METHOD_OPTMIZED SYSTEM_SOLVER_OPTMIZED"
-RESIDUAL_CSV_FORMAT="N RESIDUAL RESIDUAL_OPTMIZED"
+GENERAL_CSV_FORMAT="N LEAST_SQUARE_METHOD RESIDUAL LEAST_SQUARE_METHOD_OPTMIZED RESIDUAL_OPTMIZED"
+SL_CSV_FORMAT="N SYSTEM_SOLVER SYSTEM_SOLVER_OPTMIZED"
 
 
 echo "performance" > /sys/devices/system/cpu/cpufreq/policy3/scaling_governor
@@ -35,7 +35,7 @@ function parse_output() {
             ;;
         ENERGY)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
-            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO OU E FLOPS FLOPS_AVX
             likwid_output=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
@@ -49,7 +49,7 @@ function parse_output() {
             ;;
         L2CACHE)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
-            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO OU E FLOPS FLOPS_AVX
             likwid_output=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
             
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
@@ -64,7 +64,7 @@ function parse_output() {
         # cache miss ratio
         L3)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
-            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TE,O OU E FLOPS FLOPS_AVX
+            # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO OU E FLOPS FLOPS_AVX
             likwid_output=$(cat "$g_$n.txt" | grep "L3\ bandwidth\ " | awk '{print $(NF-1)}' | tr '\n' ' ')
 
             # if likwid output is '0 0 0 0', change it to '1 1 1 1'
