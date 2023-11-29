@@ -1,40 +1,20 @@
 #!/bin/bash
 
 # List of .txt files to process
-files=("FLOPS_DP.csv" "ENERGY.csv" "FLOPS_AVX.csv" "time.csv")
+files=("AVX_LS.csv" "AVX_SS.csv" "AVX_R.csv")
+files+=("ENERGY_LS.csv" "ENERGY_SS.csv" "ENERGY_R.csv")
+files+=("FLOPS_DP_LS.csv" "FLOPS_DP_SS.csv" "FLOPS_DP_R.csv")
+files+=("AVX_LS.csv" "AVX_SS.csv" "AVX_R.csv")
 
 # Gnuplot script filename
 gnuplot_script="plot_script.gp"
 
-# Iterate through the files and generate plots
-for file in "${files[@]}"; do
-    # Set the output filename based on the input file
-    output_file="${file%.csv}_output.png"
 
-    # switch case to change the YLABEL
-    case $file in
-        "FLOPS_DP.csv")
-            YLABEL="MFLOPS/s"
-            ;;
-        "FLOPS_AVX.csv")
-            YLABEL="MFLOPS/s"
-            ;;
-        "ENERGY.csv")
-            YLABEL="Joules"
-            ;;
-        "L2CACHE.csv")
-            YLABEL="L2 Cache Miss Ratio"
-            ;;
-        "L3.csv")
-            YLABEL="L3 Bandwidth"
-            ;;
-        "time.csv")
-            YLABEL="Time (ms)"
-            ;;
-    esac
-    
-    # Generate the Gnuplot script for the current file
-    cat > "$gnuplot_script" <<EOL
+# $1 = PLOT_TITLE1
+# $2 = PLOT_TITLE2
+function create_plot () {
+# Generate the Gnuplot script for the current file
+cat > "$gnuplot_script" <<EOL
 set terminal pngcairo enhanced font 'Verdana,10' size 1600,1000
 set output '$output_file'
 set xlabel 'N'
@@ -54,10 +34,8 @@ set bmargin 8
 set tmargin 8
 set key at screen 0.95, screen 0.95
 
-plot '$file' using 1:2 with linespoints title 'Least Square Method', \\
-     '' using 1:3 with linespoints title 'System Solver', \\
-     '' using 1:4 with linespoints title 'Optmized Least Square Method', \\
-     '' using 1:5 with linespoints title 'Optmized System Solver'
+plot '$file' using 1:2 with linespoints title '$PLOT_TITLE1', \\
+     '' using 1:3 with linespoints title '$PLOT_TITLE2'
 EOL
 
     # Generate the plot using Gnuplot
@@ -65,4 +43,54 @@ EOL
 
     # Optional: Cleanup the temporary Gnuplot script
     rm "$gnuplot_script"
+}
+
+# Iterate through the files and generate plots
+for file in "${files[@]}"; do
+    # Set the output filename based on the input file
+    output_file="${file%.csv}.png"
+
+    # switch case to change the YLABEL
+    case $file in
+        "FLOPS_DP_LS.csv" | "FLOPS_DP_SS.csv" | "FLOPS_DP_R.csv")
+            YLABEL="MFLOPS/s"
+            # extract the csv column names
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+        "AVX_LS.csv" | "AVX_SS.csv" | "AVX_R.csv")
+            YLABEL="MFLOPS/s"
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+        "ENERGY_LS.csv" | "ENERGY_SS.csv" | "ENERGY_R.csv")
+            YLABEL="Joules"
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+        "L2CACHE_LS.csv" | "L2CACHE_SS.csv" | "L2CACHE_R.csv")
+            YLABEL="L2 Cache Miss Ratio"
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+        "L3_LS.csv" | "L3_SS.csv" | "L3_R")
+            YLABEL="L3 Bandwidth"
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+        "time_LS.csv" | "time_SS.csv" | "time_R.csv")
+            YLABEL="Time (ms)"
+            PLOT_TITLE1=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $1}' | sed 's/_/ /g')
+            PLOT_TITLE2=$(head -n 1 $file | cut -d ' ' -f 2- | awk '{print $2}' | sed 's/_/ /g')
+            create_plot $PLOT_TITLE1 $PLOT_TITLE2
+            ;;
+    esac
+    
+
+
 done
