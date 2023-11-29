@@ -18,9 +18,7 @@ Vinicius Fontoura de Abreu - GRR20206873
   - [Introdução](#introdução)
   - [Otimizações realizadas](#otimizações-realizadas)
     - [Estruturas de dados](#estruturas-de-dados)
-    - [Acesso à matriz](#acesso-à-matriz)
-    - [Loop unrolling + JAM](#loop-unrolling--jam)
-    - [Blocking](#blocking)
+    - [Loop unrolling + JAM e blocking](#loop-unrolling--jam-e-blocking)
   - [Execução](#execução)
     - [Compilação](#compilação)
     - [Scripts de execução e geração de gráficos](#scripts-de-execução-e-geração-de-gráficos)
@@ -136,13 +134,23 @@ Para gerar os gráficos, basta executar o comando `./generate_plot.sh` na pasta 
 
 Vamos analisar os resultados obtidos com o likwid para cada uma das metricas indicadas no enunciado do trabalho:
 
-- FLOPS DP:
+- FLOPS DP: A quantidade de FLOPS/s no geral aumentou, o que indica que o programa está utilizando melhor os recursos da CPU. Entretanto, é difícil de analisar essa métrica se não for acompanha do tempo que o evento(Least Square Method, System Solver ou Residual) levou. Visto que o tempo de execução do programa diminuiu, mas o número de FLOPS continuou o mesmo, ainda sim isso é bom, pois indica que o programa está utilizando melhor os recursos da CPU.
 
-- FLOPS AVX DP:
+- FLOPS AVX DP: A metrica de FLPOS AVX DP segue a mesma lógica da métrica de FLOPS DP, onde o número de FLOPS aumentou, mas o tempo de execução diminuiu. Então mesmo que o número de FLOPS AVX DP não tenha aumentado, o programa está mais eficiente. **OBS.:** Na minha máquina os valores de FLOPS AVX DP são sempre 0, só pude analisá-los nas máquinas do dinf
 
-- MEM:
+- TEMPO: O tempo de execução do programa diminuiu em todas os eventos, o que indica que o programa está mais eficiente.
 
-- DATA CACHE MISS RATIO:
+- ENERGY: Visto que o tempo diminuiu e a quantidade de FLOPS aumentou, o consumo de energia do programa diminuiu. **OBS.:** Na minha máquina os valores de ENERGY são sempre 0, só pude analisá-los nas máquinas do dinf
+
+- L2CACHE MISS RATIO: O número de cache misses diminuiu, o que indica que o programa está utilizando melhor a memória cache, principalmente devido a blocagem nas funções. **OBS.:** Na minha máquina não existe o evento L2CACHE, só pude analisá-lo nas máquinas do dinf
+
+- L3 BANDWIDTH: O número de bytes lidos e escritos na memória diminuiu, o que indica que o programa está utilizando melhor a memória cache, também devido a blocagem nas funções. **OBS.:** Na minha máquina não existe o evento L3, só pude analisá-lo nas máquinas do dinf
+
+## Problemas
+
+- Calculo do residuo: Não foi possível otimizar a função que calcula o residual, pois usar técnicas de loop unrroll ou blocking não melhorou o desempenho da função.
+
+- Versões diferentes do likwid: Nos trabalhos não foi especificada uma versão do likwid para ser utilizada, isso gera problemas de compatibilidade entre os scripts feitos e as máquinas. Além de atrapalhar o aluno que: hora vê seus scripts funcionando e hora não. Isso também atrapalha a correção do trabalho, pois o professor pode não conseguir executar os scripts e gerar os gráficos corretamente, além de gerar diversos casos em que: o aluno perde nota por mais que tenha feito corretamente o trabalho ou o professor precisa corrigir o trabalho manualmente.
 
 ## Conclusão
 

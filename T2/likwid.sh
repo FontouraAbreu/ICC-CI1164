@@ -27,13 +27,13 @@ function parse_output() {
         FLOPS_DP)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
             # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO, FLOPS_DP OU FLOPS_AVX
-            likwid_output_LS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 1,4)
-            likwid_output_SS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 2,5)
-            likwid_output_R=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 3,6)
+            likwid_output_LS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 1,4)
+            likwid_output_SS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 2,5)
+            likwid_output_R=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | cut -d ' ' -f 3,6)
 
-            likwid_output_flops_avx_LS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 1,4)
-            likwid_output_flops_avx_SS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 2,5)
-            likwid_output_flops_avx_R=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 3,6)
+            likwid_output_flops_avx_LS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 1,4)
+            likwid_output_flops_avx_SS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 2,5)
+            likwid_output_flops_avx_R=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | cut -d ' ' -f 3,6)
             save_time
             ;;
         ENERGY)
