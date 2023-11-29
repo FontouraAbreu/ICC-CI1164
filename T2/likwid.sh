@@ -5,9 +5,9 @@ EXECUTABLE="ajustePol"
 # test sizes
 SIZES="64 128 200 256 512 600 800 1024 2000 3000 4096 6000 7000 10000 50000 10⁵ 10⁶ 10⁷ 10⁸"
 # likwid groups
-EVENTS="FLOPS_DP ENERGY"
+EVENTS="FLOPS_DP ENERGY L2CACHE L3"
 #CPU core
-CORE=15
+CORE=3
 LS_CSV_FORMAT="N LEAST_SQUARE_METHOD LEAST_SQUARE_METHOD_OPTMIZED"
 SS_CSV_FORMAT="N SYSTEM_SOLVER SYSTEM_SOLVER_OPTMIZED"
 R_CSV_FORMAT="N RESIDUAL RESIDUAL_OPTMIZED"
@@ -26,22 +26,21 @@ function parse_output() {
         FLOPS_DP)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
             # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO, FLOPS_DP OU FLOPS_AVX
-            likwid_output_LS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $1 " " $4}')
-            likwid_output_SS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $2 " " $5}')
-            likwid_output_R=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $3 " " $6}')
+            likwid_output_LS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $1 " " $4}')
+            likwid_output_SS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $2 " " $5}')
+            likwid_output_R=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==1 {dp = $(NF-1); printf "%s ", dp}' | awk '{print $3 " " $6}')
 
-            likwid_output_flops_avx_LS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $1 " " $4}')
-            likwid_output_flops_avx_SS=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $2 " " $5}')
-            likwid_output_flops_avx_R=$(cat $g_$n.txt | grep "DP\ \[MFLOP/s\]" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $3 " " $6}')
-
+            likwid_output_flops_avx_LS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $1 " " $4}')
+            likwid_output_flops_avx_SS=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $2 " " $5}')
+            likwid_output_flops_avx_R=$(cat $g_$n.txt | grep "DP\ MFLOP/s" | awk 'NR%3==2 {avx_dp = $(NF-1); printf "%s ", avx_dp}' | awk '{print $3 " " $6}')
             save_time
             ;;
         ENERGY)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
             # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO OU E FLOPS FLOPS_AVX
-            likwid_output_LS=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $1 " " $4}')
-            likwid_output_SS=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $2 " " $5}')
-            likwid_output_R=$(cat $g_$n.txt | grep "Energy\ \[J\]\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $3 " " $6}')
+            likwid_output_LS=$(cat $g_$n.txt | grep "Energy\ J\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $1 " " $4}')
+            likwid_output_SS=$(cat $g_$n.txt | grep "Energy\ J\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $2 " " $5}')
+            likwid_output_R=$(cat $g_$n.txt | grep "Energy\ J\ " | awk {'print $5'} | tr '\n' ' ' | awk '{print $3 " " $6}')
 
 
             save_time
@@ -49,9 +48,9 @@ function parse_output() {
         L2CACHE)
             # CONFERIR SE ESTA PEGANDO OS VALORES GERADOS PELO EVENTO "RESIDUAL" TBM
             # SE ESTIVER, EXCLUIR OS VALORES A NÃO SER QUE SEJA O GRUPO TEMPO OU E FLOPS FLOPS_AVX
-            likwid_output_LS=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $1 " " $4}')
-            likwid_output_SS=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $2 " " $5}')
-            likwid_output_R=$(cat "L2Cache.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $3 " " $6}')
+            likwid_output_LS=$(cat "$g_$n.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $1 " " $4}')
+            likwid_output_SS=$(cat "$g_$n.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $2 " " $5}')
+            likwid_output_R=$(cat "$g_$n.txt" | grep "\ miss \ratio\ " | awk '{print $(NF-1)}' | tr '\n' ' ' | awk '{print $3 " " $6}')
 
             save_time
             ;;
