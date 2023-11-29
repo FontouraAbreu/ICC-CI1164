@@ -5,6 +5,8 @@ files=("AVX_LS.csv" "AVX_SS.csv" "AVX_R.csv")
 files+=("ENERGY_LS.csv" "ENERGY_SS.csv" "ENERGY_R.csv")
 files+=("FLOPS_DP_LS.csv" "FLOPS_DP_SS.csv" "FLOPS_DP_R.csv")
 files+=("AVX_LS.csv" "AVX_SS.csv" "AVX_R.csv")
+files+=("L2CACHE_LS.csv" "L2CACHE_SS.csv" "L2CACHE_R.csv")
+files+=("L3_LS.csv" "L3_SS.csv" "L3_R.csv")
 
 # Gnuplot script filename
 gnuplot_script="plot_script.gp"
