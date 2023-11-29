@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 #endif
     timeResidual_optmized = timestamp() - timeResidual_optmized;
     // avoiding compiling warnings
-    if (optSolution && solution) {
+    if (optResidual && residual) {
         //do nothing
         
                 
