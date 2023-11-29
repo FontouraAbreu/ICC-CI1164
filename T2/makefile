@@ -38,4 +38,4 @@ clean:
 	rm -f *.o
 
 purge: clean
-	rm -f ajustePol gera_entrada
+	rm -f ajustePol gera_entrada *.png *.csv
